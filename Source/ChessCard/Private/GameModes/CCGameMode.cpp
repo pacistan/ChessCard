@@ -44,11 +44,13 @@ void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 	Super::InitGame(MapName, Options, ErrorMessage);
 	
 	// Wait for the next frame to give time to initialize startup settings
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::TryToHostServer);
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::HandlePartyAssignement);
 }
 
-void ACCGameMode::TryToHostServer()
+void ACCGameMode::HandlePartyAssignement()
 {
+	// Check load of Default exeperience
+	// If not found
 	
 }
 

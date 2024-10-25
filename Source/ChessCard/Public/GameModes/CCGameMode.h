@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "CCGameMode.generated.h"
 
+enum class ECCOnlineMode : uint8;
 class UCCPawnData;
 
 /**
@@ -20,6 +21,8 @@ class CHESSCARD_API ACCGameMode : public AGameModeBase
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
+
+	
 public:
 	// Delegate called on player initialization
 	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;
@@ -37,7 +40,8 @@ public:
 
 protected:
 	UFUNCTION()
-	void TryToHostServer();
+	void HandlePartyAssignement();
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
 
