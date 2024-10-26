@@ -1,12 +1,13 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "GameModes/CCGameState.h"
-
+﻿#include "GameModes/CCGameState.h"
 #include "EngineUtils.h"
 #include "Engine/PlayerStartPIE.h"
 #include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Macro/CCLogMacro.h"
+#include "Grid/CCGridManager.h"
+#include "Grid/CCTile.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
+#include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerStart.h"
 
 extern ENGINE_API float GAverageFPS;
@@ -120,4 +121,10 @@ void ACCGameState::PostInitializeComponents()
 			}
 		}
 	}
+}
+
+void ACCGameState::BeginPlay()
+{
+	Super::BeginPlay();
+	GridManager = Cast<ACCGridManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACCTile::StaticClass()));
 }

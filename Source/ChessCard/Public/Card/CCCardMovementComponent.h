@@ -5,6 +5,7 @@
 #include "Player/CCPlayerPawn.h"
 #include "CCCardMovementComponent.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE(FOnCardMovementEnd);
 
 enum class ECardState : uint8;
 class ACCCard;
@@ -41,7 +42,7 @@ public:
 	float Duration;
 
 	UPROPERTY()
-	FOnEndCardDraw OnDrawCardEnd;
+	FOnCardMovementEnd OnDrawCardEnd;
 };
 
 USTRUCT(BlueprintType)
@@ -108,7 +109,7 @@ public:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void StartMovement(int InCardIndex, int InHandNumber,FOnEndCardDraw& OnDrawCardEnd);
+	void StartMovement(int InCardIndex, int InHandNumber,FOnCardMovementEnd& OnCardMovementEnd);
 
 	UFUNCTION()
 	void MovementTick(float DeltaTime);

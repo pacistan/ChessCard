@@ -9,7 +9,7 @@ public class ChessCard : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", 
-			"GameplayTags", "DeveloperSettings", "NetCore"});
+			"GameplayTags", "DeveloperSettings", "NetCore", "GeometryCore"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "CommonUser", "CommonUI"});
 
