@@ -1,19 +1,15 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameState.generated.h"
 
+class ACCGridManager;
 class ACCPlayerStart;
 class ACCPlayerState;
 class UCCPawnData;
 
-/**
- * 
- */
 UCLASS(HideDropdown)
 class CHESSCARD_API ACCGameState : public AGameStateBase
 {
@@ -31,6 +27,9 @@ protected:
 private:
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
+
+	UPROPERTY()
+	TObjectPtr<ACCGridManager> GridManager;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 protected:
@@ -58,4 +57,11 @@ public:
 	
 private:
 	virtual void PostInitializeComponents() override;
+
+	virtual void BeginPlay() override;
+	
+	/* ------------------------------------------ GETTER/SETTER -------------------------------------------*/
+public:
+	UFUNCTION(BlueprintGetter)
+	ACCGridManager* GetGridManager()const {return GridManager;}
 };

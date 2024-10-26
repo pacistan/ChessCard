@@ -3,6 +3,7 @@
 #include "Card/CCCard.h"
 #include "Card/CCCardMovementComponent.h"
 #include "Deck/CCDeckComponent.h"
+#include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 ACCPlayerPawn::ACCPlayerPawn()
 {
@@ -28,7 +29,16 @@ void ACCPlayerPawn::DrawCard()
 	HandComponent->GetCards().Add(DeckComponent->CreateCard(FVector()));
 	NumberOfCardDrawnOnRoundStart++;
 
-	OnEndCardDrawDelegate.BindDynamic(this, &ACCPlayerPawn::DrawCard);
+	FOnCardMovementEnd OnCardMovementEnd;
+	OnCardMovementEnd.BindDynamic(this, &ACCPlayerPawn::DrawCard);
 	int CardNum = HandComponent->GetCardNum();
-	HandComponent->GetCards()[CardNum]->CardMovement->StartMovement(CardNum, CardNum, OnEndCardDrawDelegate);
+	HandComponent->GetCards()[CardNum]->CardMovement->StartMovement(CardNum, CardNum, OnCardMovementEnd);
+}
+
+void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tiles)
+{
+	auto& Card = HandComponent->GetCards()[CurrentSelectedCardIndex];
+	Card->UnSelect(this);
+	Card->Play(this);
+	PlayedCardsIndex.Add(Card->CardIndex);
 }

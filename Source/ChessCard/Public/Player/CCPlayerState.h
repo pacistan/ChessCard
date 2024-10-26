@@ -30,13 +30,20 @@ protected:
 	
 	UFUNCTION()
 	void OnRep_PawnData();
+
+	UFUNCTION(Server)
+	void AskServerToSendPlayerIndexToPawn();
+
+	UFUNCTION(NetMulticast)
+	void SendPlayerIndexToClients(int32 PlayerIndex);
 	
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)
 	void SetPawnData(const UCCPawnData* InPawnData);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
+	virtual void BeginPlay() override;
+	
 	//~AActor interface
 	virtual void PostInitializeComponents() override;
 	//~End of AActor interface

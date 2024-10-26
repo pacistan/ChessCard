@@ -37,6 +37,15 @@ void ACCPlayerState::OnRep_PawnData()
 	
 }
 
+void ACCPlayerState::SendPlayerIndexToClients_Implementation(int32 PlayerIndex)
+{
+}
+
+void ACCPlayerState::AskServerToSendPlayerIndexToPawn_Implementation()
+{
+	SendPlayerIndexToClients();
+}
+
 void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
 {
 	check(InPawnData);
@@ -54,6 +63,13 @@ void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
 	
 	ForceNetUpdate();
 }
+
+void ACCPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	AskServerToSendPlayerIndexToPawn();
+}
+
 
 void ACCPlayerState::PostInitializeComponents()
 {

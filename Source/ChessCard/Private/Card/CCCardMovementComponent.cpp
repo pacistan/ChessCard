@@ -11,7 +11,7 @@ UCCCardMovementComponent::UCCCardMovementComponent()
 	Owner = Cast<ACCCard>(GetOwner());
 }
 
-void UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnEndCardDraw& OnDrawCardEnd)
+void UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd& OnCardMovementEnd)
 {
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	if(!GetWorld() || !CameraManager)
@@ -22,7 +22,7 @@ void UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 
 	PrimaryComponentTick.SetTickFunctionEnable(true);
 
-	MovementData.OnDrawCardEnd = OnDrawCardEnd;
+	MovementData.OnDrawCardEnd = OnCardMovementEnd;
 	MovementData.StartPosition = GetOwner()->GetActorLocation();
 	MovementData.StartRotation = GetOwner()->GetActorRotation();
 	MovementData.StartScale = GetOwner()->GetActorScale();
