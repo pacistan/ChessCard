@@ -21,7 +21,7 @@ class CHESSCARD_API ACCGameMode : public AGameModeBase
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
-
+	
 	
 public:
 	// Delegate called on player initialization
@@ -41,6 +41,8 @@ public:
 protected:
 	UFUNCTION()
 	void HandlePartyAssignement();
+
+	bool IsExperienceLoaded() const;
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
@@ -50,6 +52,7 @@ public:
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
 	virtual bool ShouldSpawnAtStartSpot(AController* Player) override;
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	virtual void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation) override;
 	virtual void InitGameState() override;

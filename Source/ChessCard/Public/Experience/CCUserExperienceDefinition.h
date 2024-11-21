@@ -4,19 +4,37 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "CCUserExperience.generated.h"
+#include "CCUserExperienceDefinition.generated.h"
+
+
+class UTexture2D;
+class UUserWidget;
+class UCommonSession_HostSessionRequest;
 
 /**
- *  Setting For the Experience At Start of a New Session
+ *  Setting For the Experience In UI And Start A New Session 
  */
 UCLASS()
-class CHESSCARD_API UCCUserExperience : public UDataAsset
+class CHESSCARD_API UCCUserExperienceDefinition : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 public :
+	
 	/** The specific map to load */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= Experience, meta=(AllowedTypes="Map"))
 	FPrimaryAssetId MapID;
+	
+	/** Primary title in the UI */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
+	FText TileTitle;
+
+	/** Full description */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
+	FText TileDescription;
+
+	/** Icon used in the UI */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
+	TObjectPtr<UTexture2D> TileIcon;
 	
 	/** The loading screen widget to show when loading into (or back out of) a given experience */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=LoadingScreen)

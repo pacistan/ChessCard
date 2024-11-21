@@ -4,6 +4,8 @@
 #include "GameModes/CCGameMode.h"
 
 #include "GameModes/CCGameState.h"
+#include "GameModes/Component/CCExperienceManagerComponent.h"
+#include "Experience/CCExperienceDefinition.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPawnData.h"
 #include "Player/CCPlayerController.h"
@@ -23,19 +25,27 @@ const UCCPawnData* ACCGameMode::GetPawnDataForController(const AController* InCo
 {
 	// See if pawn data is already set on the player state
 	if (InController != nullptr){
-		if (const ACCPlayerState* CGPS = InController->GetPlayerState<ACCPlayerState>()){
-			if (const UCCPawnData* PawnData = CGPS->GetPawnData()) {
+		if (const ACCPlayerState* CCPS = InController->GetPlayerState<ACCPlayerState>()){
+			if (const UCCPawnData* PawnData = CCPS->GetPawnData()) {
 				return PawnData;
 			}
 		}
 	}
-	
-	// If not, fall back to the the default from the GameState
-	check(GameState);
-	if(ACCGameState* CGGameState = Cast<ACCGameState>(GameState)) {
-		return CGGameState->DefaultPawnData.LoadSynchronous();
-	}
 
+	
+	check(GameState);
+	UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
+	check(ExperienceComponent);
+
+	if (ExperienceComponent->IsExperienceLoaded()) {
+		const UCCExperienceDefinition* Experience = ExperienceComponent->GetCurrentExperienceChecked();
+		if (Experience->DefaultPawnData != nullptr) {
+			return Experience->DefaultPawnData;
+		}
+		
+		DEBUG_ERROR("Experience is loaded and there's still no pawn data");
+	}
+	
 	return nullptr;
 }
 
@@ -49,9 +59,32 @@ void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 
 void ACCGameMode::HandlePartyAssignement()
 {
-	// Check load of Default exeperience
-	// If not found
+	FPrimaryAssetId ExperienceId;
 	
+	// see if the world settings has a default experience
+	/* if (!ExperienceId.IsValid()) {
+		if (ACCWorldSettings* TypedWorldSettings = Cast<ACCWorldSettings>(GetWorldSettings())) {
+			ExperienceId = TypedWorldSettings->GetDefaultGameplayExperience();
+		}
+	}*/
+	
+	if (ExperienceId.IsValid()) {
+		DEBUG_LOG("Identified experience %s", *ExperienceId.ToString());
+		UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
+		check(ExperienceComponent);
+		ExperienceComponent->SetCurrentExperience(ExperienceId);
+	} else {
+		DEBUG_LOG("Failed to identify experience, loading never end");
+	}
+}
+
+bool ACCGameMode::IsExperienceLoaded() const
+{
+	check(GameState);
+	UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
+	check(ExperienceComponent);
+
+	return ExperienceComponent->IsExperienceLoaded();
 }
 
 UClass* ACCGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -92,6 +125,14 @@ bool ACCGameMode::ShouldSpawnAtStartSpot(AController* Player)
 	return false;
 }
 
+// here Handle Spawn of the Pawn For New Player
+void ACCGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	if (IsExperienceLoaded()) {
+		Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+	}
+}
+
 AActor* ACCGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	if (ACCGameState* CGGameState = Cast<ACCGameState>(GameState)) {
@@ -111,7 +152,7 @@ void ACCGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& St
 void ACCGameMode::InitGameState()
 {
 	Super::InitGameState();
-
+	
 	// Spawn any players that are already attached
 	// TODO: Here we're handling only *player* controllers, but in GetDefaultPawnClassForController_Implementation we skipped all controllers
 	// GetDefaultPawnClassForController_Implementation might only be getting called for players anyways
@@ -147,11 +188,11 @@ void ACCGameMode::FailedToRestartPlayer(AController* NewPlayer)
 {
 	Super::FailedToRestartPlayer(NewPlayer);
 	
-	// If we tried to spawn a pawn and it failed, lets try again *note* check if there's actually a pawn class
+	// If we tried to spawn a pawn, and it failed, lets try again *note* check if there's actually a pawn class
 	// before we try this forever.
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer)) {
 		if (APlayerController* NewPC = Cast<APlayerController>(NewPlayer)) {
-			// If it's a player don't loop forever, maybe something changed and they can no longer restart if so stop trying.
+			// If it's a player don't loop forever, maybe something changed, and they can no longer restart if so stop trying.
 			if (PlayerCanRestart(NewPC)) {
 				RequestPlayerRestartNextFrame(NewPlayer, false);			
 			} else {

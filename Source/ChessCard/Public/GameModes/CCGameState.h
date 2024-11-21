@@ -20,9 +20,7 @@ class CHESSCARD_API ACCGameState : public AGameStateBase
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 public:
-	/** The default pawn class to spawn for players */
-	UPROPERTY(EditDefaultsOnly, Category=Gameplay)
-	TSoftObjectPtr<const UCCPawnData> DefaultPawnData;
+	// bool to update when loading connection
 	
 protected:
 	UPROPERTY(Replicated)
