@@ -9,7 +9,6 @@ class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
 
-
 UCLASS()
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
@@ -33,12 +32,6 @@ protected:
 private:
 	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
 
-	UFUNCTION(Server)
-	void AskServerToSendPlayerIndexToPawn();
-
-	UFUNCTION(NetMulticast)
-	void SendPlayerIndexToClients(int32 PlayerIndex);
-	
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)
 	void SetPawnData(const UCCPawnData* InPawnData);
