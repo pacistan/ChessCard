@@ -9,6 +9,7 @@
 
 class ACCPlayerController;
 class UCCPawnData;
+
 /**
  * 
  */
@@ -19,15 +20,16 @@ class CHESSCARD_API ACCPlayerState : public APlayerState
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	UFUNCTION(BlueprintCallable, Category = "CG|PlayerState")
-	ACCPlayerController* GetCGPlayerController() const;
+	ACCPlayerController* GetCCPlayerController() const;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_PawnData)
 	TObjectPtr<const UCCPawnData> PawnData;
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-protected:
 	
+protected:
 	UFUNCTION()
 	void OnRep_PawnData();
 	

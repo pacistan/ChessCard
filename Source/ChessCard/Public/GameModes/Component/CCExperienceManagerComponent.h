@@ -8,7 +8,7 @@
 
 class UCCExperienceDefinition;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCCExperienceLoaded, const UCCExperienceDefinition* );
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCCExperienceLoaded, const UCCExperienceDefinition*);
 
 // TODO : add loading screen process
 // TODO : add loading Decors process
@@ -45,9 +45,8 @@ protected:
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	UCCExperienceManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
+	
 	void SetCurrentExperience(FPrimaryAssetId ExperienceId);
-
 	
 	// Ensures the delegate is called once the experience has been loaded
 	// If the experience has already loaded, calls the delegate immediately
@@ -62,6 +61,7 @@ public:
 	const UCCExperienceDefinition* GetCurrentExperienceChecked() const;
 
 	// Returns true if the experience is fully loaded
+	UFUNCTION(BlueprintCallable, Category = "CC|Experience")
 	bool IsExperienceLoaded() const;
 
 

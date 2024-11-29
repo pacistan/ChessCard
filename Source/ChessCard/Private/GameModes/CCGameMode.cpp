@@ -57,6 +57,24 @@ void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::HandlePartyAssignement);
 }
 
+void ACCGameMode::OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience)
+{
+	// Spawn any players that are already attached
+	//@TODO: Here we're handling only *player* controllers, but in GetDefaultPawnClassForController_Implementation we skipped all controllers
+	// GetDefaultPawnClassForController_Implementation might only be getting called for players anyways
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PC = Cast<APlayerController>(*Iterator);
+		if ((PC != nullptr) && (PC->GetPawn() == nullptr))
+		{
+			if (PlayerCanRestart(PC))
+			{
+				RestartPlayer(PC);
+			}
+		}
+	}
+}
+
 void ACCGameMode::HandlePartyAssignement()
 {
 	FPrimaryAssetId ExperienceId;
@@ -158,17 +176,10 @@ void ACCGameMode::InitGameState()
 {
 	Super::InitGameState();
 	
-	// Spawn any players that are already attached
-	// TODO: Here we're handling only *player* controllers, but in GetDefaultPawnClassForController_Implementation we skipped all controllers
-	// GetDefaultPawnClassForController_Implementation might only be getting called for players anyways
-	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator) {
-		APlayerController* PC = Cast<APlayerController>(*Iterator);
-		if ((PC != nullptr) && (PC->GetPawn() == nullptr)) {
-			if (PlayerCanRestart(PC)) {
-				RestartPlayer(PC);
-			}
-		}
-	}
+	// Listen for the experience load to complete	
+	UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
+	check(ExperienceComponent);
+	ExperienceComponent->CallOrRegister_OnExperienceLoaded(FOnCCExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));
 }
 
 void ACCGameMode::GenericPlayerInitialization(AController* NewPlayer)

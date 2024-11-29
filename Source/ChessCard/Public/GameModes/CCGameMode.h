@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "CCGameMode.generated.h"
 
+class UCCExperienceDefinition;
 enum class ECCOnlineMode : uint8;
 class UCCPawnData;
 
@@ -13,13 +14,15 @@ class UCCPawnData;
  * Post Login Event, Trigger When a player joins the game
  * Call at end Of initialization 
  */
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*);
 
 UCLASS(HideDropdown)
 class CHESSCARD_API ACCGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
+protected:
+	
 public:
 	// Delegate called on player initialization
 	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;
@@ -38,7 +41,7 @@ public:
 protected:
 	UFUNCTION()
 	void HandlePartyAssignement();
-
+	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
 	bool IsExperienceLoaded() const;
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/

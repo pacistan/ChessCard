@@ -17,7 +17,7 @@ ACCPlayerState::ACCPlayerState(const FObjectInitializer& ObjectInitializer) : Su
 	NetUpdateFrequency = 100.0f;
 }
 
-ACCPlayerController* ACCPlayerState::GetCGPlayerController() const
+ACCPlayerController* ACCPlayerState::GetCCPlayerController() const
 {
 	return Cast<ACCPlayerController>(GetOwner());
 }
@@ -34,7 +34,6 @@ void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 void ACCPlayerState::OnRep_PawnData()
 {
-	
 }
 
 void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)

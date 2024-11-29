@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "Engine/PlayerStartPIE.h"
+#include "GameModes/CCGameMode.h"
 #include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/CCPlayerStart.h"
@@ -18,8 +19,6 @@ ACCGameState::ACCGameState(const FObjectInitializer& ObjectInitializer)
 
 	ExperienceManagerComponent = CreateDefaultSubobject<UCCExperienceManagerComponent>(TEXT("ExperienceManagerComponent"));
 }
-
-
 
 AActor* ACCGameState::ChoosePlayerStart(AController* Player)
 {
