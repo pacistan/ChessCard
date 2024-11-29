@@ -9,9 +9,7 @@
 
 class ACCPlayerController;
 class UCCPawnData;
-/**
- * 
- */
+
 UCLASS(HideDropdown)
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
@@ -31,12 +29,6 @@ protected:
 	UFUNCTION()
 	void OnRep_PawnData();
 
-	UFUNCTION(Server)
-	void AskServerToSendPlayerIndexToPawn();
-
-	UFUNCTION(NetMulticast)
-	void SendPlayerIndexToClients(int32 PlayerIndex);
-	
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)
 	void SetPawnData(const UCCPawnData* InPawnData);
