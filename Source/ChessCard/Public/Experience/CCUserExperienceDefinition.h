@@ -14,7 +14,7 @@ class UCommonSession_HostSessionRequest;
 /**
  *  Setting For the Experience In UI And Start A New Session 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class CHESSCARD_API UCCUserExperienceDefinition : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

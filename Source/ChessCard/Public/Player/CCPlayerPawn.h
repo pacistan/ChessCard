@@ -10,8 +10,7 @@ DECLARE_DYNAMIC_DELEGATE(FOnEndCardDraw);
 class UCCHandComponent;
 class UCCDeckComponent;
 
-
-UCLASS(HideDropdown,HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
+UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
 class CHESSCARD_API ACCPlayerPawn : public APawn
 {
 	GENERATED_BODY()

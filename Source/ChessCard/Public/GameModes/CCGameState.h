@@ -7,6 +7,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameState.generated.h"
 
+class UCCExperienceManagerComponent;
 class ACCPlayerStart;
 class ACCPlayerState;
 class UCCPawnData;
@@ -14,21 +15,20 @@ class UCCPawnData;
 /**
  * 
  */
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-public:
-	// bool to update when loading connection
-	
 protected:
-	UPROPERTY(Replicated)
-	float ServerFPS;
+
 
 private:
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
+	
+	UPROPERTY()
+	TObjectPtr<UCCExperienceManagerComponent> ExperienceManagerComponent;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 protected:
@@ -36,8 +36,6 @@ protected:
 
 public:
 	ACCGameState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
-	DECLARE_GETTER(ServerFPS, ServerFPS, float);
 
 private:
 	AActor* ChoosePlayerStart(AController* Player);

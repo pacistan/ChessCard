@@ -10,7 +10,10 @@ class UInputMappingContext;
 class UInputAction;
 class ACCPlayerPawn;
 
-UCLASS(HideDropdown)
+/**
+ * 
+ */
+UCLASS()
 class CHESSCARD_API ACCPlayerController : public APlayerController
 {
 	GENERATED_BODY()

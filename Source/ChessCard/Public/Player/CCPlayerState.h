@@ -12,7 +12,7 @@ class UCCPawnData;
 /**
  * 
  */
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
 	GENERATED_BODY()

@@ -6,6 +6,7 @@
 #include "GameModes/CCGameState.h"
 #include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Experience/CCExperienceDefinition.h"
+#include "GameModes/CCWorldSettings.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPawnData.h"
 #include "Player/CCPlayerController.h"
@@ -31,7 +32,6 @@ const UCCPawnData* ACCGameMode::GetPawnDataForController(const AController* InCo
 			}
 		}
 	}
-
 	
 	check(GameState);
 	UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
@@ -62,11 +62,16 @@ void ACCGameMode::HandlePartyAssignement()
 	FPrimaryAssetId ExperienceId;
 	
 	// see if the world settings has a default experience
-	/* if (!ExperienceId.IsValid()) {
+	if (!ExperienceId.IsValid()) {
 		if (ACCWorldSettings* TypedWorldSettings = Cast<ACCWorldSettings>(GetWorldSettings())) {
 			ExperienceId = TypedWorldSettings->GetDefaultGameplayExperience();
 		}
-	}*/
+	}
+
+	// Final fallback to the default experience
+	if (!ExperienceId.IsValid()) {
+		ExperienceId = FPrimaryAssetId(FPrimaryAssetType("CCExperienceDefinition"), FName("BP_DefaultExperience"));
+	}
 	
 	if (ExperienceId.IsValid()) {
 		DEBUG_LOG("Identified experience %s", *ExperienceId.ToString());

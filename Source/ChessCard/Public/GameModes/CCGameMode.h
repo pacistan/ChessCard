@@ -20,9 +20,6 @@ class CHESSCARD_API ACCGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-protected:
-	
-	
 public:
 	// Delegate called on player initialization
 	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;

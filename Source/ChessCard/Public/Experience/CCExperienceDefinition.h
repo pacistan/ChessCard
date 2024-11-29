@@ -10,11 +10,12 @@ class UCCPawnData;
 
 // TODO : add Decors to load ?
 // TODO : add game Process to load (Deck, special rules etc...) ?
+// TODO : List Actions to perform when experience is loaded (like load assets, load game process, etc...) ?
 
 /**
  *  Definition of an experience
  */
-UCLASS()
+UCLASS(BlueprintType, Const)
 class CHESSCARD_API UCCExperienceDefinition : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

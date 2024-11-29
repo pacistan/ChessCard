@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "Engine/PlayerStartPIE.h"
+#include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/CCPlayerStart.h"
 
@@ -14,8 +15,8 @@ ACCGameState::ACCGameState(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-	
-	ServerFPS = 0.0f;
+
+	ExperienceManagerComponent = CreateDefaultSubobject<UCCExperienceManagerComponent>(TEXT("ExperienceManagerComponent"));
 }
 
 
@@ -101,20 +102,9 @@ APlayerStart* ACCGameState::GetFirstRandomUnoccupiedPlayerStart(AController* Con
 	return nullptr;
 }
 
-void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, ServerFPS);
-}
-
 void ACCGameState::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	if (GetLocalRole() == ROLE_Authority) {
-		ServerFPS = GAverageFPS;
-	}
 }
 
 void ACCGameState::PostInitializeComponents()

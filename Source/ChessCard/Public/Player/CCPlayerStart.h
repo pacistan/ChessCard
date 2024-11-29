@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "CCPlayerStart.generated.h"
 
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCPlayerStart : public APlayerStart
 {
 	GENERATED_BODY()

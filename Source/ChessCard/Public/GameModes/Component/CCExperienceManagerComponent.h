@@ -36,9 +36,6 @@ protected:
 
 	ECCExperienceLoadState LoadState = ECCExperienceLoadState::Unloaded;
 	
-	int32 NumObservedPausers = 0;
-	int32 NumExpectedPausers = 0;
-	
 	/** Delegate called when the experience has finished loading */
 	FOnCCExperienceLoaded OnExperienceLoaded;
 
