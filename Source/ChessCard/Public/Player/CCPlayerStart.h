@@ -13,7 +13,7 @@ class CHESSCARD_API ACCPlayerStart : public APlayerStart
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	/** The controller that claimed this PlayerStart */
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly)
 	TObjectPtr<AController> ClaimingController = nullptr;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
