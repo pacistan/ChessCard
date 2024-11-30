@@ -67,6 +67,7 @@ void ACCPlayerState::OnExperienceLoaded(const UCCExperienceDefinition* CurrentEx
 void ACCPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
+	ACCGameMode::StaticClass();
 }
 
 void ACCPlayerState::PostInitializeComponents()

@@ -5,6 +5,8 @@
 #include "Deck/CCDeckComponent.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
+
+
 ACCPlayerPawn::ACCPlayerPawn()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,22 +25,32 @@ void ACCPlayerPawn::DrawCard()
 {
 	if(NumberOfCardsToDrawThisRound == NumberOfCardDrawnOnRoundStart)
 	{
+		OnAllCardDrawServer();
 		return;
 	}
-		
-	HandComponent->GetCards().Add(DeckComponent->CreateCard(FVector()));
+
+	UE_LOG(LogTemp, Warning, TEXT("DrawCard"));
+	auto Card = DeckComponent->CreateCard(FVector(0));
+	HandComponent->Cards.Add(Card);
 	NumberOfCardDrawnOnRoundStart++;
 
+	UE_LOG(LogTemp, Warning, TEXT("Card Num = %i"), HandComponent->GetCardNum());
+	return;
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.BindDynamic(this, &ACCPlayerPawn::DrawCard);
 	int CardNum = HandComponent->GetCardNum();
-	HandComponent->GetCards()[CardNum]->CardMovement->StartMovement(CardNum, CardNum, OnCardMovementEnd);
+	HandComponent->Cards[CardNum - 1]->CardMovement->StartMovement(CardNum, CardNum, OnCardMovementEnd);
 }
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tiles)
 {
-	auto& Card = HandComponent->GetCards()[CurrentSelectedCardIndex];
+	auto& Card = HandComponent->Cards[CurrentSelectedCardIndex];
 	Card->UnSelect(this);
 	Card->Play(this);
 	PlayedCardsIndex.Add(Card->CardIndex);
+}
+
+void ACCPlayerPawn::OnAllCardDrawServer_Implementation()
+{
+	EndDrawDelegate.ExecuteIfBound(this);
 }

@@ -8,6 +8,8 @@
 
 class UCCExperienceDefinition;
 enum class ECCOnlineMode : uint8;
+class UCCBaseState;
+class UCCFSM;
 class UCCPawnData;
 
 /**
@@ -16,16 +18,23 @@ class UCCPawnData;
  */
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*);
 
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
+	UPROPERTY()
+	TObjectPtr<UCCFSM> FSM;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCCBaseState> StartState;
 	
 public:
 	// Delegate called on player initialization
 	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;
+
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -46,8 +55,17 @@ protected:
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
+	UFUNCTION()
+	virtual TArray<ACCPlayerPawn*> GetPlayerPawns();
 
+	UFUNCTION()
+	UCCFSM* GetFSM(){return FSM;}
+
+	UFUNCTION()
+	TSubclassOf<UCCBaseState> GetStartState(){return StartState;}
+	
 	//~AGameModeBase interface
+	virtual void BeginPlay() override;
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;

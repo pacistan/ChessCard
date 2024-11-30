@@ -7,6 +7,7 @@
 class UCCHandComponent;
 class UCCDeckComponent;
 class ACCTile;
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
 
 UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
 class CHESSCARD_API ACCPlayerPawn : public APawn
@@ -39,6 +40,9 @@ private:
 	UPROPERTY()
 	int32 PlayerIndex;
 
+public:
+	FOnEndDrawDelegate EndDrawDelegate;
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	UFUNCTION(BlueprintCallable)
@@ -49,6 +53,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlaySelectedCard(ACCTile* Tiles);
+
+	UFUNCTION(Server, Reliable)
+	void OnAllCardDrawServer();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
