@@ -4,6 +4,8 @@
 #include "GameModes/CCGameMode.h"
 
 #include "GameModes/CCGameState.h"
+#include "GameModes/FSM/CCFSM.h"
+#include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPawnData.h"
 #include "Player/CCPlayerController.h"
@@ -16,6 +18,7 @@ ACCGameMode::ACCGameMode(const FObjectInitializer& ObjectInitializer)
 	PlayerControllerClass = ACCPlayerController::StaticClass();
 	PlayerStateClass = ACCPlayerState::StaticClass();
 	DefaultPawnClass = ::ACCPlayerPawn::StaticClass();
+
 	// TODO : set HUDClass
 }
 
@@ -37,6 +40,13 @@ const UCCPawnData* ACCGameMode::GetPawnDataForController(const AController* InCo
 	}
 
 	return nullptr;
+}
+
+void ACCGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	FSM = NewObject<UCCFSM>(this);
+	FSM->OnBeginPlay();
 }
 
 void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
@@ -162,4 +172,19 @@ void ACCGameMode::FailedToRestartPlayer(AController* NewPlayer)
 	} else {
 		UE_LOG(LogCard, Verbose, TEXT("FailedToRestartPlayer(%s) but there's no pawn class so giving up."), *GetPathNameSafe(NewPlayer));
 	}
+}
+
+TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
+{
+	TArray<ACCPlayerPawn*> Players;
+	for(auto PlayerState :  GetGameState<AGameStateBase>()->PlayerArray)
+	{
+		ACCPlayerPawn* Player = Cast<ACCPlayerPawn>(PlayerState->GetPawn());
+		if(Player)
+		{
+			Players.Add(Player);
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Found %i Players"), Players.Num());
+	return Players;
 }

@@ -56,6 +56,7 @@ void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
 void ACCPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
+	ACCGameMode::StaticClass();
 }
 
 void ACCPlayerState::PostInitializeComponents()

@@ -26,13 +26,13 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 
 	if (HitResult.bBlockingHit)
 	{
+		if(CurrentHoveredElement == nullptr) return;
 		if(CurrentHoveredElement.GetObject() != HitResult.GetActor())
 		{
 			if(CurrentHoveredElement.GetObject() != nullptr)
 			{
 				CurrentHoveredElement->StopHover(PlayerPawn);
 			}
-
 			CurrentHoveredElement.SetInterface(HoverableActor);
 			CurrentHoveredElement.SetObject(HitResult.GetActor());	
 			CurrentHoveredElement->StartHover(PlayerPawn);

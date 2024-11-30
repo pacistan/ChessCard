@@ -16,7 +16,7 @@ public:
 	UCCHandComponent();
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-private:
+public:
 	UPROPERTY()
 	TArray<TObjectPtr<ACCCard>> Cards;
 
@@ -30,7 +30,4 @@ protected:
 	virtual void BeginPlay() override;
 	
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
-public:
-	UFUNCTION(BlueprintGetter)
-	TArray<ACCCard*> GetCards(){return Cards;}
 };
