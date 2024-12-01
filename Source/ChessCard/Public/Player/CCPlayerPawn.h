@@ -6,8 +6,10 @@
 #include "CCPlayerPawn.generated.h"
 
 
+class FOnCardMovementEnd;
 class UCCHandComponent;
 class UCCDeckComponent;
+class UCameraComponent;
 class ACCTile;
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
@@ -28,6 +30,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
+	UCameraComponent* FollowCamera;
+	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
 
@@ -49,7 +54,7 @@ public:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
 	void DrawCards(int NumberOfCardsToDraw);
 
 	UFUNCTION(BlueprintCallable)

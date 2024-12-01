@@ -9,7 +9,6 @@
 ACCCard::ACCCard()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	CardMovement = CreateDefaultSubobject<UCCCardMovementComponent>(TEXT("Card Movement"));
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Card Sleeve"));
 	RootComponent = CardMesh;
 	if(!IsValid(CardMesh->GetStaticMesh()))
@@ -17,6 +16,7 @@ ACCCard::ACCCard()
 		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Cube.Cube"));
 		CardMesh->SetStaticMesh(MeshRef.Object);
 	}
+	CardMovement = CreateDefaultSubobject<UCCCardMovementComponent>(TEXT("Card Movement"));
 }
 
 void ACCCard::UpdateMaterials()
@@ -54,6 +54,11 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 	auto Lambda = [&toHighlight](ACCTile* Tile){Tile->SetHighlight(toHighlight);};
 	TileTypeDelegate.BindLambda(Lambda);
 	Cast<ACCGameState>(UGameplayStatics::GetGameState(GetWorld()))->GetGridManager()->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
+}
+
+void ACCCard::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)

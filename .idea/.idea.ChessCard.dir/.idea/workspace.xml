@@ -7,27 +7,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="726e441e-e7a4-44ea-a73a-e92f6d3dfded" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCBaseState.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCFSM.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateDrawingCards.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateMain.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCBaseState.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCFSM.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStateDrawingCards.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStateMain.h" afterDir="false" />
+    <list default="true" id="c25b22c9-845d-423c-9e0a-277f1c196e21" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerComtroller.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/DataTables/Cards/DT_AllCardData.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/DataTables/Cards/DT_AllCardData.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCardMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCardMovementComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Hand/CCHandComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Hand/CCHandComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Deck/CCDeckComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Deck/CCDeckComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Hand/CCHandComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Hand/CCHandComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
@@ -57,15 +52,48 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="SWEA" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
 }</component>
-  <component name="ProjectId" id="2nyzPs7lWkMWkrPEGjYvuYG7g1e" />
+  <component name="ProjectId" id="2pa27OaQlPdkCRUjeQR9ncItiix" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -74,7 +102,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Uproject.ChessCard.executor": "Run",
+    "Uproject.ChessCard.executor": "Debug",
     "git-widget-placeholder": "Dev__Grid",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -85,9 +113,9 @@
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "C:\\Users\\andre\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
-      "C:\\Users\\andre\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
-      "C:\\Users\\andre\\AppData\\Local\\Symbols\\src"
+      "C:\\Users\\Sneakysunset\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Sneakysunset\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\Sneakysunset\\AppData\\Local\\Symbols\\src"
     ]
   }
 }]]></component>
@@ -97,9 +125,9 @@
       <configuration_2>
         <option name="CONFIGURATION" value="DebugGame Editor" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\Win64\UnrealEditor-Win64-DebugGame.exe" />
-        <option name="WORKING_DIRECTORY" value="C:\Program Files\Epic Games\UE_5.4" />
-        <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;C:\Users\andre\Documents\Github\ICAN\ChessCard\ChessCard.uproject&quot;" />
+        <option name="EXECUTABLE_PATH" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4\Engine\Binaries\Win64\UnrealEditor-Win64-DebugGame.exe" />
+        <option name="WORKING_DIRECTORY" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4" />
+        <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;D:\Github\ICAN\ChessCard\ChessCard.uproject&quot;" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
@@ -108,8 +136,8 @@
       <configuration_3>
         <option name="CONFIGURATION" value="DebugGame" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="C:\Users\andre\Documents\Github\ICAN\ChessCard\Binaries\Win64\ChessCard-Win64-DebugGame.exe" />
-        <option name="WORKING_DIRECTORY" value="C:\Program Files\Epic Games\UE_5.4" />
+        <option name="EXECUTABLE_PATH" value="D:\Github\ICAN\ChessCard\Binaries\Win64\ChessCard-Win64-DebugGame.exe" />
+        <option name="WORKING_DIRECTORY" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4" />
         <option name="MANDATORY_PROGRAM_PARAMETERS" value="" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
         <option name="PASS_PARENT_ENVS" value="1" />
@@ -119,9 +147,9 @@
       <configuration_4>
         <option name="CONFIGURATION" value="Development Editor" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\Win64\UnrealEditor.exe" />
-        <option name="WORKING_DIRECTORY" value="C:\Program Files\Epic Games\UE_5.4" />
-        <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;C:\Users\andre\Documents\Github\ICAN\ChessCard\ChessCard.uproject&quot;" />
+        <option name="EXECUTABLE_PATH" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4\Engine\Binaries\Win64\UnrealEditor.exe" />
+        <option name="WORKING_DIRECTORY" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4" />
+        <option name="MANDATORY_PROGRAM_PARAMETERS" value=" &quot;D:\Github\ICAN\ChessCard\ChessCard.uproject&quot;" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
@@ -130,8 +158,8 @@
       <configuration_5>
         <option name="CONFIGURATION" value="Development" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="C:\Users\andre\Documents\Github\ICAN\ChessCard\Binaries\Win64\ChessCard.exe" />
-        <option name="WORKING_DIRECTORY" value="C:\Program Files\Epic Games\UE_5.4" />
+        <option name="EXECUTABLE_PATH" value="D:\Github\ICAN\ChessCard\Binaries\Win64\ChessCard.exe" />
+        <option name="WORKING_DIRECTORY" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4" />
         <option name="MANDATORY_PROGRAM_PARAMETERS" value="" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
         <option name="PASS_PARENT_ENVS" value="1" />
@@ -141,8 +169,8 @@
       <configuration_6>
         <option name="CONFIGURATION" value="Shipping" />
         <option name="PLATFORM" value="Win64" />
-        <option name="EXECUTABLE_PATH" value="C:\Users\andre\Documents\Github\ICAN\ChessCard\Binaries\Win64\ChessCard-Win64-Shipping.exe" />
-        <option name="WORKING_DIRECTORY" value="C:\Program Files\Epic Games\UE_5.4" />
+        <option name="EXECUTABLE_PATH" value="D:\Github\ICAN\ChessCard\Binaries\Win64\ChessCard-Win64-Shipping.exe" />
+        <option name="WORKING_DIRECTORY" value="D:\Apps\Epic Games\UnrealEngine\UE_5.4" />
         <option name="MANDATORY_PROGRAM_PARAMETERS" value="" />
         <option name="CUSTOM_PROGRAM_PARAMETERS" value="" />
         <option name="PASS_PARENT_ENVS" value="1" />
@@ -157,14 +185,13 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="726e441e-e7a4-44ea-a73a-e92f6d3dfded" name="Changes" comment="" />
-      <created>1729960083847</created>
+      <changelist id="c25b22c9-845d-423c-9e0a-277f1c196e21" name="Changes" comment="" />
+      <created>1732989698830</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1729960083847</updated>
-      <workItem from="1729960085504" duration="8580000" />
-      <workItem from="1732886011181" duration="11072000" />
-      <workItem from="1732897968882" duration="3403000" />
+      <updated>1732989698830</updated>
+      <workItem from="1732989700300" duration="700000" />
+      <workItem from="1733051161523" duration="5259000" />
     </task>
     <servers />
   </component>
@@ -173,12 +200,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="Uproject">
-        <watch expression="LOG_Static" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

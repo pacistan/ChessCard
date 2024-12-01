@@ -22,6 +22,11 @@ ACCGameMode::ACCGameMode(const FObjectInitializer& ObjectInitializer)
 	// TODO : set HUDClass
 }
 
+void ACCGameMode::TempBeginPlay()
+{
+
+}
+
 const UCCPawnData* ACCGameMode::GetPawnDataForController(const AController* InController) const
 {
 	// See if pawn data is already set on the player state
@@ -47,6 +52,8 @@ void ACCGameMode::BeginPlay()
 	Super::BeginPlay();
 	FSM = NewObject<UCCFSM>(this);
 	FSM->OnBeginPlay();
+	//FTimerHandle TimerHandle;
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ACCGameMode::TempBeginPlay, 3, false);
 }
 
 void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
