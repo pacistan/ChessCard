@@ -39,6 +39,9 @@ public:
 public:
 	ACCGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION()
+	void TempBeginPlay();
+	
 	UFUNCTION(BlueprintCallable, Category = "CC|Pawn")
 	const UCCPawnData* GetPawnDataForController(const AController* InController) const;
 	

@@ -106,16 +106,24 @@ public:
 	UPROPERTY()
 	FMovementData MovementData;
 
+	UPROPERTY()
+	float CurrentDuration;
+
+	UPROPERTY()
+	bool IsMoving = false;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void StartMovement(int InCardIndex, int InHandNumber,FOnCardMovementEnd& OnCardMovementEnd);
+	UFUNCTION()
+	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(), bool IsCustomDuration = false, float CustomDuration = 0);
 
 	UFUNCTION()
 	void MovementTick(float DeltaTime);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
+	virtual void BeginPlay() override;
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 };

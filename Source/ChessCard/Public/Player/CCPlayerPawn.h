@@ -4,9 +4,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
+
+
+class FOnCardMovementEnd;
 class UCCHandComponent;
 class UCCDeckComponent;
+class UCameraComponent;
 class ACCTile;
+
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
 
 UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
@@ -24,6 +29,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
+	UCameraComponent* FollowCamera;
+	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
 
@@ -45,7 +53,7 @@ public:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
 	void DrawCards(int NumberOfCardsToDraw);
 
 	UFUNCTION(BlueprintCallable)

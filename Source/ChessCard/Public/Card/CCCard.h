@@ -35,7 +35,7 @@ public:
 	ACCCard();
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, Category="", BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TObjectPtr<UCCCardMovementComponent> CardMovement;
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
@@ -61,6 +61,8 @@ private:
 	UFUNCTION()
 	void OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn);
 
+	virtual void BeginPlay() override;
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	void Play(ACCPlayerPawn* Pawn);

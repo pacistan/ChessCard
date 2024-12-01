@@ -1,5 +1,6 @@
 #include "Player/CCPlayerPawn.h"
 
+#include "Camera/CameraComponent.h"
 #include "Card/CCCard.h"
 #include "Card/CCCardMovementComponent.h"
 #include "Deck/CCDeckComponent.h"
@@ -12,13 +13,19 @@ ACCPlayerPawn::ACCPlayerPawn()
 	PrimaryActorTick.bCanEverTick = false;
 	DeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Deck"));
 	HandComponent = CreateDefaultSubobject<UCCHandComponent>(TEXT("Hand"));
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->bUsePawnControlRotation = false;
 }
 
-void ACCPlayerPawn::DrawCards(int NumberOfCardsToDraw)
+void ACCPlayerPawn::DrawCards_Implementation(int NumberOfCardsToDraw)
 {
 	NumberOfCardsToDrawThisRound = NumberOfCardsToDraw;
 	NumberOfCardDrawnOnRoundStart = 0;
-	DrawCard();
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, [this]()
+	{
+		DrawCard();
+	}, 1, false);
 }
 
 void ACCPlayerPawn::DrawCard()
@@ -28,18 +35,12 @@ void ACCPlayerPawn::DrawCard()
 		OnAllCardDrawServer();
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("DrawCard"));
-	auto Card = DeckComponent->CreateCard(FVector(0));
-	HandComponent->Cards.Add(Card);
-	NumberOfCardDrawnOnRoundStart++;
-
-	UE_LOG(LogTemp, Warning, TEXT("Card Num = %i"), HandComponent->GetCardNum());
-	return;
+	
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.BindDynamic(this, &ACCPlayerPawn::DrawCard);
-	int CardNum = HandComponent->GetCardNum();
-	HandComponent->Cards[CardNum - 1]->CardMovement->StartMovement(CardNum, CardNum, OnCardMovementEnd);
+	ACCCard* Card = DeckComponent->CreateCard();
+	NumberOfCardDrawnOnRoundStart++;
+	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tiles)
