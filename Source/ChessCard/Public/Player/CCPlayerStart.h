@@ -6,14 +6,14 @@
 #include "GameFramework/PlayerStart.h"
 #include "CCPlayerStart.generated.h"
 
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCPlayerStart : public APlayerStart
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	/** The controller that claimed this PlayerStart */
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly)
 	TObjectPtr<AController> ClaimingController = nullptr;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
@@ -23,6 +23,9 @@ public:
 	
 	/** If this PlayerStart was not claimed, claim it for ClaimingController */
 	bool TryClaim(AController* OccupyingController);
+\
+	/** Get the controller that claimed this PlayerStart */
+	AController* GetClaimingController() const { return ClaimingController; }
 	
 protected:
 	/* ------------------------------------------ OVERRIDE -------------------------------------------*/

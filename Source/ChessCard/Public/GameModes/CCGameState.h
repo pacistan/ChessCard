@@ -7,6 +7,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameState.generated.h"
 
+class UCCExperienceManagerComponent;
 class ACCPlayerStart;
 class ACCPlayerState;
 class UCCPawnData;
@@ -14,24 +15,20 @@ class UCCPawnData;
 /**
  * 
  */
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-public:
-	/** The default pawn class to spawn for players */
-	UPROPERTY(EditDefaultsOnly, Category=Gameplay)
-	TSoftObjectPtr<const UCCPawnData> DefaultPawnData;
-	
-protected:
-	UPROPERTY(Replicated)
-	float ServerFPS;
 
 private:
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
 	
+	UPROPERTY()
+	TObjectPtr<UCCExperienceManagerComponent> ExperienceManagerComponent;
+	
+	friend class ACCGameMode;
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 protected:
 	APlayerStart* GetFirstRandomUnoccupiedPlayerStart(AController* Controller, const TArray<ACCPlayerStart*>& FoundStartPoints) const;
@@ -39,12 +36,9 @@ protected:
 public:
 	ACCGameState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	DECLARE_GETTER(ServerFPS, ServerFPS, float);
-
 private:
 	AActor* ChoosePlayerStart(AController* Player);
 	void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation);
-	friend class ACCGameMode;
 
 #if WITH_EDITOR
 	APlayerStart* FindPlayFromHereStart(AController* Player);
@@ -52,9 +46,6 @@ private:
 	
 	void HandleOnActorSpawned(AActor* SpawnedActor);
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
-public:
-	virtual void Tick(float DeltaSeconds) override;
 	
 private:
 	virtual void PostInitializeComponents() override;

@@ -6,6 +6,7 @@
 #include "GameModes/CCGameMode.h"
 #include "Player/CCPawnData.h"
 #include "GameModes/CCGameState.h"
+#include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Macro/CCLogMacro.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/Core/PushModel/PushModel.h"
@@ -17,7 +18,7 @@ ACCPlayerState::ACCPlayerState(const FObjectInitializer& ObjectInitializer) : Su
 	NetUpdateFrequency = 100.0f;
 }
 
-ACCPlayerController* ACCPlayerState::GetCGPlayerController() const
+ACCPlayerController* ACCPlayerState::GetCCPlayerController() const
 {
 	return Cast<ACCPlayerController>(GetOwner());
 }
@@ -34,7 +35,6 @@ void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 void ACCPlayerState::OnRep_PawnData()
 {
-	
 }
 
 void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
@@ -55,20 +55,28 @@ void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
 	ForceNetUpdate();
 }
 
+void ACCPlayerState::OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience)
+{
+	if (ACCGameMode* GameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
+		if (const UCCPawnData* NewPawnData = GameMode->GetPawnDataForController(GetOwningController())) {
+			SetPawnData(NewPawnData);
+		} else {
+			DEBUG_LOG("ALyraPlayerState::OnExperienceLoaded(): Unable to find PawnData to initialize player state [%s]!", *GetNameSafe(this));
+		}
+	}
+}
+
 void ACCPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
 	UWorld* World = GetWorld();
-	if (World && World->IsGameWorld() && World->GetNetMode() != NM_Client) {
+	if (World && World->IsGameWorld() && World->GetNetMode() != NM_Client)
+	{
 		AGameStateBase* GameState = GetWorld()->GetGameState();
 		check(GameState);
-		if (ACCGameMode* CCGameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
-			if (const UCCPawnData* NewPawnData = CCGameMode->GetPawnDataForController(GetOwningController())) {
-				SetPawnData(NewPawnData);
-			} else {
-				DEBUG_ERROR("ACGPlayerState::PostInitializeComponents(): Unable to find PawnData to initialize player state [%s]!", *GetNameSafe(this));
-			}
-		}
+		UCCExperienceManagerComponent* ExperienceComponent = GameState->FindComponentByClass<UCCExperienceManagerComponent>();
+		check(ExperienceComponent);
+		ExperienceComponent->CallOrRegister_OnExperienceLoaded(FOnCCExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));
 	}
-	
 }

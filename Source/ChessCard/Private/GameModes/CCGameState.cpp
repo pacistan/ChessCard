@@ -5,7 +5,8 @@
 
 #include "EngineUtils.h"
 #include "Engine/PlayerStartPIE.h"
-#include "Net/UnrealNetwork.h"
+#include "GameModes/Component/CCExperienceManagerComponent.h"
+#include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerStart.h"
 
 extern ENGINE_API float GAverageFPS;
@@ -14,11 +15,9 @@ ACCGameState::ACCGameState(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
-	
-	ServerFPS = 0.0f;
+
+	ExperienceManagerComponent = CreateDefaultSubobject<UCCExperienceManagerComponent>(TEXT("ExperienceManagerComponent"));
 }
-
-
 
 AActor* ACCGameState::ChoosePlayerStart(AController* Player)
 {
@@ -45,7 +44,8 @@ AActor* ACCGameState::ChoosePlayerStart(AController* Player)
 
 		return PlayerSpawn;
 	}
-
+	
+	DEBUG_LOG("returning nullptr from ChoosePlayerStart");
 	return nullptr;
 }
 
@@ -90,43 +90,33 @@ APlayerStart* ACCGameState::GetFirstRandomUnoccupiedPlayerStart(AController* Con
 		for (ACCPlayerStart* StartPoint : FoundStartPoints) {
 			if (!StartPoint->IsClaimed()) {
 				UnOccupiedStartPoints.Add(StartPoint);
+			} else {
+				if (StartPoint->GetClaimingController() == Controller) {
+					return StartPoint;
+				}
 			}
 		}
 
 		if (UnOccupiedStartPoints.Num() > 0) {
 			return UnOccupiedStartPoints[FMath::RandRange(0, UnOccupiedStartPoints.Num() - 1)];
-		} 
+		}
+		
 	}
 
 	return nullptr;
 }
 
-void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ThisClass, ServerFPS);
-}
-
-void ACCGameState::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	
-	if (GetLocalRole() == ROLE_Authority) {
-		ServerFPS = GAverageFPS;
-	}
-}
 
 void ACCGameState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if(UWorld* World = GetWorld())
-	{
+	if(UWorld* World = GetWorld()) {
 		World->AddOnActorSpawnedHandler(FOnActorSpawned::FDelegate::CreateUObject(this, &ThisClass::HandleOnActorSpawned));
 		for (TActorIterator<ACCPlayerStart> It(World); It; ++It) {
 			if (ACCPlayerStart* PlayerStart = *It){
 				CachedPlayerStarts.Add(PlayerStart);
+				DEBUG_LOG("PlayerStart Added");
 			}
 		}
 	}

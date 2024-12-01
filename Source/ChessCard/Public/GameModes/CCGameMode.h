@@ -6,13 +6,15 @@
 #include "GameFramework/GameModeBase.h"
 #include "CCGameMode.generated.h"
 
+class UCCExperienceDefinition;
+enum class ECCOnlineMode : uint8;
 class UCCPawnData;
 
 /**
  * Post Login Event, Trigger When a player joins the game
  * Call at end Of initialization 
  */
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*);
 
 UCLASS(HideDropdown)
 class CHESSCARD_API ACCGameMode : public AGameModeBase
@@ -20,6 +22,7 @@ class CHESSCARD_API ACCGameMode : public AGameModeBase
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
+	
 public:
 	// Delegate called on player initialization
 	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;
@@ -37,7 +40,10 @@ public:
 
 protected:
 	UFUNCTION()
-	void TryToHostServer();
+	void HandlePartyAssignement();
+	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
+	bool IsExperienceLoaded() const;
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
 
@@ -46,6 +52,7 @@ public:
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
 	virtual bool ShouldSpawnAtStartSpot(AController* Player) override;
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	virtual void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation) override;
 	virtual void InitGameState() override;

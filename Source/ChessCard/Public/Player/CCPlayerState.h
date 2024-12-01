@@ -7,29 +7,35 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCPlayerState.generated.h"
 
+class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
+
 /**
  * 
  */
-UCLASS(HideDropdown)
+UCLASS()
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	UFUNCTION(BlueprintCallable, Category = "CG|PlayerState")
-	ACCPlayerController* GetCGPlayerController() const;
+	ACCPlayerController* GetCCPlayerController() const;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_PawnData)
 	TObjectPtr<const UCCPawnData> PawnData;
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-protected:
 	
+protected:
 	UFUNCTION()
 	void OnRep_PawnData();
+
+private:
+	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
 	
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)
