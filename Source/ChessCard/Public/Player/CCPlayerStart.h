@@ -23,6 +23,9 @@ public:
 	
 	/** If this PlayerStart was not claimed, claim it for ClaimingController */
 	bool TryClaim(AController* OccupyingController);
+\
+	/** Get the controller that claimed this PlayerStart */
+	AController* GetClaimingController() const { return ClaimingController; }
 	
 protected:
 	/* ------------------------------------------ OVERRIDE -------------------------------------------*/

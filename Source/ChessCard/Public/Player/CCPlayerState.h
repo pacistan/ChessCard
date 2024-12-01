@@ -7,6 +7,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCPlayerState.generated.h"
 
+class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
 
@@ -32,6 +33,9 @@ public:
 protected:
 	UFUNCTION()
 	void OnRep_PawnData();
+
+private:
+	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
 	
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)

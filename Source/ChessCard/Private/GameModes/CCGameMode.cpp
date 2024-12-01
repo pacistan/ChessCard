@@ -59,9 +59,6 @@ void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 
 void ACCGameMode::OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience)
 {
-	// Spawn any players that are already attached
-	//@TODO: Here we're handling only *player* controllers, but in GetDefaultPawnClassForController_Implementation we skipped all controllers
-	// GetDefaultPawnClassForController_Implementation might only be getting called for players anyways
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 	{
 		APlayerController* PC = Cast<APlayerController>(*Iterator);

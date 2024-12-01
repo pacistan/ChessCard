@@ -46,10 +46,7 @@ private:
 	
 	void HandleOnActorSpawned(AActor* SpawnedActor);
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
-public:
-	virtual void Tick(float DeltaSeconds) override;
-
+	
 private:
 	virtual void PostInitializeComponents() override;
 };

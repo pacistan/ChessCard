@@ -11,7 +11,7 @@ UCommonSession_HostSessionRequest* UCCUserExperienceDefinition::CreateHostingReq
 	const FString UserExperienceName = GetPrimaryAssetId().PrimaryAssetName.ToString();
 	UCommonSession_HostSessionRequest* HostSessionRequest = NewObject<UCommonSession_HostSessionRequest>();
 	HostSessionRequest->OnlineMode  = ECommonSessionOnlineMode::LAN;
-	HostSessionRequest->bUseLobbies = true;
+	HostSessionRequest->bUseLobbies = false;
 	HostSessionRequest->MapID = MapID;
 	HostSessionRequest->ModeNameForAdvertisement =  UserExperienceName;
 	HostSessionRequest->MaxPlayerCount = MaxPlayerCount;

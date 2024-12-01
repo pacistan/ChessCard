@@ -32,6 +32,9 @@ public :
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
 	FText TileDescription;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
+	bool bIsDefaultExperience = false;
+
 	/** Icon used in the UI */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience)
 	TObjectPtr<UTexture2D> TileIcon;

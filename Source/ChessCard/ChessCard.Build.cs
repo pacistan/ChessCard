@@ -11,7 +11,7 @@ public class ChessCard : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", 
 			"GameplayTags", "DeveloperSettings", "NetCore"});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "CommonUser", "CommonUI", "UIExtension"});
+		PrivateDependencyModuleNames.AddRange(new string[] { "CommonUser", "CommonUI"});
 
 		// Online 
 		PublicDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "OnlineSubsystemUtils" });
