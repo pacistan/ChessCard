@@ -45,7 +45,15 @@ void ACCGridManager::ApplyLambdaToTileType(ETileType TileType, const FTileTypeDe
 {
 	for(const auto& TileCoordinates : MappedGrid[TileType])
 	{
-		TileLambdaFunc.ExecuteIfBound(Grid[TileCoordinates.A][TileCoordinates.B]);
+			TileLambdaFunc.ExecuteIfBound(Grid[TileCoordinates.A][TileCoordinates.B]);
+		/*if(Grid.Contains(TileCoordinates.A) && Grid[TileCoordinates.A].Contains(TileCoordinates.B))
+		{
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Coord : %i %i"), TileCoordinates.A, TileCoordinates.B);
+			return;
+		}*/
 	}
 }
 

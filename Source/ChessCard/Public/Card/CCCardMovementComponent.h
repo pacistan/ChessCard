@@ -51,19 +51,19 @@ struct CHESSCARD_API FExposedMovementData
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float HeightOffset;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int LayerNumber;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ScaleCoefficient;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCurveFloat> AnimCurve;
 
 };
@@ -78,7 +78,7 @@ public:
 	UCCCardMovementComponent();
 	
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintType)
 	TMap<ECardState, FExposedMovementData> ExposedDataMap;
 
 public:
@@ -111,11 +111,14 @@ public:
 
 	UPROPERTY()
 	bool IsMoving = false;
+
+	UPROPERTY()
+	bool IsInterruptable = true;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	UFUNCTION()
-	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(), bool IsCustomDuration = false, float CustomDuration = 0);
+	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(), bool IsCustomDuration = false, float CustomDuration = 0, bool InIsInterruptable = true);
 
 	UFUNCTION()
 	void MovementTick(float DeltaTime);

@@ -29,7 +29,7 @@ void ACCCard::UpdateMaterials()
 
 void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 {
-    ETileType TargetTileType;
+    ETileType TargetTileType = ETileType::Player1;
 	switch(Pawn->GetPlayerIndex())
 	{
 	case 1:
@@ -46,7 +46,7 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 		break;
 	default:
 		UE_LOG(LogTemp, Error, TEXT("Pawn has an invalid Player Index"));
-		return;
+		break;
 	}
 
 	bool toHighlight = bIsSelected;
@@ -63,37 +63,45 @@ void ACCCard::BeginPlay()
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)
 {
+	if(!CardMovement->IsInterruptable)
+	{
+		return;
+	}
 	CurrentCardState = ECardState::Played;
-	FOnCardMovementEnd OnCardMovementEnd;
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)
 {
-	if(CurrentCardState == ECardState::Played || CurrentCardState == ECardState::Selected)
+	if(CurrentCardState == ECardState::Played || CurrentCardState == ECardState::Selected || !CardMovement->IsInterruptable)
 		return;
 	CurrentCardState = ECardState::Hovered;
 	
-	FOnCardMovementEnd OnCardMovementEnd;
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }
 
 void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 {
-	if(CurrentCardState != ECardState::Hovered)
+	if(!CardMovement->IsInterruptable || CurrentCardState != ECardState::Hovered)
+	{
 		return;
-	CurrentCardState = ECardState::Inactive;
+	}
 	
-	FOnCardMovementEnd OnCardMovementEnd;
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+	CurrentCardState = ECardState::Inactive;
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }
 
 void ACCCard::Select(ACCPlayerPawn* Pawn)
 {
 	//TODO: Check if In Planning Mode
+	if(!CardMovement->IsInterruptable)
+	{
+		return;
+	}
+	
 	bool bToSelected = true;
 	if(CurrentCardState == ECardState::Played)
 	{
@@ -101,8 +109,7 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 		CurrentCardState = ECardState::Hovered;
 		Pawn->GetPlayedCardIndex().Remove(CardIndex);
 
-		FOnCardMovementEnd OnCardMovementEnd;
-		CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+		CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 		UpdateMaterials();
 		//TODO: Unplay movements AND/OR Spawns
 		return;
@@ -119,19 +126,22 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 		Pawn->SetCurrentSelectedCardIndex(CardIndex);
 	}
 	
-	FOnCardMovementEnd OnCardMovementEnd;
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 	OnSelectCardEffects(bToSelected, Pawn);
 }
 
 void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 {
+	
 	//TODO: Check if In Planning Mode
-	CurrentCardState = ECardState::Hovered;
+	if(!CardMovement->IsInterruptable)
+	{
+		return;
+	}
+	CurrentCardState = ECardState::Inactive;
 	Pawn->SetCurrentSelectedCardIndex(-1);
-	FOnCardMovementEnd OnCardMovementEnd;
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), OnCardMovementEnd);
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 	OnSelectCardEffects(false, Pawn);
 }

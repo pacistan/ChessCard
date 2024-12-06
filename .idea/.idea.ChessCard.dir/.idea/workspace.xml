@@ -7,25 +7,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c25b22c9-845d-423c-9e0a-277f1c196e21" name="Changes" comment="">
+    <list default="true" id="20d54f98-c552-4158-9447-edb3cdc30d9c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/DataTables/Cards/DT_AllCardData.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/DataTables/Cards/DT_AllCardData.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Materials/M_CardInactive.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/M_CardInactive.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCardMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCardMovementComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Hand/CCHandComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Hand/CCHandComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Deck/CCDeckComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Deck/CCDeckComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Hand/CCHandComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Hand/CCHandComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,54 +40,12 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 0
-}</component>
-  <component name="ProjectId" id="2pa27OaQlPdkCRUjeQR9ncItiix" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2pcb2BqIHR6vB0wxYfv43lmRc66" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -103,7 +55,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Uproject.ChessCard.executor": "Debug",
-    "git-widget-placeholder": "Dev__Grid",
+    "git-widget-placeholder": "Dev__HandMovement",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -185,13 +137,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c25b22c9-845d-423c-9e0a-277f1c196e21" name="Changes" comment="" />
-      <created>1732989698830</created>
+      <changelist id="20d54f98-c552-4158-9447-edb3cdc30d9c" name="Changes" comment="" />
+      <created>1733068102586</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1732989698830</updated>
-      <workItem from="1732989700300" duration="700000" />
-      <workItem from="1733051161523" duration="5259000" />
+      <updated>1733068102586</updated>
+      <workItem from="1733068104780" duration="6893000" />
     </task>
     <servers />
   </component>
@@ -200,5 +151,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCTile.cpp</url>
+          <line>22</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
