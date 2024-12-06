@@ -9,7 +9,7 @@ UCCCardMovementComponent::UCCCardMovementComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd, bool IsCustomDuration, float CustomDuration)
+bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd, bool IsCustomDuration, float CustomDuration, bool InIsInterruptable)
 {
 	if(!IsValid(this) || !IsValid(GetWorld()))
 	{
@@ -24,10 +24,12 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 	}
 	//PrimaryComponentTick.SetTickFunctionEnable(true);
 	MovementData.Interpolator = 0;
+	IsInterruptable = InIsInterruptable;
 	const FVector CameraLocation = CameraManager->GetCameraLocation();
 	const FRotator CameraRotation = CameraManager->GetCameraRotation();
 	const FVector CameraRightVector = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Y);
 	const FVector CameraUpVector = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::Z);
+	const FVector CameraForwardVector = FRotationMatrix(CameraRotation).GetScaledAxis(EAxis::X);
 	auto State = Owner->GetCurrentCardState();
 	
 	MovementData.OnDrawCardEnd = OnCardMovementEnd;
@@ -47,10 +49,12 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 	+ CameraUpVector * HandPositionOffset.Y
 	- CameraUpVector * CardHeightPositionOffset * FMath::Abs(InCardIndex - (InHandNumber - 1) / 2.0f)
 	- CameraUpVector * CardHeightPositionOffset
-	+ CameraUpVector * HoveredPositionOffset);
+	+ CameraUpVector * HoveredPositionOffset
+	+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
 	IsMoving = true;
 	MovementData.EndRotation = MovementData.StartRotation;
-	MovementData.EndRotation.Roll = FMath::Lerp(
+	MovementData.EndRotation.Roll = 
+		FMath::Lerp(
 		CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		-CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		InCardIndex / static_cast<float>(InHandNumber - 1));
@@ -89,13 +93,13 @@ void UCCCardMovementComponent::MovementTick(float DeltaTime)
 
 	if(MovementData.Interpolator >= 1 )
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Movement Ended"));
 		Owner->SetActorLocation(MovementData.EndPosition);
 		Owner->SetActorRotation(MovementData.EndRotation);
 		Owner->SetActorScale3D(MovementData.EndScale);
 		MovementData.OnDrawCardEnd.ExecuteIfBound();
 		//PrimaryComponentTick.SetTickFunctionEnable(false);
 		IsMoving = false;
+		IsInterruptable = true;
 	}
 }
 

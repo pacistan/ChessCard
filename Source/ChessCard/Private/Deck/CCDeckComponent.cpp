@@ -21,7 +21,8 @@ ACCCard* UCCDeckComponent::CreateCard()
 	SpawnParams.bNoFail = true;
 	SpawnParams.Owner = GetOwner();
 	auto Card =  GetWorld()->SpawnActor<ACCCard>(CardPrefab, TransformedDeckPosition, CameraRotation, SpawnParams);
-	Card->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepRelativeTransform);
+	Card->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
+	//Card->SetActorRotation(CameraRotation);
 	return Card;
 }
 

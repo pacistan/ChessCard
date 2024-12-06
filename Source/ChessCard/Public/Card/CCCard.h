@@ -7,14 +7,13 @@
 
 class UCCCardMovementComponent;
 
-UENUM()
+UENUM(BlueprintType)
 enum class ECardState : uint8
 {
 	Inactive,
 	Hovered,
 	Selected,
-	Played,
-	IsExamined
+	Played
 };
 
 USTRUCT(BlueprintType)
