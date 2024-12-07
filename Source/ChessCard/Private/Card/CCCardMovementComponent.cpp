@@ -23,6 +23,7 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 		DEBUG_ERROR("NO WORLD");
 		return false;
 	}
+
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	if(!IsValid(CameraManager))
 	{
@@ -118,6 +119,7 @@ void UCCCardMovementComponent::MovementTick(float DeltaTime)
 		{
 			MovementData.OnDrawCardEnd.Broadcast();
 		}
+
 		//PrimaryComponentTick.SetTickFunctionEnable(false);
 		IsMoving = false;
 		IsInterruptable = true;

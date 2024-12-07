@@ -43,6 +43,7 @@ public:
 
 	UFUNCTION()
 	void RemoveCardFromHand(int InCardIndex);
+
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:

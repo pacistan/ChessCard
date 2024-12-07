@@ -36,6 +36,7 @@ private:
 
 	//UPROPERTY(EditAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
 	//UCameraComponent* FollowCamera;
+
 	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
@@ -59,6 +60,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCCMainWidget> MainWidget;
 	
+
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
 	

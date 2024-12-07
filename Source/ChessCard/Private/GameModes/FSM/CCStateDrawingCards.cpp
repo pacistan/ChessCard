@@ -16,7 +16,6 @@ void UCCStateDrawingCards::Initialization(ACCGameMode* InGameMode)
 void UCCStateDrawingCards::OnEnterState()
 {
 	Super::OnEnterState();
-	DEBUG_WARNING("START DRAWING");
 	for(auto Player : Players)
 	{
 		Player->EndDrawDelegate.BindDynamic(this, &UCCStateDrawingCards::OnPlayerEndDraw);

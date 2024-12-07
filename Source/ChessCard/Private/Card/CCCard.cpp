@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
 
+
 ACCCard::ACCCard()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,6 +71,7 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 	}
 	CurrentCardState = ECardState::Played;
 	DEBUG_WARNING("%s", *CardMovement.GetName());
+
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }

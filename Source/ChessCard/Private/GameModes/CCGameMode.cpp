@@ -1,8 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "GameModes/CCGameMode.h"
-
+﻿#include "GameModes/CCGameMode.h"
 #include "GameModes/CCGameState.h"
 #include "GameModes/Component/CCExperienceManagerComponent.h"
 #include "Experience/CCExperienceDefinition.h"

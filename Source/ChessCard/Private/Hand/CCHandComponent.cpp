@@ -6,6 +6,7 @@
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerController.h"
 
+
 UCCHandComponent::UCCHandComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;

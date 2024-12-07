@@ -1,5 +1,4 @@
 #include "Player/CCPlayerPawn.h"
-
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Card/CCCard.h"
@@ -21,7 +20,6 @@ ACCPlayerPawn::ACCPlayerPawn(const FObjectInitializer& ObjectInitializer): Super
 	HandComponent = CreateDefaultSubobject<UCCHandComponent>(TEXT("Hand"));
 	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	//FollowCamera->bUsePawnControlRotation = true;
-	
 }
 
 void ACCPlayerPawn::DrawCards_Implementation(int NumberOfCardsToDraw)
@@ -45,6 +43,7 @@ void ACCPlayerPawn::DrawCard()
 	
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
+
 	ACCCard* Card = DeckComponent->CreateCard();
 	NumberOfCardDrawnOnRoundStart++;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
