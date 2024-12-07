@@ -5,6 +5,7 @@
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Macro/CCLogMacro.h"
 
 ACCCard::ACCCard()
 {
@@ -45,7 +46,7 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 		TargetTileType = ETileType::Player4;
 		break;
 	default:
-		UE_LOG(LogTemp, Error, TEXT("Pawn has an invalid Player Index"));
+		DEBUG_ERROR("Pawn has an invalid Player Index : %i", Pawn->GetPlayerIndex());
 		break;
 	}
 
@@ -68,6 +69,7 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 		return;
 	}
 	CurrentCardState = ECardState::Played;
+	DEBUG_WARNING("%s", *CardMovement.GetName());
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }

@@ -1,6 +1,7 @@
 #include "GameModes/FSM/CCFSM.h"
 #include "GameModes/CCGameMode.h"
 #include "GameModes/FSM/CCBaseState.h"
+#include "Macro/CCLogMacro.h"
 
 UCCFSM::UCCFSM()
 {
@@ -10,6 +11,7 @@ void UCCFSM::OnBeginPlay()
 {
 	Owner = Cast<ACCGameMode>(GetWorld()->GetAuthGameMode());
 	ChangeStateWithClass(Owner->GetStartState());
+	DEBUG_WARNING("Start Play FSM");
 }
 
 void UCCFSM::OnTick(float DeltaTime)

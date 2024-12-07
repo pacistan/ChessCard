@@ -6,6 +6,8 @@
 #include "CCPlayerPawn.generated.h"
 
 
+class ACCCard;
+class UCCMainWidget;
 class FOnCardMovementEnd;
 class UCCHandComponent;
 class UCCDeckComponent;
@@ -14,12 +16,12 @@ class ACCTile;
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
 
-UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
+UCLASS(/*HideCategories(Rendering, Collision, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick)*/)
 class CHESSCARD_API ACCPlayerPawn : public APawn
 {
 	GENERATED_BODY()
 
-	ACCPlayerPawn();
+	ACCPlayerPawn(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 private:
@@ -27,10 +29,13 @@ private:
 	TObjectPtr<UCCDeckComponent> DeckComponent;
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UCCDeckComponent> MovementDeckComponent;
+
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
-	UCameraComponent* FollowCamera;
+	//UPROPERTY(EditAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
+	//UCameraComponent* FollowCamera;
 	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
@@ -48,6 +53,12 @@ private:
 	UPROPERTY()
 	int32 PlayerIndex;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> MainWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UCCMainWidget> MainWidget;
+	
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
 	
@@ -64,15 +75,26 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void OnAllCardDrawServer();
+
+	UFUNCTION(BlueprintCallable)
+	void OnGetMovementCardTrigger();
+
+	UFUNCTION(BlueprintCallable)
+	void DrawMovementCard();
+
+	UFUNCTION()
+	void RemoveCardFromHand();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+	virtual void PossessedBy(AController* NewController) override;
+	
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
 public:
 	UFUNCTION(BlueprintGetter)
 	int32 GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
 
 	UFUNCTION(BlueprintSetter)
-	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex) {CurrentSelectedCardIndex = InSelectedCardIndex;};
+	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex) ;
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}

@@ -57,11 +57,16 @@ const UCCPawnData* ACCGameMode::GetPawnDataForController(const AController* InCo
 	return nullptr;
 }
 
+void ACCGameMode::StartPlaySequence()
+{
+	FSM = NewObject<UCCFSM>(this);
+	FSM->OnBeginPlay();
+}
+
 void ACCGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	FSM = NewObject<UCCFSM>(this);
-	FSM->OnBeginPlay();
+
 	//FTimerHandle TimerHandle;
 	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ACCGameMode::TempBeginPlay, 3, false);
 }

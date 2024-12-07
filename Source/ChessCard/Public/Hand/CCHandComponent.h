@@ -23,6 +23,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float DrawFromDeckAnimDuration;
+
+	UPROPERTY(EditAnywhere)
+	float DrawFromMovementDeckAnimDuration;
+
+	UPROPERTY(EditAnywhere)
+	float SendCardToMovementDeckAnimDuration;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -31,6 +37,12 @@ public:
 
 	UFUNCTION()
 	void DrawCard(ACCCard* Card, FOnCardMovementEnd OnCardMovementEnd);
+
+	UFUNCTION()
+	void SendSelectedCardToMovementDeck(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition);
+
+	UFUNCTION()
+	void RemoveCardFromHand(int InCardIndex);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:

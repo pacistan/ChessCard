@@ -66,6 +66,9 @@ public:
 
 	UFUNCTION()
 	TSubclassOf<UCCBaseState> GetStartState(){return StartState;}
+
+	UFUNCTION(BlueprintCallable)
+	void StartPlaySequence();
 	
 	//~AGameModeBase interface
 	virtual void BeginPlay() override;

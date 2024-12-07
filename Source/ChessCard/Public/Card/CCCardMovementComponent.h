@@ -5,7 +5,7 @@
 #include "Player/CCPlayerPawn.h"
 #include "CCCardMovementComponent.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE(FOnCardMovementEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCardMovementEnd);
 
 enum class ECardState : uint8;
 class ACCCard;
@@ -118,7 +118,8 @@ public:
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	UFUNCTION()
-	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(), bool IsCustomDuration = false, float CustomDuration = 0, bool InIsInterruptable = true);
+	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(),
+		bool IsCustomDuration = false, float CustomDuration = 0, bool InIsInterruptable = true, bool InIsCustomEndPosition = false, FVector InEndPosition = FVector());
 
 	UFUNCTION()
 	void MovementTick(float DeltaTime);

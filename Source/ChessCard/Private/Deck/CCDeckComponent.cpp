@@ -9,7 +9,7 @@ UCCDeckComponent::UCCDeckComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 }
-int num = 0;
+
 ACCCard* UCCDeckComponent::CreateCard()
 {
 	const FCardData* CardData = CardDataTable->FindRow<FCardData>(DeckCards[0],TEXT("No Card Found with name"));
@@ -30,5 +30,4 @@ ACCCard* UCCDeckComponent::CreateCard()
 void UCCDeckComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	num = 0;
 }

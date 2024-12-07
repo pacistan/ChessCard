@@ -4,6 +4,7 @@
 #include "GameModes/FSM/CCFSM.h"
 #include "GameModes/FSM/CCStateMain.h"
 #include "Kismet/GameplayStatics.h"
+#include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerPawn.h"
 
 void UCCStateDrawingCards::Initialization(ACCGameMode* InGameMode)
@@ -15,6 +16,7 @@ void UCCStateDrawingCards::Initialization(ACCGameMode* InGameMode)
 void UCCStateDrawingCards::OnEnterState()
 {
 	Super::OnEnterState();
+	DEBUG_WARNING("START DRAWING");
 	for(auto Player : Players)
 	{
 		Player->EndDrawDelegate.BindDynamic(this, &UCCStateDrawingCards::OnPlayerEndDraw);

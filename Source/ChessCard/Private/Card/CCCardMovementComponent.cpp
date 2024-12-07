@@ -10,11 +10,17 @@ UCCCardMovementComponent::UCCCardMovementComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd, bool IsCustomDuration, float CustomDuration, bool InIsInterruptable)
+bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd,
+	bool IsCustomDuration, float CustomDuration, bool InIsInterruptable, bool InIsCustomEndPosition, FVector InEndPosition)
 {
-	if(!IsValid(this) || !IsValid(GetWorld()))
+	if(!IsValid(this))
 	{
-		UE_LOG(LogTemp, Error, TEXT("NO WORLD"));
+		DEBUG_ERROR("No Card Movement Actor");
+		return false;
+	}
+	if( !IsValid(GetWorld()))
+	{
+		DEBUG_ERROR("NO WORLD");
 		return false;
 	}
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
@@ -43,15 +49,24 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 	int32 HoveredLayerNumber = ExposedDataMap[State].LayerNumber;
 	MovementData.EndScale = BaseScale * ExposedDataMap[State].ScaleCoefficient;
 	CurrentDuration = IsCustomDuration ? CustomDuration : ExposedDataMap[State].Duration;
-	MovementData.EndPosition =FVector(CameraLocation + (CameraRotation.Vector() * (DistanceFromCamera - HoveredLayerNumber))
-	+ CameraRightVector * HandPositionOffset.X 
-	+ CameraRightVector * CardXPositionOffSet * InCardIndex
-	- CameraRightVector * CardXPositionOffSet * (InHandNumber - 1) / 2.0f
-	+ CameraUpVector * HandPositionOffset.Y
-	- CameraUpVector * CardHeightPositionOffset * FMath::Abs(InCardIndex - (InHandNumber - 1) / 2.0f)
-	- CameraUpVector * CardHeightPositionOffset
-	+ CameraUpVector * HoveredPositionOffset
-	+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
+
+	if(InIsCustomEndPosition)
+	{
+		MovementData.EndPosition = CameraLocation + InEndPosition;
+	}
+	else
+	{
+		MovementData.EndPosition =FVector(CameraLocation + (CameraRotation.Vector() * (DistanceFromCamera - HoveredLayerNumber))
+		+ CameraRightVector * HandPositionOffset.X 
+		+ CameraRightVector * CardXPositionOffSet * InCardIndex
+		- CameraRightVector * CardXPositionOffSet * (InHandNumber - 1) / 2.0f
+		+ CameraUpVector * HandPositionOffset.Y
+		- CameraUpVector * CardHeightPositionOffset * FMath::Abs(InCardIndex - (InHandNumber - 1) / 2.0f)
+		- CameraUpVector * CardHeightPositionOffset
+		+ CameraUpVector * HoveredPositionOffset
+		+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
+	}
+	
 	IsMoving = true;
 	MovementData.EndRotation = MovementData.StartRotation;
 	MovementData.EndRotation.Roll = InHandNumber <= 1 ? 0 :
@@ -99,7 +114,10 @@ void UCCCardMovementComponent::MovementTick(float DeltaTime)
 		Owner->SetActorLocation(MovementData.EndPosition);
 		Owner->SetActorRotation(MovementData.EndRotation);
 		Owner->SetActorScale3D(MovementData.EndScale);
-		MovementData.OnDrawCardEnd.ExecuteIfBound();
+		if(MovementData.OnDrawCardEnd.IsBound())
+		{
+			MovementData.OnDrawCardEnd.Broadcast();
+		}
 		//PrimaryComponentTick.SetTickFunctionEnable(false);
 		IsMoving = false;
 		IsInterruptable = true;
