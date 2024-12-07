@@ -1,7 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "Player/CCPlayerState.h"
+﻿#include "Player/CCPlayerState.h"
 
 #include "GameModes/CCGameMode.h"
 #include "Player/CCPawnData.h"
@@ -37,6 +34,7 @@ void ACCPlayerState::OnRep_PawnData()
 {
 }
 
+
 void ACCPlayerState::SetPawnData(const UCCPawnData* InPawnData)
 {
 	check(InPawnData);
@@ -64,6 +62,12 @@ void ACCPlayerState::OnExperienceLoaded(const UCCExperienceDefinition* CurrentEx
 			DEBUG_LOG("ALyraPlayerState::OnExperienceLoaded(): Unable to find PawnData to initialize player state [%s]!", *GetNameSafe(this));
 		}
 	}
+}
+
+void ACCPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	ACCGameMode::StaticClass();
 }
 
 void ACCPlayerState::PostInitializeComponents()

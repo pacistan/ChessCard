@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
 #include "Player/CCPlayerPawn.h"
@@ -24,7 +25,7 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility);
 	IHoverable* HoverableActor = Cast<IHoverable>(HitResult.GetActor());
 
-	if (HitResult.bBlockingHit)
+	if (HitResult.bBlockingHit && HoverableActor != nullptr)
 	{
 		if(CurrentHoveredElement.GetObject() != HitResult.GetActor())
 		{
@@ -32,7 +33,6 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 			{
 				CurrentHoveredElement->StopHover(PlayerPawn);
 			}
-
 			CurrentHoveredElement.SetInterface(HoverableActor);
 			CurrentHoveredElement.SetObject(HitResult.GetActor());	
 			CurrentHoveredElement->StartHover(PlayerPawn);
@@ -51,7 +51,6 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 void ACCPlayerController::OnSelectCard()
 {
 	if(PlayerPawn == nullptr) return;
-
 	FVector2D MousePosition;
 	GetMousePosition(MousePosition.X, MousePosition.Y);
 	
@@ -63,9 +62,14 @@ void ACCPlayerController::OnSelectCard()
 	FVector TraceEnd = WorldLocation + (WorldDirection * 1000000);
 	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility);
 	ISelectable* SelectableActor = Cast<ISelectable>(HitResult.GetActor());
+	IClickable* ClickableActor = Cast<IClickable>(HitResult.GetActor());
+
+	if(ClickableActor != nullptr)
+	{
+		ClickableActor->Click(PlayerPawn);
+	}
 	
-	
-	if (HitResult.bBlockingHit)
+	if (HitResult.bBlockingHit && SelectableActor != nullptr)
 	{
 		if(HitResult.GetActor() != CurrentSelectedElement.GetObject())
 		{

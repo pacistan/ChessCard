@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
@@ -11,9 +9,6 @@ class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
 
-/**
- * 
- */
 UCLASS()
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
@@ -36,13 +31,14 @@ protected:
 
 private:
 	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
-	
+
 public:
 	DECLARE_GETTER(PawnData, PawnData, TObjectPtr<const UCCPawnData>)
 	void SetPawnData(const UCCPawnData* InPawnData);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
+	virtual void BeginPlay() override;
+	
 	//~AActor interface
 	virtual void PostInitializeComponents() override;
 	//~End of AActor interface

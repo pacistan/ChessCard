@@ -5,6 +5,8 @@
 #include "Player/CCPlayerPawn.h"
 #include "CCCardMovementComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCardMovementEnd);
+
 
 enum class ECardState : uint8;
 class ACCCard;
@@ -41,7 +43,7 @@ public:
 	float Duration;
 
 	UPROPERTY()
-	FOnEndCardDraw OnDrawCardEnd;
+	FOnCardMovementEnd OnDrawCardEnd;
 };
 
 USTRUCT(BlueprintType)
@@ -50,19 +52,19 @@ struct CHESSCARD_API FExposedMovementData
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Duration;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float HeightOffset;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int LayerNumber;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ScaleCoefficient;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCurveFloat> AnimCurve;
 
 };
@@ -77,7 +79,7 @@ public:
 	UCCCardMovementComponent();
 	
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintType)
 	TMap<ECardState, FExposedMovementData> ExposedDataMap;
 
 public:
@@ -105,16 +107,29 @@ public:
 	UPROPERTY()
 	FMovementData MovementData;
 
+	UPROPERTY()
+	float CurrentDuration;
+
+	UPROPERTY()
+	bool IsMoving = false;
+
+	UPROPERTY()
+	bool IsInterruptable = true;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void StartMovement(int InCardIndex, int InHandNumber,FOnEndCardDraw& OnDrawCardEnd);
+	UFUNCTION()
+	bool StartMovement(int InCardIndex, int InHandNumber, FOnCardMovementEnd OnCardMovementEnd = FOnCardMovementEnd(),
+		bool IsCustomDuration = false, float CustomDuration = 0, bool InIsInterruptable = true, bool InIsCustomEndPosition = false, FVector InEndPosition = FVector());
+
 
 	UFUNCTION()
 	void MovementTick(float DeltaTime);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
+	virtual void BeginPlay() override;
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 };

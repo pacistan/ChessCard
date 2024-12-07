@@ -26,12 +26,14 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FName> DeckCards;
+
+	UPROPERTY(EditAnywhere)
+	FVector DeckPosition;
 	
 	/* -----------------------------------------FUNCTIONS -------------------------------------------*/
-	ACCCard* CreateCard(const FVector& SpawnLocation);
-	
+	ACCCard* CreateCard();
+
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-	
 protected:
 	virtual void BeginPlay() override;
 };

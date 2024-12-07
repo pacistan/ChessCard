@@ -7,14 +7,22 @@
 
 class UCCCardMovementComponent;
 
-UENUM()
+UENUM(BlueprintType)
 enum class ECardState : uint8
 {
 	Inactive,
 	Hovered,
 	Selected,
-	Played,
-	IsExamined
+	Played
+};
+
+USTRUCT(BlueprintType)
+struct FMaterialArrayWrapper
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials")
+	TArray<UMaterialInterface*> Materials;
 };
 
 UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
@@ -26,20 +34,45 @@ public:
 	ACCCard();
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, Category="", BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TObjectPtr<UCCCardMovementComponent> CardMovement;
+
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UStaticMeshComponent> CardMesh;
 
 	UPROPERTY(VisibleAnywhere, Category="")
 	ECardState CurrentCardState;
+
+	UPROPERTY()
+	int32 CardIndex;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<ECardState, FMaterialArrayWrapper> MaterialMap;
+
+	UPROPERTY()
+	bool IsHovered;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
+private:
+	UFUNCTION()
+	void UpdateMaterials();
+
+	UFUNCTION()
+	void OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn);
+
+	virtual void BeginPlay() override;
+	
+public:
+	UFUNCTION(BlueprintCallable)
+	void Play(ACCPlayerPawn* Pawn);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
-	/* ------------------------------------------ Getters -------------------------------------------*/
+	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
+public:
 	UFUNCTION(BlueprintGetter)
 	ECardState GetCurrentCardState(){return CurrentCardState;}
-
+	
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 	
 	virtual void StartHover(ACCPlayerPawn* Pawn) override;
@@ -49,4 +82,9 @@ public:
 	virtual void Select(ACCPlayerPawn* Pawn) override;
 	
 	virtual void UnSelect(ACCPlayerPawn* Pawn) override;
+
+	/* ------------------------------------------ GETTER/SETTER -------------------------------------------*/
+public:
+	UFUNCTION(BlueprintSetter)
+	void SetCardIndex(int32 InCardIndex) { CardIndex = InCardIndex;}
 };
