@@ -1,6 +1,7 @@
 ﻿#include "Card/CCCardMovementComponent.h"
 #include "Card/CCCard.h"
 #include "Kismet/GameplayStatics.h"
+#include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerPawn.h"
 
 
@@ -53,11 +54,13 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 	+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
 	IsMoving = true;
 	MovementData.EndRotation = MovementData.StartRotation;
-	MovementData.EndRotation.Roll = 
+	MovementData.EndRotation.Roll = InHandNumber <= 1 ? 0 :
 		FMath::Lerp(
 		CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		-CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		InCardIndex / static_cast<float>(InHandNumber - 1));
+	if(IsCustomDuration)
+		DEBUG_WARNING("Card %i = %f | %f", InCardIndex, MovementData.StartRotation.Roll,  MovementData.EndRotation.Roll);
 	//PrimaryComponentTick.SetTickFunctionEnable(true);
 	return true;
 }

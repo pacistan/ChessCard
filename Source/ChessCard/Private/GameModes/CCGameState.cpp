@@ -139,5 +139,5 @@ void ACCGameState::PostInitializeComponents()
 void ACCGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	GridManager = Cast<ACCGridManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACCTile::StaticClass()));
+	GridManager = Cast<ACCGridManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACCGridManager::StaticClass()));
 }

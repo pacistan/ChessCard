@@ -3,6 +3,8 @@
 #include "IndexTypes.h"
 #include "Grid/CCTile.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetStringLibrary.h"
+#include "Macro/CCLogMacro.h"
 
 ACCGridManager::ACCGridManager()
 {
@@ -35,25 +37,28 @@ void ACCGridManager::GenerateGrid()
 			SpawnedTile->AttachToActor(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
 			SpawnedTile->SetActorLocation(SpawnLocation);
 			SpawnedTile->SetRowNum(i);
-			SpawnedTile->SetColumnNum(i);
+			SpawnedTile->SetColumnNum(j);
 			SpawnedTile->SetActorScale3D(FVector(TileWidth, TileWidth, 1));
 		}
 	}
 }
 
+
+
 void ACCGridManager::ApplyLambdaToTileType(ETileType TileType, const FTileTypeDelegate TileLambdaFunc)
 {
 	for(const auto& TileCoordinates : MappedGrid[TileType])
 	{
-			TileLambdaFunc.ExecuteIfBound(Grid[TileCoordinates.A][TileCoordinates.B]);
-		/*if(Grid.Contains(TileCoordinates.A) && Grid[TileCoordinates.A].Contains(TileCoordinates.B))
+		if(Grid.Num() > TileCoordinates.A && Grid[TileCoordinates.A].Num() > TileCoordinates.B)
 		{
+			TileLambdaFunc.ExecuteIfBound(Grid[TileCoordinates.A][TileCoordinates.B]);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Coord : %i %i"), TileCoordinates.A, TileCoordinates.B);
+			FString EnumAsString = UEnum::GetValueAsString(TileType);
+			DEBUG_WARNING("Coord : %i %i with Type : %s", TileCoordinates.A, TileCoordinates.B, *EnumAsString);
 			return;
-		}*/
+		}
 	}
 }
 
@@ -72,10 +77,9 @@ void ACCGridManager::BeginPlay()
 
 	if(Tiles.Num() != GridSize * GridSize)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Number of Tiles Found is wrong"));
+		DEBUG_ERROR("Number of Tiles Found is wrong. Num = %i", Tiles.Num());
 		return;
 	}
-
 	if (UEnum* EnumPtr = StaticEnum<ETileType>())
 	{
 		for (int32 i = 0; i < EnumPtr->NumEnums() - 1; i++)
@@ -86,9 +90,9 @@ void ACCGridManager::BeginPlay()
 	}
 	
 	Grid.SetNum(GridSize);
-	for(auto& GridCell : Grid)
+	for(int i = 0; i < Grid.Num(); i++)
 	{
-		GridCell.SetNum(GridSize);
+		Grid[i].SetNum(GridSize);
 	}
 
 	for(const auto& Tile : Tiles)

@@ -39,7 +39,7 @@ private:
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void GenerateGrid();
-	
+
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	void ApplyLambdaToTileType(ETileType TileType,const FTileTypeDelegate TileLambdaFunc);

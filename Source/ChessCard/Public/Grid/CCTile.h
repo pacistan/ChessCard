@@ -60,10 +60,10 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> MaterialInstance;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	int RowNum;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	int ColumnNum;
 
 	UPROPERTY()

@@ -54,7 +54,7 @@ public:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	UFUNCTION(BlueprintCallable, NetMulticast, Unreliable)
+	UFUNCTION(BlueprintCallable, Client, Unreliable)
 	void DrawCards(int NumberOfCardsToDraw);
 
 	UFUNCTION(BlueprintCallable)
