@@ -1,5 +1,6 @@
 ﻿#include "Grid/CCTile.h"
 
+#include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerPawn.h"
 
 ACCTile::ACCTile()
@@ -46,7 +47,14 @@ void ACCTile::StartHover(ACCPlayerPawn* Player)
 void ACCTile::StopHover(ACCPlayerPawn* Player)
 {
 	IsHovered = false;
+
 	FColor Color = IsHighlighted ? HighlightColor : ColorMap[TileType];
+	if(MaterialInstance == nullptr)
+	{
+		DEBUG_ERROR("Material Instance of Tile %s is null", *GetName());
+		return;
+	}
+	MaterialInstance->SetVectorParameterValue("Color", Color);
 }
 
 void ACCTile::BeginPlay()
