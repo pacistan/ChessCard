@@ -110,5 +110,5 @@ public:
 	
 	UFUNCTION(BlueprintGetter)
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
-
+	
 };
