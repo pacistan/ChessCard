@@ -6,6 +6,9 @@
 #include "CCPlayerPawn.generated.h"
 
 
+class ACCTileUnit;
+struct FCardData;
+class ACCPieceBase;
 class ACCCard;
 class UCCMainWidget;
 class FOnCardMovementEnd;
@@ -34,6 +37,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
 
+	
 	//UPROPERTY(EditAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
 	//UCameraComponent* FollowCamera;
 
@@ -59,6 +63,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCCMainWidget> MainWidget;
+
+	UPROPERTY()
+	TObjectPtr<ACCTileUnit> SelectedUnit;
 	
 
 public:
@@ -86,6 +93,7 @@ public:
 
 	UFUNCTION()
 	void RemoveCardFromHand();
+
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
@@ -110,5 +118,9 @@ public:
 	
 	UFUNCTION(BlueprintGetter)
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
+
+	UFUNCTION()
+	void SetSelectedUnit(ACCTileUnit* Unit);
 	
 };
+

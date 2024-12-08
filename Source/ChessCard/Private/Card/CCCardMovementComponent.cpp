@@ -75,8 +75,8 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 		CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		-CardTiltOffset * static_cast<float>(InHandNumber - 1) / 2,
 		InCardIndex / static_cast<float>(InHandNumber - 1));
-	if(IsCustomDuration)
-		DEBUG_WARNING("Card %i = %f | %f", InCardIndex, MovementData.StartRotation.Roll,  MovementData.EndRotation.Roll);
+	//if(IsCustomDuration)
+	//	DEBUG_WARNING("Card %i = %f | %f", InCardIndex, MovementData.StartRotation.Roll,  MovementData.EndRotation.Roll);
 	//PrimaryComponentTick.SetTickFunctionEnable(true);
 	return true;
 }

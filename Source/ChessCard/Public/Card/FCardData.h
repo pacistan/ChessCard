@@ -2,6 +2,7 @@
 #include "GameplayTagContainer.h"
 #include "FCardData.generated.h"
 
+struct FUnitMovementData;
 struct FCardAbilities;
 
 UENUM()
@@ -13,24 +14,6 @@ enum class ECardType : uint8
 	Custom // Custom card type for special cards if needed /* not implemented Yet */
 };
 
-/* Struct that Handle of the Data relative to the patern of movement */ 
-USTRUCT(BlueprintType)
-struct FMovementPattern
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	TArray<FVector2D> Pattern;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	TSoftObjectPtr<UTexture2D> PatternTexture;
-
-	FMovementPattern()
-	: Pattern(TArray<FVector2d>())
-	, PatternTexture(nullptr)
-	{
-	}
-};
 
 USTRUCT(BlueprintType)
 struct FCardData : public FTableRowBase
@@ -86,16 +69,10 @@ struct FCardData : public FTableRowBase
 	/* Tags the Unit need To have at Start */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer Tags;
-};
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	TArray<FUnitMovementData> Pattern;
 
-UCLASS(EditInlineNew, Blueprintable, CollapseCategories)
-class UClasseTest : public UObject
-{
-	GENERATED_BODY()
-	
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
-	FString Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	TSoftObjectPtr<UTexture2D> PatternTexture;
 };
- 

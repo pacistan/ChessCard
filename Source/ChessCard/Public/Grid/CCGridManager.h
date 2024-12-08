@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "CCGridManager.generated.h"
 
+struct FUnitMovementData;
 enum class ETileType : uint8;
 class ACCTile;
 
@@ -34,15 +35,33 @@ private:
 
 	TArray<TArray<TObjectPtr<ACCTile>>> Grid;
 
-	TMap<ETileType, TArray<UE::Geometry::FIndex2i>> MappedGrid;
+	TMap<ETileType, TArray<FIntPoint>> MappedGrid;
 	
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void GenerateGrid();
 
+
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
+	static FVector CoordinatesToPosition(FIntPoint Coordinates);
+
+	void GetTargetTiles(TArray<FUnitMovementData>& MovementData,
+	                    TMap<FIntPoint, TArray<FIntPoint>>& PatternMap);
+	
+	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FIntPoint>>& PatternMap,
+	                            TArray<FIntPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
+
 	void ApplyLambdaToTileType(ETileType TileType,const FTileTypeDelegate TileLambdaFunc);
+
+	void RegisterTileAsType(FIntPoint TileCoordinates, ETileType TileType);
+
+	void UnregisterTileAsType(FIntPoint TileCoordinates, ETileType TileType);
+
+	UFUNCTION()
+	void UnhighlightTiles();
+
+	ACCTile* GetTile(FIntPoint Coordinates);
 
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:

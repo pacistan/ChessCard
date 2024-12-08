@@ -2,9 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "CCTile.generated.h"
+
+class ACCPieceBase;
+
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnClickTileDelegate, ACCTile*, Tile);
 
 USTRUCT()
 struct FTileContent
@@ -24,10 +29,10 @@ public:
 
 UENUM()
 enum class ETileType : uint8
-{Normal, Disabled, Player1, Player2, Player3, Player4, ScoreTile, BonusTile};
+{Normal, Disabled, Player1, Player2, Player3, Player4, ScoreTile, BonusTile, Unit, Highlighted};
 
 UCLASS()
-class CHESSCARD_API ACCTile : public AActor, public IClickable, public IHoverable
+class CHESSCARD_API ACCTile : public AActor, public IClickable, public IHoverable, public ICCGridManagerInterface
 {
 	GENERATED_BODY()
 
@@ -35,18 +40,28 @@ public:
 	ACCTile();
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
+public:
+	FOnClickTileDelegate OnClickEvent;
+	
 private:
+	UPROPERTY(VisibleAnywhere)
+	TArray<TObjectPtr<ACCPieceBase>> Pieces;
+	
 	UPROPERTY()
 	FTileContent CurrentTileContent;
 
 	UPROPERTY(EditAnywhere)
 	ETileType TileType;
 
+	
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ETileType, FColor> ColorMap;
 
 	UPROPERTY(EditDefaultsOnly)
 	FColor HighlightColor;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInterface> HighlightMaterial;
 
 	UPROPERTY(EditDefaultsOnly)
 	FColor HoveredColor;
@@ -75,10 +90,13 @@ private:
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void BlueprintEditorTick(float DeltaTime);
+
+	UFUNCTION(CallInEditor)
+	void Test();
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void SetHighlight(bool bIsHighlight);
+	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate = FOnClickTileDelegate());
 	
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 private:
@@ -112,4 +130,16 @@ public:
 
 	UFUNCTION(BlueprintGetter)
 	ETileType GetTileType()const {return TileType;}
+
+	UFUNCTION()
+	void AddPieceLocal(ACCPieceBase* Piece);
+
+	UFUNCTION()
+	void RemovePiece(ACCPieceBase* Piece);
+
+	UFUNCTION()
+	bool ContainPiece(){return Pieces.Num() > 0;}
+
+	UFUNCTION()
+	TArray<ACCPieceBase*> GetPieces(){return Pieces;};
 };

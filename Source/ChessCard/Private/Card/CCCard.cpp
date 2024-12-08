@@ -1,11 +1,16 @@
 ﻿#include "Card/CCCard.h"
+
+#include "AsyncTreeDifferences.h"
 #include "Card/CCCardMovementComponent.h"
+#include "Card/FCardData.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
+#include "TileActor/CCPieceBase.h"
+#include "TileActor/CCTileUnit.h"
 
 
 ACCCard::ACCCard()
@@ -31,31 +36,77 @@ void ACCCard::UpdateMaterials()
 
 void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 {
-    ETileType TargetTileType = ETileType::Player1;
-	switch(Pawn->GetPlayerIndex())
+	FCardData* RowData = DataTable->FindRow<FCardData>(CardRowHandle ,TEXT("No Card Found with name"));
+	
+	switch(RowData->CardType)
 	{
-	case 1:
-		TargetTileType = ETileType::Player1;
-		break;
-	case 2:
-		TargetTileType = ETileType::Player2;
-		break;
-	case 3:
-		TargetTileType = ETileType::Player3;
-		break;
-	case 4:
-		TargetTileType = ETileType::Player4;
-		break;
-	default:
-		DEBUG_ERROR("Pawn has an invalid Player Index : %i", Pawn->GetPlayerIndex());
-		break;
+		case ECardType::Unit:
+		{
+			ETileType TargetTileType = ETileType::Player1;
+			switch(Pawn->GetPlayerIndex())
+			{
+				case 1:
+					TargetTileType = ETileType::Player1;
+					break;
+				case 2:
+					TargetTileType = ETileType::Player2;
+					break;
+				case 3:
+					TargetTileType = ETileType::Player3;
+					break;
+				case 4:
+					TargetTileType = ETileType::Player4;
+					break;
+				default:
+					//DEBUG_ERROR("Pawn has an invalid Player Index : %i", Pawn->GetPlayerIndex());
+					break;
+			}
+				
+			/*if(bIsSelected)
+			{
+				GetGridManager(	GetWorld())->UnhighlightTiles();
+			}*/
+				
+			FTileTypeDelegate TileTypeDelegate;
+			auto Lambda = [this, &bIsSelected](ACCTile* Tile)
+			{
+				if(!Tile->ContainPiece())
+				{
+					FOnClickTileDelegate OnClickDelegate;
+					OnClickDelegate.BindDynamic(this, &ACCCard::SpawnUnit);
+					Tile->SetHighlight(bIsSelected, OnClickDelegate);
+				}
+			};
+			TileTypeDelegate.BindLambda(Lambda);
+			GetGridManager(GetWorld())->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
+			break;
+		}
+		case ECardType::Movement:
+		{
+			bool ToHighlight = bIsSelected;
+			FTileTypeDelegate TileTypeDelegate;
+			auto Lambda = [this, &ToHighlight](ACCTile* Tile)
+			{
+				for(auto& Piece : Tile->GetPieces())
+				{
+					auto Unit = Cast<ACCTileUnit>(Piece);
+					if(IsValid(Unit))
+					{
+						Unit->SetHighlight(ToHighlight);
+					}
+				}
+			};
+			TileTypeDelegate.BindLambda(Lambda);
+			GetGridManager(GetWorld())->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+			break;
+		}
+		case ECardType::SpecificUnit:
+			DEBUG_WARNING("Not Implemented Specific Unit Card Type");
+			break;
+		case ECardType::Custom:
+			DEBUG_WARNING("Not Implemented Custom Card Type");
+			break;
 	}
-
-	bool toHighlight = bIsSelected;
-	FTileTypeDelegate TileTypeDelegate;
-	auto Lambda = [&toHighlight](ACCTile* Tile){Tile->SetHighlight(toHighlight);};
-	TileTypeDelegate.BindLambda(Lambda);
-	Cast<ACCGameState>(UGameplayStatics::GetGameState(GetWorld()))->GetGridManager()->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
 }
 
 void ACCCard::BeginPlay()
@@ -65,15 +116,37 @@ void ACCCard::BeginPlay()
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)
 {
+	CurrentCardState = ECardState::Played;
+	UpdateMaterials();
 	if(!CardMovement->IsInterruptable)
 	{
 		return;
 	}
-	CurrentCardState = ECardState::Played;
-	DEBUG_WARNING("%s", *CardMovement.GetName());
 
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
-	UpdateMaterials();
+}
+
+void ACCCard::SpawnUnit(ACCTile* Tile)
+{
+	const FRotator UnitRotation;
+	const FVector UnitPosition = Tile->GetActorLocation() + FVector::UpVector * 20;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.bNoFail = true;
+	auto Unit =  GetWorld()->SpawnActor<ACCTileUnit>(PieceClass, UnitPosition, UnitRotation, SpawnParams);
+	Tile->AddPieceLocal(Unit);
+	Unit->CurrentCoordinates = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
+	Unit->Pattern = DataTable->FindRow<FCardData>(CardRowHandle, TEXT(""))->Pattern;
+	Unit->SetTargetMap();
+	auto GridManager = GetGridManager(GetWorld());
+	check(GridManager);
+	GridManager->UnhighlightTiles();
+	//TODO : Add Summon Action to Queue of Actions For Resolve and historic.
+}
+
+void ACCCard::MoveUnit(ACCTile* Unit)
+{
+	
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)
@@ -143,7 +216,7 @@ void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 	{
 		return;
 	}
-	CurrentCardState = ECardState::Inactive;
+	CurrentCardState = CurrentCardState ==  ECardState::Played ? ECardState::Played : ECardState::Inactive;
 	Pawn->SetCurrentSelectedCardIndex(-1);
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();

@@ -2,10 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Selectable.h"
+#include "TileActor/CCTileUnit.h"
 #include "CCCard.generated.h"
 
+
+class ACCTile;
 class UCCCardMovementComponent;
+class ACCPieceBase;
 
 UENUM(BlueprintType)
 enum class ECardState : uint8
@@ -26,7 +31,7 @@ struct FMaterialArrayWrapper
 };
 
 UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
-class CHESSCARD_API ACCCard : public AActor, public ISelectable, public IHoverable
+class CHESSCARD_API ACCCard : public AActor, public ISelectable, public IHoverable, public ICCGridManagerInterface
 {
 	GENERATED_BODY()
 
@@ -43,6 +48,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category="")
 	ECardState CurrentCardState;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACCPieceBase> PieceClass;
+	
 	UPROPERTY()
 	int32 CardIndex;
 
@@ -51,6 +59,15 @@ public:
 
 	UPROPERTY()
 	bool IsHovered;
+
+	UPROPERTY()
+	FName CardRowHandle;
+
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UDataTable> DataTable;
+
+private:
+
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
@@ -68,13 +85,18 @@ public:
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
-	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
+	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
+protected:
+	UFUNCTION()
+	void SpawnUnit(ACCTile* Tile);
+
 public:
-	UFUNCTION(BlueprintGetter)
-	ECardState GetCurrentCardState(){return CurrentCardState;}
-	
+	UFUNCTION()
+	void MoveUnit(ACCTile* Unit);
+
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
-	
+
+public:
 	virtual void StartHover(ACCPlayerPawn* Pawn) override;
 	
 	virtual void StopHover(ACCPlayerPawn* Pawn) override;
@@ -87,4 +109,13 @@ public:
 public:
 	UFUNCTION(BlueprintSetter)
 	void SetCardIndex(int32 InCardIndex) { CardIndex = InCardIndex;}
+
+	UFUNCTION(BlueprintGetter)
+	FName GetDataTableRow(){return CardRowHandle;}
+
+	UFUNCTION(BlueprintGetter)
+	ECardState GetCurrentCardState(){return CurrentCardState;}
+
+	UFUNCTION(BlueprintSetter)
+	void SetDataTableRow(FName RowName){CardRowHandle = RowName;}
 };

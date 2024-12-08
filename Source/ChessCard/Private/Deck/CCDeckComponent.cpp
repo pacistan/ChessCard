@@ -23,7 +23,7 @@ ACCCard* UCCDeckComponent::CreateCard()
 	SpawnParams.Owner = GetOwner();
 	auto Card =  GetWorld()->SpawnActor<ACCCard>(CardPrefab, TransformedDeckPosition, CameraRotation, SpawnParams);
 	Card->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
-	//Card->SetActorRotation(CameraRotation);
+	Card->SetDataTableRow(DeckCards[0]);
 	return Card;
 }
 

@@ -3,10 +3,12 @@
 #include "Camera/CameraComponent.h"
 #include "Card/CCCard.h"
 #include "Card/CCCardMovementComponent.h"
+#include "Card/FCardData.h"
 #include "Deck/CCDeckComponent.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 #include "Macro/CCLogMacro.h"
+#include "TileActor/CCPieceBase.h"
 #include "UI/CCMainWidget.h"
 
 
@@ -49,7 +51,7 @@ void ACCPlayerPawn::DrawCard()
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
-void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tiles)
+void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 {
 	auto& Card = HandComponent->Cards[CurrentSelectedCardIndex];
 	Card->UnSelect(this);
@@ -98,8 +100,22 @@ void ACCPlayerPawn::PossessedBy(AController* NewController)
 
 void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 {
+	if(CurrentSelectedCardIndex != InSelectedCardIndex && IsValid(SelectedUnit))
+	{
+		SelectedUnit->UnSelect();
+		SelectedUnit = nullptr;
+	}
 	CurrentSelectedCardIndex = InSelectedCardIndex;
 	MainWidget->OnSelectCardChange(CurrentSelectedCardIndex == -1? false : true);
+}
+
+void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)
+{
+	if(IsValid(SelectedUnit))
+	{
+		SelectedUnit->UnSelect();
+	}
+	SelectedUnit = Unit;
 }
 
 void ACCPlayerPawn::OnAllCardDrawServer_Implementation()

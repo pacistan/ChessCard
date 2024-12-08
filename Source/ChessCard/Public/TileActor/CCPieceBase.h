@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "Card/FCardData.h"
 #include "GameFramework/Actor.h"
+#include "Card/FUnitMovementData.h"
 #include "CCPieceBase.generated.h"
 
 class ACCPlayerState;
 class ACCPlayerController;
+//struct FUnitMovementData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileEffectTriggered, ACCPieceBase* , Owner);
 
@@ -28,7 +30,7 @@ protected:
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
-	FMovementPattern MovementPattern = FMovementPattern();
+	TArray<FUnitMovementData> MovementDatas;
 	
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
 	int Level = 1;
@@ -47,7 +49,7 @@ public:
 public:
 	ACCPieceBase( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void Initialize(ACCPlayerState* PlayerState, FString RawName, FIntVector2 Position, FMovementPattern MovementPattern, int Level = 1);  
+	void Initialize(ACCPlayerState* PlayerState, FString RawName, FIntVector2 Position, TArray<FUnitMovementData>& MovementPattern, int Level = 1);  
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
   
 };
