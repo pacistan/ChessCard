@@ -8,8 +8,7 @@
 
 class ACCCard;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), HideCategories
-	(Variable, "Sockets", Tags, Component_Tick, Component_Replication, Activation, Cooking, Events, Asset_User_Data, Replication, Navigation))
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), HideCategories(Variable, "Sockets", Tags, Component_Tick, Component_Replication, Activation, Cooking, Events, Asset_User_Data, Replication, Navigation))
 class CHESSCARD_API UCCDeckComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -88,6 +88,7 @@ public:
 	void RemoveCardFromHand();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+
 	virtual void PossessedBy(AController* NewController) override;
 	
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
@@ -109,4 +110,5 @@ public:
 	
 	UFUNCTION(BlueprintGetter)
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
+	
 };
