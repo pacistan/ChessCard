@@ -7,18 +7,19 @@ struct FCardAbilities;
 UENUM()
 enum class ECardType : uint8
 {
-	Unit,
-	Movement,
-	SpecificUnit,
-	Custom // Custom card type for special cards if needed /* not implemented Yet */
+	Unit UMETA(ToolTip = "Have a movement pattern and can be placed on the board"),
+	Movement UMETA(ToolTip = "Card that can be used to move a unit"),
+	SpecificUnit UMETA(ToolTip = "Card that can be used on a specific unit"),
+	Ephemere UMETA(ToolTip = "Card That is Destroy when Draw"),
+	Custom UMETA(ToolTip = "Custom Card Type for special cards if needed (not implemented Yet)", hidden) 
 };
 
-/* Struct that Handle of the Data relative to the patern of movement */ 
+/* Struct that Handle of the Data relative to the patern of movement */
 USTRUCT(BlueprintType)
 struct FMovementPattern
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	TArray<FVector2D> Pattern;
 
@@ -40,9 +41,11 @@ struct FCardData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Card")
 	ECardType CardType = ECardType::Unit;
 
-	/* if the card is a specific unit, this is the name of the unit who can use this card */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Card", meta = (editcondition = "CardType == ECardType::SpecificUnit"))
-	FString NameOfUnitWhoCanUseThisCard;
+	/* if the card is a specific unit, this is the name of the unit who can use this card
+	 *  If the card choose is not a unit, The card will not be able to be used 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Card", meta = (editcondition = "CardType == ECardType::SpecificUnit", RowType = "FCardData", EditConditionHides))
+	FDataTableRowHandle UnitWhoCanUseThisCard;
 
 	/* juste the name for the Ui, the actual name if the name of the Raw */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
@@ -53,49 +56,21 @@ struct FCardData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	TSoftObjectPtr<UTexture2D> CardTexture;
-	
-	// On Death 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
-	bool bHasOnDeathEffect = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnDeathEffect", TitleProperty = "AbilityType"))
+	// On Death
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "CardType = ECardType::Unit || CardType == ECardType::SpecificUnit", TitleProperty = "AbilityType", EditConditionHides))
 	TArray<FCardAbilities> OnDeathEffect;
-	
-	// On Spawn 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
-	bool bHasOnSpawnEffect = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnSpawnEffect", TitleProperty = "AbilityType"))
-	TArray<FCardAbilities> OnSpawnEffect;
-	
 	// On Kill 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
-	bool bHasOnKillEffect = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnKillEffect", TitleProperty = "AbilityType"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "CardType = ECardType::Unit || CardType == ECardType::SpecificUnit", TitleProperty = "AbilityType", EditConditionHides))
 	TArray<FCardAbilities> OnKillEffect;
-	
-	// On Move (end of deplacement)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
-	bool bHasOnMoveEffect = false;
 
+	// On Move (end of deplacement)
 	/* the Effect is Trigger at End of Movement */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnMoveEffect", TitleProperty = "AbilityType"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects",meta = (editcondition = "CardType = ECardType::Unit || CardType == ECardType::SpecificUnit", TitleProperty = "AbilityType", EditConditionHides))
 	TArray<FCardAbilities> OnMoveEffect;
-	
+
 	/* Tags the Unit need To have at Start */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer Tags;
 };
-
-
-UCLASS(EditInlineNew, Blueprintable, CollapseCategories)
-class UClasseTest : public UObject
-{
-	GENERATED_BODY()
-	
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Test")
-	FString Name;
-};
- 

@@ -21,8 +21,9 @@ class CHESSCARD_API ACCPieceBase : public AActor
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
-	FString RawName;
+	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime", meta = (RowType = "FCardData"))
+	FDataTableRowHandle RowHandle;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
@@ -47,7 +48,6 @@ public:
 public:
 	ACCPieceBase( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void Initialize(ACCPlayerState* PlayerState, FString RawName, FIntVector2 Position, FMovementPattern MovementPattern, int Level = 1);  
+	void Initialize(ACCPlayerState* PlayerState, FDataTableRowHandle RowHandle, FIntVector2 Position, FMovementPattern MovementPattern, int Level = 1);  
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-  
 };
