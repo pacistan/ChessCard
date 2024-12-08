@@ -42,4 +42,5 @@ class CHESSCARD_API ACCPlayerPawn : public APawn
 	void DrawCard();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+	
 };

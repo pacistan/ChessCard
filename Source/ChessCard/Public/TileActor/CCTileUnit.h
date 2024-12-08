@@ -3,19 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "CCTileActorBase.generated.h"
+#include "CCPieceBase.h"
+#include "CCTileUnit.generated.h"
 
 /**
- *  Base class for all the Actor that will be placed on the board
+ *  Tile Actor that Have a the ability to move 
  */
 UCLASS()
-class CHESSCARD_API ACCTileActorBase : public AActor
+class CHESSCARD_API ACCTileUnit : public ACCPieceBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 public:
+	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
+public:
+	ACCTileUnit(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-  
 };
