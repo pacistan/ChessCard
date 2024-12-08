@@ -8,24 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41f76a9f-df79-44cb-9473-38e9678a12a5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileUnit.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardAbilities.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardAbilities.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCPieceBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Experiences/BP_UserExeperience.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Experiences/BP_UserExeperience.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/DataTables/Cards/DT_AllCardData.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Environments/N_LoadBackGroundLevel.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Environments/N_LoadBackGroundLevel.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_StartJoinSessionWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Menu/W_StartJoinSessionWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCardEffect.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileActorBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCPieceBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardEffect.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardData.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCTileActorBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCTileUnit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardAbilities.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/FCardAbilities.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
