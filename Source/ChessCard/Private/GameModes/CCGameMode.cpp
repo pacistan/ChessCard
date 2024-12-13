@@ -75,21 +75,6 @@ void ACCGameMode::InitGame(const FString& MapName, const FString& Options, FStri
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::HandlePartyAssignement);
 }
 
-void ACCGameMode::OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience)
-{
-	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-	{
-		APlayerController* PC = Cast<APlayerController>(*Iterator);
-		if ((PC != nullptr) && (PC->GetPawn() == nullptr))
-		{
-			if (PlayerCanRestart(PC))
-			{
-				RestartPlayer(PC);
-			}
-		}
-	}
-}
-
 void ACCGameMode::HandlePartyAssignement()
 {
 	FPrimaryAssetId ExperienceId;
@@ -113,6 +98,21 @@ void ACCGameMode::HandlePartyAssignement()
 		ExperienceComponent->SetCurrentExperience(ExperienceId);
 	} else {
 		DEBUG_LOG("Failed to identify experience, loading never end");
+	}
+}
+
+void ACCGameMode::OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience)
+{
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PC = Cast<APlayerController>(*Iterator);
+		if ((PC != nullptr) && (PC->GetPawn() == nullptr))
+		{
+			if (PlayerCanRestart(PC))
+			{
+				RestartPlayer(PC);
+			}
+		}
 	}
 }
 
