@@ -21,9 +21,5 @@
 				"Editor"
 			]
 		},
-		{
-			"Name": "CommonUI",
-			"Enabled": true
-		}
 	]
 }
