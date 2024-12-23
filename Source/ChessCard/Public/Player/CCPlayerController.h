@@ -28,14 +28,14 @@ public:
 	TScriptInterface<IHoverable> CurrentHoveredElement;
 	
 	TScriptInterface<ISelectable> CurrentSelectedElement;
-
-	UPROPERTY()
-	TObjectPtr<ACCPlayerPawn> PlayerPawn;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
 	UFUNCTION()
 	void OnSelectCard();
+
+	UFUNCTION()
+	ACCPlayerPawn* GetCCPlayerPawn();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void BeginPlay() override;
