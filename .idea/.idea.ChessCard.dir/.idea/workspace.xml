@@ -8,52 +8,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9b77102a-1d28-4f5e-96e6-ef959d7d881a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChessCard.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/ChessCard.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/PawnData/DA_DefaultPawnData.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LTestMulti.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestMulti.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/ButtonStyle/ButtonStyle-Clear.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_MenuButton.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_StartJoinSessionWidget.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_StartMenu.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/CommonUser.uplugin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Resources/Icon128.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/CommonUser.Build.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/AsyncAction_CommonUserInitialize.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonSessionSubsystem.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonUserModule.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonUserSubsystem.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonUserTypes.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/AsyncAction_CommonUserInitialize.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonSessionSubsystem.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonUserModule.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonUserSubsystem.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonUserTypes.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/ChessCard.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/ChessCard.Build.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Experience/CCExperienceDefinition.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Experience/CCUserExperienceDefinition.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_GlobalHud.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Menu/W_GlobalHud.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_HostJoinSession.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Menu/W_HostJoinSession.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_SessionSearchRequest.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCWorldSettings.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/Component/CCExperienceManagerComponent.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPawnData.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerState.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/UI/CCActivableWidget.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/UI/CCButtonBase.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Experience/CCExperienceDefinition.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Experience/CCUserExperienceDefinition.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCWorldSettings.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/Component/CCExperienceManagerComponent.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPawnData.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerState.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/UI/CCActivableWidget.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/UI/CCButtonBase.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,47 +31,55 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Stanpac"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Stanpac&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/pacistan/ChessCard.git",
-    "accountId": "306490cc-477f-4d7e-9741-ab1b188b9632"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/pacistan/ChessCard.git&quot;,
+    &quot;accountId&quot;: &quot;306490cc-477f-4d7e-9741-ab1b188b9632&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Source/ChessCard/ChessCard.Build.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.3/Engine/Plugins/Runtime/CommonUI/Source/CommonUI/Public/CommonTabListWidgetBase.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/GameModeBase.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/GameModeBase.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Slate/Private/Widgets/Layout/SWidgetSwitcher.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/SlateCore/Private/Widgets/SWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/UMG/Private/Components/WidgetSwitcher.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/UMG/Public/Components/ListView.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../Unreal Projects/LyraStarterGame/Plugins/CommonUser/Source/CommonUser/Private/CommonSessionSubsystem.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../Unreal Projects/LyraStarterGame/Source/LyraGame/UI/Foundation/LyraButtonBase.h" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2qcqe8Hoywcg9c2ns6dQy9FQITn" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Uproject.ChessCard.executor": "Run",
-    "git-widget-placeholder": "DevDebugPossessPawn",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Uproject.ChessCard.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DevDebugPossessPawn&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="ChessCard" type="Uproject" factoryName="rider.uproject">
       <configuration_1 setup="1">
@@ -190,7 +163,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1734972305585</updated>
-      <workItem from="1734972306192" duration="2171000" />
+      <workItem from="1734972306192" duration="7617000" />
+      <workItem from="1735033528389" duration="10725000" />
     </task>
     <servers />
   </component>

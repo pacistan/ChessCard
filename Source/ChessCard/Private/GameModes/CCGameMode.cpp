@@ -21,6 +21,12 @@ void ACCGameMode::PostLogin(APlayerController* NewPlayer)
 	OnUserPostLogin.Broadcast(NewPlayer);
 }
 
+void ACCGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+	OnUserLogout.Broadcast(Exiting);
+}
+
 void ACCGameMode::StartPlaySequence()
 {
 	FSM = NewObject<UCCFSM>(this);
