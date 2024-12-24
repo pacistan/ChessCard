@@ -5,6 +5,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameState.generated.h"
 
+class ACCPlayerController;
 class ACCGridManager;
 
 UCLASS()
@@ -12,14 +13,21 @@ class CHESSCARD_API ACCGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
-private:
-	UPROPERTY()
-	TObjectPtr<ACCGridManager> GridManager;
-	
+protected:
 	friend class ACCGameMode;
+	
+	UPROPERTY(Replicated)
+	TObjectPtr<ACCGridManager> GridManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	TArray<ACCPlayerController*> PlayerControllers;
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCGameState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UFUNCTION(BlueprintCallable)
+	bool AddPlayerController(ACCPlayerController* PlayerController);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 private:
@@ -29,4 +37,7 @@ private:
 public:
 	UFUNCTION(BlueprintGetter)
 	ACCGridManager* GetGridManager()const {return GridManager;}
+
+	UFUNCTION()
+	int GetIndexOfPlayerController(ACCPlayerController* PlayerController) const {return PlayerControllers.Find(PlayerController);} 
 };

@@ -10,6 +10,11 @@ class UInputMappingContext;
 class UInputAction;
 class ACCPlayerPawn;
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartGame);
+
+// TODO : Event Show Info Ui Card (CardInfo)
+
 /**
  * 
  */
@@ -18,6 +23,13 @@ class CHESSCARD_API ACCPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> InGameUiClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UUserWidget> InGameHud;
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerPawn|Input", meta=(DisplayName = "Default Mapping Context"))
 	UInputMappingContext* IMC_Default;
@@ -28,6 +40,9 @@ public:
 	TScriptInterface<IHoverable> CurrentHoveredElement;
 	
 	TScriptInterface<ISelectable> CurrentSelectedElement;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnStartGame OnStartGame;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
@@ -36,6 +51,10 @@ private:
 
 	UFUNCTION()
 	ACCPlayerPawn* GetCCPlayerPawn();
+
+public:
+	UFUNCTION()
+	void CreateHudForPlayer();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void BeginPlay() override;

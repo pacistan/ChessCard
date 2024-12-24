@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
@@ -95,6 +96,18 @@ void ACCPlayerController::OnSelectCard()
 ACCPlayerPawn* ACCPlayerController::GetCCPlayerPawn()
 {
 	return Cast<ACCPlayerPawn>(GetPawn());
+}
+
+void ACCPlayerController::CreateHudForPlayer()
+{
+	if (IsLocalController()) {
+		if (InGameUiClass) {
+			InGameHud = CreateWidget<UUserWidget>(this, InGameUiClass);
+			if (InGameHud) {
+				InGameHud->AddToPlayerScreen();
+			}
+		}
+	}
 }
 
 void ACCPlayerController::BeginPlay()

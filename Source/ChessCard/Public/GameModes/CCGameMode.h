@@ -10,7 +10,7 @@
 class UCCBaseState;
 class UCCFSM;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUserPostLogin, APlayerController*, NewPlayer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUserLogin, AController*, NewPlayer);
 
 UCLASS()
 class CHESSCARD_API ACCGameMode : public AGameModeBase
@@ -24,18 +24,34 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UCCBaseState> StartState;
 
+	// Number of players needed to start the game (default 4)
+	UPROPERTY(EditAnywhere)
+	int NumOfPlayersNeeded = 4;
+
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnUserPostLogin OnUserPostLogin;
+	FOnUserLogin OnUserPostLogin;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUserLogin OnUserLogout;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
+	UFUNCTION(BlueprintCallable)
+	void StartPlaySequence();
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
 	UFUNCTION()
 	virtual TArray<ACCPlayerPawn*> GetPlayerPawns();
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	virtual void Logout(AController* Exiting) override;
+
+	/* ------------------------------------------ GETTERS / SETTERS  -------------------------------------------*/
 
 	UFUNCTION()
 	UCCFSM* GetFSM(){return FSM;}
@@ -44,7 +60,5 @@ public:
 	TSubclassOf<UCCBaseState> GetStartState(){return StartState;}
 	
 	UFUNCTION(BlueprintCallable)
-	void StartPlaySequence();
-
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+	int GetNumOfPlayersNeeded() const { return NumOfPlayersNeeded; }
 };
