@@ -4,19 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Macro/CCGetSetMacro.h"
 #include "CCGameMode.generated.h"
 
-class UCCExperienceDefinition;
-enum class ECCOnlineMode : uint8;
 class UCCBaseState;
 class UCCFSM;
-class UCCPawnData;
 
-/**
- * Post Login Event, Trigger When a player joins the game
- * Call at end Of initialization 
- */
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCCCameModePlayerInitialized, AGameModeBase*, AController*);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUserLogin, AController*, NewPlayer);
 
 UCLASS()
 class CHESSCARD_API ACCGameMode : public AGameModeBase
@@ -29,60 +23,42 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UCCBaseState> StartState;
-	
-public:
-	// Delegate called on player initialization
-	FOnCCCameModePlayerInitialized OnGameModePlayerInitialized;
 
+	// Number of players needed to start the game (default 4)
+	UPROPERTY(EditAnywhere)
+	int NumOfPlayersNeeded = 4;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnUserLogin OnUserPostLogin;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUserLogin OnUserLogout;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
-	UFUNCTION()
-	void TempBeginPlay();
 	
-	UFUNCTION(BlueprintCallable, Category = "CC|Pawn")
-	const UCCPawnData* GetPawnDataForController(const AController* InController) const;
-	
-	// Restart (respawn) the specified player next frame
-	// - If bForceReset is true, the controller will be reset this frame (abandoning the currently possessed pawn, if any)
 	UFUNCTION(BlueprintCallable)
-	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset = false);
-
-protected:
-	UFUNCTION()
-	void HandlePartyAssignement();
-	void OnExperienceLoaded(const UCCExperienceDefinition* CurrentExperience);
-	bool IsExperienceLoaded() const;
+	void StartPlaySequence();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:
 	UFUNCTION()
 	virtual TArray<ACCPlayerPawn*> GetPlayerPawns();
 
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	virtual void Logout(AController* Exiting) override;
+
+	/* ------------------------------------------ GETTERS / SETTERS  -------------------------------------------*/
+
 	UFUNCTION()
 	UCCFSM* GetFSM(){return FSM;}
 
 	UFUNCTION()
 	TSubclassOf<UCCBaseState> GetStartState(){return StartState;}
-
-
-	UFUNCTION(BlueprintCallable)
-	void StartPlaySequence();
-
 	
-	//~AGameModeBase interface
-	virtual void BeginPlay() override;
-	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
-	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
-	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
-	virtual bool ShouldSpawnAtStartSpot(AController* Player) override;
-	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
-	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
-	virtual void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation) override;
-	virtual void InitGameState() override;
-	virtual void GenericPlayerInitialization(AController* NewPlayer) override;
-	virtual void FailedToRestartPlayer(AController* NewPlayer) override;
-	//~End of AGameModeBase interface
+	UFUNCTION(BlueprintCallable)
+	int GetNumOfPlayersNeeded() const { return NumOfPlayersNeeded; }
 };

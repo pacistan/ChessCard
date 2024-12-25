@@ -2,6 +2,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
@@ -11,7 +12,7 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if(PlayerPawn == nullptr) return;
+	if(!GetCCPlayerPawn()) return;
 
 	FVector2D MousePosition;
 	GetMousePosition(MousePosition.X, MousePosition.Y);
@@ -31,18 +32,18 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 		{
 			if(CurrentHoveredElement.GetObject() != nullptr)
 			{
-				CurrentHoveredElement->StopHover(PlayerPawn);
+				CurrentHoveredElement->StopHover(GetCCPlayerPawn());
 			}
 			CurrentHoveredElement.SetInterface(HoverableActor);
 			CurrentHoveredElement.SetObject(HitResult.GetActor());	
-			CurrentHoveredElement->StartHover(PlayerPawn);
+			CurrentHoveredElement->StartHover(GetCCPlayerPawn());
 		}
 	}
 	else
 	{
 		if(CurrentHoveredElement != nullptr)
 		{
-			CurrentHoveredElement->StopHover(PlayerPawn);
+			CurrentHoveredElement->StopHover(GetCCPlayerPawn());
 			CurrentHoveredElement = nullptr;
 		}
 	}
@@ -50,7 +51,7 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 
 void ACCPlayerController::OnSelectCard()
 {
-	if(PlayerPawn == nullptr) return;
+	if(!GetCCPlayerPawn()) return;
 	FVector2D MousePosition;
 	GetMousePosition(MousePosition.X, MousePosition.Y);
 	
@@ -66,7 +67,7 @@ void ACCPlayerController::OnSelectCard()
 
 	if(ClickableActor != nullptr)
 	{
-		ClickableActor->Click(PlayerPawn);
+		ClickableActor->Click(GetCCPlayerPawn());
 	}
 	
 	if (HitResult.bBlockingHit && SelectableActor != nullptr)
@@ -75,19 +76,36 @@ void ACCPlayerController::OnSelectCard()
 		{
 			if(CurrentSelectedElement.GetObject() != nullptr)
 			{
-				CurrentSelectedElement.GetInterface()->UnSelect(PlayerPawn);
+				CurrentSelectedElement.GetInterface()->UnSelect(GetCCPlayerPawn());
 			}
 			CurrentSelectedElement.SetInterface(SelectableActor);
 			CurrentSelectedElement.SetObject(HitResult.GetActor());
-			CurrentSelectedElement.GetInterface()->Select(PlayerPawn);
+			CurrentSelectedElement.GetInterface()->Select(GetCCPlayerPawn());
 		}
 	}
 	else
 	{
 		if(CurrentSelectedElement != nullptr)
 		{
-			CurrentSelectedElement->UnSelect(PlayerPawn);
+			CurrentSelectedElement->UnSelect(GetCCPlayerPawn());
 			CurrentSelectedElement = nullptr;
+		}
+	}
+}
+
+ACCPlayerPawn* ACCPlayerController::GetCCPlayerPawn()
+{
+	return Cast<ACCPlayerPawn>(GetPawn());
+}
+
+void ACCPlayerController::CreateHudForPlayer()
+{
+	if (IsLocalController()) {
+		if (InGameUiClass) {
+			InGameHud = CreateWidget<UUserWidget>(this, InGameUiClass);
+			if (InGameHud) {
+				InGameHud->AddToPlayerScreen();
+			}
 		}
 	}
 }
@@ -95,7 +113,6 @@ void ACCPlayerController::OnSelectCard()
 void ACCPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayerPawn = Cast<ACCPlayerPawn>(GetPawn());
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())) {
 		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
