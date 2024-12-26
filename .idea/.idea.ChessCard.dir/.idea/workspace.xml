@@ -9,16 +9,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9b77102a-1d28-4f5e-96e6-ef959d7d881a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/LTestMulti.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestMulti.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_GlobalHud.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Menu/W_GlobalHud.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_HostJoinSession.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Menu/W_HostJoinSession.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/UI/Menu/W_SessionSearchRequest.uasset" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerStart.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerStart.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerStart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerStart.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerState.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +65,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Uproject.ChessCard.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;DevDebugPossessPawn&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dev__HandleStartGame&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -165,6 +161,7 @@
       <updated>1734972305585</updated>
       <workItem from="1734972306192" duration="7617000" />
       <workItem from="1735033528389" duration="10725000" />
+      <workItem from="1735205716139" duration="1213000" />
     </task>
     <servers />
   </component>

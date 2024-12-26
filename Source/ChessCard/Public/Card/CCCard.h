@@ -5,6 +5,7 @@
 #include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Selectable.h"
 #include "TileActor/CCTileUnit.h"
+#include "Card/FCardData.h"
 #include "CCCard.generated.h"
 
 
@@ -61,13 +62,7 @@ public:
 	bool IsHovered;
 
 	UPROPERTY()
-	FName CardRowHandle;
-
-	UPROPERTY(EditAnywhere)
-	TSoftObjectPtr<UDataTable> DataTable;
-
-private:
-
+	FDataTableRowHandle CardRowHandle;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
@@ -111,11 +106,11 @@ public:
 	void SetCardIndex(int32 InCardIndex) { CardIndex = InCardIndex;}
 
 	UFUNCTION(BlueprintGetter)
-	FName GetDataTableRow(){return CardRowHandle;}
+	FDataTableRowHandle GetDataTableRow(){return CardRowHandle;}
 
 	UFUNCTION(BlueprintGetter)
 	ECardState GetCurrentCardState(){return CurrentCardState;}
 
 	UFUNCTION(BlueprintSetter)
-	void SetDataTableRow(FName RowName){CardRowHandle = RowName;}
+	void SetDataTableRow(FDataTableRowHandle InRowHandle){CardRowHandle = InRowHandle;}
 };

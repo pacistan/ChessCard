@@ -49,52 +49,52 @@ FVector ACCGridManager::CoordinatesToPosition(FIntPoint Coordinates)
 	return FVector();
 }
 
-void ACCGridManager::GetTargetTiles(TArray<FUnitMovementData>& MovementData,
+void ACCGridManager::GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
 	TMap<FIntPoint, TArray<FIntPoint>>& PatternMap)
 {
-	if(MovementData[0].MovementDirection == EMovementDirection::Diagonal)
+	if(OutMovementData[0].MovementDirection == EMovementDirection::Diagonal)
 	{
 		TArray<FIntPoint> UpRightArray;
-		UpRightArray.Reserve(MovementData.Num());
+		UpRightArray.Reserve(OutMovementData.Num());
 		UpRightArray.Add(FIntPoint(1, 1));
-		SimulateMovementOnGrid(PatternMap, UpRightArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, UpRightArray, OutMovementData);
 
 		TArray<FIntPoint> DownRightArray;
-		DownRightArray.Reserve(MovementData.Num());
+		DownRightArray.Reserve(OutMovementData.Num());
 		DownRightArray.Add(FIntPoint( 1,  - 1));
-		SimulateMovementOnGrid(PatternMap,  DownRightArray, MovementData);
+		SimulateMovementOnGrid(PatternMap,  DownRightArray, OutMovementData);
 
 		TArray<FIntPoint> DownLeftArray;
-		DownLeftArray.Reserve(MovementData.Num());
+		DownLeftArray.Reserve(OutMovementData.Num());
 		DownLeftArray.Add(FIntPoint(-1, -1));
-		SimulateMovementOnGrid(PatternMap, DownLeftArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, DownLeftArray, OutMovementData);
 		
 		TArray<FIntPoint> UpLeftArray;
-		UpLeftArray.Reserve(MovementData.Num());
+		UpLeftArray.Reserve(OutMovementData.Num());
 		UpLeftArray.Add(FIntPoint(-1, 1));
-		SimulateMovementOnGrid(PatternMap, UpLeftArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, UpLeftArray, OutMovementData);
 	}
 	else
 	{
 		TArray<FIntPoint> UpArray;
-		UpArray.Reserve(MovementData.Num());
+		UpArray.Reserve(OutMovementData.Num());
 		UpArray.Add(FIntPoint(0, 1));
-		SimulateMovementOnGrid(PatternMap, UpArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, UpArray, OutMovementData);
 
 		TArray<FIntPoint> RightArray;
-		RightArray.Reserve(MovementData.Num());
+		RightArray.Reserve(OutMovementData.Num());
 		RightArray.Add(FIntPoint( 1,  0));
-		SimulateMovementOnGrid(PatternMap,  RightArray, MovementData);
+		SimulateMovementOnGrid(PatternMap,  RightArray, OutMovementData);
 
 		TArray<FIntPoint> DownArray;
-		DownArray.Reserve(MovementData.Num());
+		DownArray.Reserve(OutMovementData.Num());
 		DownArray.Add(FIntPoint(0, -1));
-		SimulateMovementOnGrid(PatternMap, DownArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, DownArray, OutMovementData);
 		
 		TArray<FIntPoint> LeftArray;
-		LeftArray.Reserve(MovementData.Num());
+		LeftArray.Reserve(OutMovementData.Num());
 		LeftArray.Add(FIntPoint(-1, 0));
-		SimulateMovementOnGrid(PatternMap, LeftArray, MovementData);
+		SimulateMovementOnGrid(PatternMap, LeftArray, OutMovementData);
 	}
 	
 }

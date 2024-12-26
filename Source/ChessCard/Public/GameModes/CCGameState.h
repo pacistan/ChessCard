@@ -5,6 +5,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameState.generated.h"
 
+class ACCPlayerState;
 class ACCPlayerController;
 class ACCGridManager;
 
@@ -19,7 +20,8 @@ protected:
 	UPROPERTY(Replicated)
 	TObjectPtr<ACCGridManager> GridManager;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	/** List of all player controllers in the game, only True in Server */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<ACCPlayerController*> PlayerControllers;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
@@ -39,5 +41,8 @@ public:
 	ACCGridManager* GetGridManager()const {return GridManager;}
 
 	UFUNCTION()
-	int GetIndexOfPlayerController(ACCPlayerController* PlayerController) const {return PlayerControllers.Find(PlayerController);} 
+	int GetIndexOfPlayerController(ACCPlayerController* PlayerController) const {return PlayerControllers.Find(PlayerController);}
+
+	UFUNCTION()
+	ACCPlayerState* GetPlayerStateOfTeam(ETeam Team) const;
 };

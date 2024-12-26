@@ -19,12 +19,9 @@ public:
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACCCard> CardPrefab;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UDataTable> CardDataTable;
 	
 	UPROPERTY(EditAnywhere)
-	TArray<FName> DeckCards;
+	TArray<FDataTableRowHandle> DeckCards;
 
 	UPROPERTY(EditAnywhere)
 	FVector DeckPosition;

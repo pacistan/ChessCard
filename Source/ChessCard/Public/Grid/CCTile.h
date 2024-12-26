@@ -5,6 +5,8 @@
 #include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
+#include "Player/CCPlayerStart.h"
+
 #include "CCTile.generated.h"
 
 class ACCPieceBase;
@@ -21,7 +23,7 @@ public:
 	FName UnitRowName;
 
 	UPROPERTY()
-	int PlayerId;
+	ETeam Team;
 
 	UPROPERTY()
 	int UnitId;
@@ -52,7 +54,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	ETileType TileType;
-
 	
 	UPROPERTY(EditDefaultsOnly)
 	TMap<ETileType, FColor> ColorMap;

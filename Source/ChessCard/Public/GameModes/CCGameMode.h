@@ -7,6 +7,7 @@
 #include "Macro/CCGetSetMacro.h"
 #include "CCGameMode.generated.h"
 
+class ACCPlayerStart;
 class UCCBaseState;
 class UCCFSM;
 
@@ -28,6 +29,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int NumOfPlayersNeeded = 4;
 
+	// Cached player starts
+	UPROPERTY(Transient)
+	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnUserLogin OnUserPostLogin;
@@ -43,16 +48,22 @@ public:
 	void StartPlaySequence();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-public:
 	UFUNCTION()
 	virtual TArray<ACCPlayerPawn*> GetPlayerPawns();
 
+private:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-
 	virtual void Logout(AController* Exiting) override;
-
+	
+	// Choose the good playerStart for the player, claim it and take the team associated with it
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	
+	virtual void PreInitializeComponents() override;
+	void OnLevelAdded(ULevel* InLevel, UWorld* InWorld);
+	void HandleOnActorSpawned(AActor* SpawnedActor);
+	
 	/* ------------------------------------------ GETTERS / SETTERS  -------------------------------------------*/
-
+public:
 	UFUNCTION()
 	UCCFSM* GetFSM(){return FSM;}
 
