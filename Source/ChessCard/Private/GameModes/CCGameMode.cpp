@@ -15,8 +15,6 @@ ACCGameMode::ACCGameMode(const FObjectInitializer& ObjectInitializer)
 	GameStateClass = ACCGameState::StaticClass();
 	PlayerControllerClass = ACCPlayerController::StaticClass();
 	PlayerStateClass = ACCPlayerState::StaticClass();
-	DefaultPawnClass = ::ACCPlayerPawn::StaticClass();
-	
 }
 
 void ACCGameMode::PreInitializeComponents()

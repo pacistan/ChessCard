@@ -35,7 +35,7 @@ void ACCCard::UpdateMaterials()
 
 void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 {
-	FCardData* RowData = DataTable->FindRow<FCardData>(CardRowHandle ,TEXT("No Card Found with name"));
+	FCardData* RowData = CardRowHandle.GetRow<FCardData>( GetNameSafe(this));
 	
 	switch(RowData->CardType)
 	{
@@ -135,7 +135,9 @@ void ACCCard::SpawnUnit(ACCTile* Tile)
 	auto Unit =  GetWorld()->SpawnActor<ACCTileUnit>(PieceClass, UnitPosition, UnitRotation, SpawnParams);
 	Tile->AddPieceLocal(Unit);
 	Unit->CurrentCoordinates = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
-	Unit->Pattern = DataTable->FindRow<FCardData>(CardRowHandle, TEXT(""))->Pattern;
+	if (FCardData* CardData = CardRowHandle.GetRow<FCardData>( GetNameSafe(this))){
+		Unit->Pattern = CardData->Pattern;
+	}
 	Unit->SetTargetMap();
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);

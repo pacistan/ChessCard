@@ -12,8 +12,9 @@ UCCDeckComponent::UCCDeckComponent()
 
 ACCCard* UCCDeckComponent::CreateCard()
 {
-	const FCardData* CardData = CardDataTable->FindRow<FCardData>(DeckCards[0],TEXT("No Card Found with name"));
+	const FCardData* CardData = DeckCards[0].DataTable ? DeckCards[0].GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
 
+	check(CardData);
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	const FRotator CameraRotation = CameraManager->GetCameraRotation();
 	const FVector TransformedDeckPosition = FRotationMatrix(CameraRotation).TransformVector(DeckPosition);

@@ -9,6 +9,7 @@
 #include "Player/CCPlayerController.h"
 #include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerStart.h"
+#include "Player/CCPlayerState.h"
 
 extern ENGINE_API float GAverageFPS;
 
@@ -37,5 +38,17 @@ void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ACCGameState, GridManager);
-    DOREPLIFETIME(ACCGameState, PlayerControllers);
+}
+
+ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
+{
+	for (auto PlayerState : PlayerArray) {
+		if (ACCPlayerState* CCPlayerState = Cast<ACCPlayerState>(PlayerState)) {
+			if (CCPlayerState->GetTeam() == Team) {
+				return CCPlayerState;
+			}
+		}
+	}
+
+	return nullptr;
 }

@@ -46,7 +46,7 @@ private:
 public:
 	static FVector CoordinatesToPosition(FIntPoint Coordinates);
 
-	void GetTargetTiles(TArray<FUnitMovementData>& MovementData,
+	void GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
 	                    TMap<FIntPoint, TArray<FIntPoint>>& PatternMap);
 	
 	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FIntPoint>>& PatternMap,

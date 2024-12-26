@@ -16,3 +16,9 @@ void ACCPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACCPlayerState, Team);
+}

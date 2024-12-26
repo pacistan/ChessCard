@@ -10,7 +10,6 @@
 
 class ACCPlayerState;
 class ACCPlayerController;
-//struct FUnitMovementData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileEffectTriggered, ACCPieceBase* , Owner);
 

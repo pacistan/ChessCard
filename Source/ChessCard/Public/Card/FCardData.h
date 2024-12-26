@@ -41,30 +41,30 @@ struct FCardData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
 	bool bHasOnDeathEffect = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnDeathEffect", TitleProperty = "AbilityType"))
-	TArray<FCardAbilities> OnDeathEffect;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnDeathEffect", TitleProperty = "AbilityType"))
+	//TArray<FCardAbilities> OnDeathEffect;
 	
 	// On Spawn 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
 	bool bHasOnSpawnEffect = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnSpawnEffect", TitleProperty = "AbilityType"))
-	TArray<FCardAbilities> OnSpawnEffect;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnSpawnEffect", TitleProperty = "AbilityType"))
+	//TArray<FCardAbilities> OnSpawnEffect;
 	
 	// On Kill 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
 	bool bHasOnKillEffect = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnKillEffect", TitleProperty = "AbilityType"))
-	TArray<FCardAbilities> OnKillEffect;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnKillEffect", TitleProperty = "AbilityType"))
+	//TArray<FCardAbilities> OnKillEffect;
 	
 	// On Move (end of deplacement)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))
 	bool bHasOnMoveEffect = false;
 
 	/* the Effect is Trigger at End of Movement */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnMoveEffect", TitleProperty = "AbilityType"))
-	TArray<FCardAbilities> OnMoveEffect;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (editcondition = "bHasOnMoveEffect", TitleProperty = "AbilityType"))
+	//TArray<FCardAbilities> OnMoveEffect;
 	
 	/* Tags the Unit need To have at Start */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")

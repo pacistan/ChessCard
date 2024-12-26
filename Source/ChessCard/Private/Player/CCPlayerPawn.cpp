@@ -85,20 +85,26 @@ void ACCPlayerPawn::RemoveCardFromHand()
 	SetCurrentSelectedCardIndex(-1);
 }
 
-void ACCPlayerPawn::PossessedBy(AController* NewController)
+void ACCPlayerPawn::AddPlayerHud_Implementation()
 {
-	Super::PossessedBy(NewController);
-	if(MainWidgetClass)
-	{
-		MainWidget = Cast<UCCMainWidget>(CreateWidget(GetWorld(), MainWidgetClass));
-		if(MainWidget)
-		{
-			MainWidget->AddToViewport();
+	if(PLayerHudClass) {
+		PlayerHud = CreateWidget(GetWorld(), PLayerHudClass);
+		if(PlayerHud) {
+			PlayerHud->AddToPlayerScreen();
 		}
 	}
 }
 
-void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
+void ACCPlayerPawn::UnPossessed()
+{
+	Super::UnPossessed();
+	if (IsValid(PlayerHud)) {
+		PlayerHud->RemoveFromParent();
+		PlayerHud = nullptr;
+	}
+}
+
+void ACCPlayerPawn::SetCurrentSelectedCardIndex_Implementation(int32 InSelectedCardIndex)
 {
 	if(CurrentSelectedCardIndex != InSelectedCardIndex && IsValid(SelectedUnit))
 	{
@@ -106,7 +112,7 @@ void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 		SelectedUnit = nullptr;
 	}
 	CurrentSelectedCardIndex = InSelectedCardIndex;
-	MainWidget->OnSelectCardChange(CurrentSelectedCardIndex == -1? false : true);
+	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
 }
 
 void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)

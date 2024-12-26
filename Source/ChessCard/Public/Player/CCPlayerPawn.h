@@ -18,6 +18,7 @@ class UCameraComponent;
 class ACCTile;
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSelectedCardChange, int, SelectedCardIndex);
 
 UCLASS(/*HideCategories(Rendering, Collision, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick)*/)
 class CHESSCARD_API ACCPlayerPawn : public APawn
@@ -36,11 +37,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
-
 	
 	//UPROPERTY(EditAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
 	//UCameraComponent* FollowCamera;
-
 	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
@@ -58,18 +57,24 @@ private:
 	UPROPERTY()
 	int32 PlayerIndex;
 
+	// The player hud class to add to the player when the game start
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> MainWidgetClass;
+	TSubclassOf<UUserWidget> PLayerHudClass;
 
+	// Keep a reference to the player hud for removing it when the player is unpossessed
 	UPROPERTY()
-	TObjectPtr<UCCMainWidget> MainWidget;
+	TObjectPtr<UUserWidget> PlayerHud;
 
 	UPROPERTY()
 	TObjectPtr<ACCTileUnit> SelectedUnit;
-	
+
 
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
+
+	/** Delegate to call when the selected card change, Needed for Ui */
+	UPROPERTY(BlueprintAssignable)
+	FOnSelectedCardChange OnSelectedCardChange;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -94,18 +99,23 @@ public:
 	UFUNCTION()
 	void RemoveCardFromHand();
 
+	/** Add the Player HUD to the player, need to be call on Start of the game */
+	UFUNCTION(Client, Unreliable)
+	void AddPlayerHud();
+	void AddPlayerHud_Implementation();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
-	virtual void PossessedBy(AController* NewController) override;
+	
+	virtual void UnPossessed() override;
 	
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
 public:
 	UFUNCTION(BlueprintGetter)
 	int32 GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
-
-	UFUNCTION(BlueprintSetter)
-	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex) ;
+	
+	UFUNCTION(BlueprintSetter, Client, Reliable)
+	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex);
+	void SetCurrentSelectedCardIndex_Implementation(int32 InSelectedCardIndex);
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}

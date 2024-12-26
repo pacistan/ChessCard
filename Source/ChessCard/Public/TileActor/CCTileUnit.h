@@ -13,7 +13,6 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FOnClickUnitDelegate, ACCPlayerPawn*, Player);
 
 class UCCUnitMovementComponent;
 
-
 /**
  *  Tile Actor that Have a the ability to move 
  */

@@ -3,9 +3,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "Macro/CCGetSetMacro.h"
+#include "Macro/CCLogMacro.h"
 #include "CCPlayerState.generated.h"
 
-enum class ETeam : uint8;
 class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
@@ -18,7 +18,7 @@ class CHESSCARD_API ACCPlayerState : public APlayerState
 protected:
 	
 	// The player's team
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	ETeam Team;
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -35,5 +35,9 @@ public:
 	ETeam GetTeam() const { return Team; }
 	
 	UFUNCTION(BlueprintCallable)
-	void SetTeam(ETeam InTeam) { Team = InTeam; }
+	void SetTeam(ETeam InTeam)
+	{
+		Team = InTeam;
+		DEBUG_LOG_CATEGORY(LogCard, "Team of Player : %s", *UEnum::GetValueAsString(Team));
+	}
 };
