@@ -20,7 +20,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACCCard> CardPrefab;
 	
-	
 	UPROPERTY(EditAnywhere)
 	TArray<FDataTableRowHandle> DeckCards;
 

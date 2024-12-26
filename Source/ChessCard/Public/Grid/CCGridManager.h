@@ -41,7 +41,6 @@ private:
 	UFUNCTION(CallInEditor)
 	void GenerateGrid();
 
-
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	static FVector CoordinatesToPosition(FIntPoint Coordinates);
