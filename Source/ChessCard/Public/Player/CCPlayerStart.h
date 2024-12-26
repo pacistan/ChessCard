@@ -6,6 +6,16 @@
 #include "GameFramework/PlayerStart.h"
 #include "CCPlayerStart.generated.h"
 
+UENUM()
+enum class ETeam : uint8
+{
+	None,
+	One,
+	Two,
+	Three,
+	Four,
+};
+
 UCLASS()
 class CHESSCARD_API ACCPlayerStart : public APlayerStart
 {
@@ -15,6 +25,10 @@ protected:
 	/** The controller that claimed this PlayerStart */
 	UPROPERTY(Transient, VisibleInstanceOnly)
 	TObjectPtr<AController> ClaimingController = nullptr;
+
+	/** The Team Who will be Assignated to the Controller that Claimed this PlayerStart */
+	UPROPERTY(EditAnywhere)
+	ETeam Team = ETeam::None;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -23,7 +37,7 @@ public:
 	
 	/** If this PlayerStart was not claimed, claim it for ClaimingController */
 	bool TryClaim(AController* OccupyingController);
-\
+
 	/** Get the controller that claimed this PlayerStart */
 	AController* GetClaimingController() const { return ClaimingController; }
 	

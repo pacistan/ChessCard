@@ -51,6 +51,7 @@ private:
 
 	UFUNCTION()
 	ACCPlayerPawn* GetCCPlayerPawn();
+	
 
 public:
 	UFUNCTION()

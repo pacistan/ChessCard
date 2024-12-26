@@ -3,6 +3,8 @@
 
 #include "Player/CCPlayerStart.h"
 
+#include "Player/CCPlayerState.h"
+
 
 bool ACCPlayerStart::IsClaimed() const
 {
@@ -13,6 +15,11 @@ bool ACCPlayerStart::TryClaim(AController* OccupyingController)
 {
 	if (OccupyingController != nullptr && !IsClaimed()) {
 		ClaimingController = OccupyingController;
+		if (ACCPlayerState* ClaimingPlayerState = ClaimingController->GetPlayerState<ACCPlayerState>()) {
+			if (Team != ETeam::None) {
+				ClaimingPlayerState->SetTeam(Team);
+			}
+		}
 		return true;
 	}
 	return false;
