@@ -1,10 +1,16 @@
 ﻿#include "TileActor/CCTileUnit.h"
-
+#include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
+#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Macro/CCLogMacro.h"
+#include "Player/CCPlayerController.h"
 #include "Player/CCPlayerPawn.h"
+#include "GameModes/CCGameState.h"
+#include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
 
 ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -16,39 +22,64 @@ void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClick
 	FOnHoverUnitDelegate InOnHoverUnitDelegate)
 {
 	IsHighlighted = bToHighlight;
-	FLinearColor Color = IsHighlighted ? HighlightColor : BaseColor;
-	MaterialInstance->SetVectorParameterValue("Color", Color);
+	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
+	MeshComponent->SetMaterial(0, NewMaterial);
+	//FLinearColor Color = IsHighlighted ? HighlightColor : BaseColor;
+	//MaterialInstance->SetVectorParameterValue("Color", Color);
 }
 
-void ACCTileUnit::HighlightDestinationTiles()
+void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 {
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
+	check(Pawn);
 	
 	GridManager->UnhighlightTiles();
 
-	for(int i = 0; i < Pattern.Num(); i++)
+	for(const auto& MovementData : PatternMap)
 	{
-		for(const auto& MovementData : PatternMap)
+		if(MovementData.Value.MovementType == EMovementType::Stoppable)
 		{
-			if(Pattern[i].MovementType == EMovementType::Stoppable)
+			ACCTile* Tile = GridManager->GetTile(MovementData.Key + CurrentCoordinates);
+			//TODO: Add true if TileType is the one of Owning PlayerPawn
+			if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal ||
+								 Tile->GetTileType() == ETileType::BonusTile ||
+								 Tile->GetTileType() == ETileType::ScoreTile))
 			{
-				ACCTile* Tile = GridManager->GetTile(MovementData.Value[i] + CurrentCoordinates);
-				if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal || Tile->GetTileType() == ETileType::BonusTile || Tile->GetTileType() == ETileType::ScoreTile))
+			    ACCCard* Card = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
+				check(Card);
+				if(IsValid(Card))
 				{
-					auto Pawn = Cast<ACCPlayerPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
-					auto Card = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
 					FOnClickTileDelegate OnClickDelegate;
-					OnClickDelegate.BindDynamic(Card, &ACCCard::MoveUnit);
-					Tile->SetHighlight(true, OnClickDelegate);
+					OnClickDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
+					if(OnClickDelegate.IsBound())
+					{
+						Tile->SetHighlight(true, OnClickDelegate);
+						//Tile->OnClickEvent = OnClickDelegate;
+					}					
 				}
-			}
-			else if(Pattern[i].MovementType == EMovementType::ApplyEffect)
-			{
-				//TODO: Visual representation of Effect
+				
 			}
 		}
+		else if(MovementData.Value.MovementType == EMovementType::ApplyEffect)
+		{
+			//TODO: Visual representation of Effect
+		}
 	}
+}
+
+void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
+{
+	check(Tile);
+	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+	check(GameState);
+	ACCPlayerState* PlayerState = GameState->GetPlayerStateOfTeam(Team);
+	check(PlayerState);
+	ACCPlayerPawn* Player = PlayerState->GetPawn<ACCPlayerPawn>();
+	check(Player);
+	ACCCard* Card = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
+	check(Card);
+	Card->MoveUnit(Tile);
 }
 
 void ACCTileUnit::Select(ACCPlayerPawn* Player)
@@ -78,9 +109,10 @@ void ACCTileUnit::SetTargetMap()
 void ACCTileUnit::BeginPlay()
 {
 	Super::BeginPlay();
-	MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
-	FName ColorParameterName = FName("Color");
-	MaterialInstance->GetVectorParameterValue(ColorParameterName, BaseColor);
+	BaseMaterial = MeshComponent->GetMaterial(0);
+	//MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
+	//FName ColorParameterName = FName("Color");
+	//MaterialInstance->GetVectorParameterValue(ColorParameterName, BaseColor);
 
 }
 
@@ -88,7 +120,7 @@ void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
 {
 	if(IsHighlighted)
 	{
-		HighlightDestinationTiles();
+		HighlightDestinationTiles(Player);
 	}
 }
 

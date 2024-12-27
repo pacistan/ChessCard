@@ -2,12 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "CCPieceBase.h"
+#include "Grid/CCGridManager.h"
 #include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
+#include "PatternMapEndPoint.h"
 #include "CCTileUnit.generated.h"
 
 
+enum class ETeam : uint8;
 DECLARE_DYNAMIC_DELEGATE(FOnHoverUnitDelegate);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnClickUnitDelegate, ACCPlayerPawn*, Player);
 
@@ -26,6 +29,13 @@ public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCUnitMovementComponent> MovementComponent;
 
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> HighlightMat;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> BaseMaterial;
+	
 	UPROPERTY(EditDefaultsOnly)
 	FColor HighlightColor;
 
@@ -37,7 +47,8 @@ public:
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
-	TMap<FIntPoint, TArray<FIntPoint>> PatternMap;
+	UPROPERTY()
+	TMap<FIntPoint, TArray<FPatternMapEndPoint>> PatternMap;
 
 	UPROPERTY()
 	bool IsHighlighted;
@@ -51,6 +62,9 @@ public:
 	UPROPERTY()
 	FIntPoint CurrentCoordinates;
 	
+	UPROPERTY()
+	ETeam Team;
+	
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 
@@ -62,7 +76,10 @@ public:
 	void SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate = FOnClickUnitDelegate(), FOnHoverUnitDelegate InOnHoverUnitDelegate = FOnHoverUnitDelegate());
 
 	UFUNCTION()
-	void HighlightDestinationTiles();
+	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
+
+	UFUNCTION()
+	void OnDestinationTileClicked(ACCTile* Tile);
 
 	UFUNCTION()
 	void Select(ACCPlayerPawn* Player);
@@ -72,7 +89,12 @@ public:
 
 	UFUNCTION()
 	void SetTargetMap();
-	
+
+	UFUNCTION()
+	ETeam GetTeam() {return Team;};
+
+	UFUNCTION()
+	void SetTeam(ETeam InTeam) {Team = InTeam;}
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
 	virtual void BeginPlay() override;

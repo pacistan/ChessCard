@@ -12,8 +12,10 @@ UCCDeckComponent::UCCDeckComponent()
 
 ACCCard* UCCDeckComponent::CreateCard()
 {
-	const FCardData* CardData = DeckCards[0].DataTable ? DeckCards[0].GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
-
+	auto DeckCard = DeckCards[0];
+	DeckCards.RemoveAt(0);
+	DeckCards.Add(DeckCard);
+	const FCardData* CardData = DeckCard.DataTable ? DeckCards[0].GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
 	check(CardData);
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	const FRotator CameraRotation = CameraManager->GetCameraRotation();
@@ -25,6 +27,7 @@ ACCCard* UCCDeckComponent::CreateCard()
 	auto Card =  GetWorld()->SpawnActor<ACCCard>(CardPrefab, TransformedDeckPosition, CameraRotation, SpawnParams);
 	Card->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
 	Card->SetDataTableRow(DeckCards[0]);
+	
 	return Card;
 }
 

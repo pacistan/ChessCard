@@ -8,6 +8,7 @@
 #include "Hand/CCHandComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
+#include "Player/CCPlayerState.h"
 #include "TileActor/CCPieceBase.h"
 #include "TileActor/CCTileUnit.h"
 
@@ -36,24 +37,27 @@ void ACCCard::UpdateMaterials()
 void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 {
 	FCardData* RowData = CardRowHandle.GetRow<FCardData>( GetNameSafe(this));
+
+
+	ACCPlayerState* PlayerState = Pawn->GetPlayerState<ACCPlayerState>();
 	
 	switch(RowData->CardType)
 	{
 		case ECardType::Unit:
 		{
 			ETileType TargetTileType = ETileType::Player1;
-			switch(Pawn->GetPlayerIndex())
+			switch(PlayerState->GetTeam())
 			{
-				case 1:
+				case ETeam::One:
 					TargetTileType = ETileType::Player1;
 					break;
-				case 2:
+				case ETeam::Two:
 					TargetTileType = ETileType::Player2;
 					break;
-				case 3:
+				case ETeam::Three:
 					TargetTileType = ETileType::Player3;
 					break;
-				case 4:
+				case ETeam::Four:
 					TargetTileType = ETileType::Player4;
 					break;
 				default:
@@ -82,16 +86,15 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 		}
 		case ECardType::Movement:
 		{
-			bool ToHighlight = bIsSelected;
 			FTileTypeDelegate TileTypeDelegate;
-			auto Lambda = [this, &ToHighlight](ACCTile* Tile)
+			auto Lambda = [this, &bIsSelected](ACCTile* Tile)
 			{
 				for(auto& Piece : Tile->GetPieces())
 				{
 					auto Unit = Cast<ACCTileUnit>(Piece);
 					if(IsValid(Unit))
 					{
-						Unit->SetHighlight(ToHighlight);
+						Unit->SetHighlight(bIsSelected);
 					}
 				}
 			};
@@ -139,6 +142,7 @@ void ACCCard::SpawnUnit(ACCTile* Tile)
 		Unit->Pattern = CardData->Pattern;
 	}
 	Unit->SetTargetMap();
+	Unit->SetTeam(OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
 	GridManager->UnhighlightTiles();

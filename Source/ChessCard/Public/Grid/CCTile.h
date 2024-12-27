@@ -43,9 +43,13 @@ public:
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 public:
+	UPROPERTY()
 	FOnClickTileDelegate OnClickEvent;
 	
 private:
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UStaticMeshComponent> MeshComponent;
+	
 	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<ACCPieceBase>> Pieces;
 	
@@ -56,26 +60,26 @@ private:
 	ETileType TileType;
 	
 	UPROPERTY(EditDefaultsOnly)
-	TMap<ETileType, FColor> ColorMap;
-
-	UPROPERTY(EditDefaultsOnly)
-	FColor HighlightColor;
+	TMap<ETileType, TObjectPtr<UMaterialInterface>> MaterialMap;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInterface> HighlightMaterial;
 
 	UPROPERTY(EditDefaultsOnly)
-	FColor HoveredColor;
-	
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> MeshComponent;
+	TObjectPtr<UMaterialInterface> HoveredMaterial;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> BaseMaterial;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> NormalCrossTileHighlight;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInterface> EffectCrossTileHighlight;
 
 	UPROPERTY()
 	ETileType PreviousTileType;
 
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> MaterialInstance;
-	
 	UPROPERTY(VisibleAnywhere)
 	int RowNum;
 
@@ -97,7 +101,7 @@ private:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate = FOnClickTileDelegate());
+	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate);
 	
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 private:

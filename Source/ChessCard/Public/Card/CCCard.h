@@ -63,6 +63,9 @@ public:
 
 	UPROPERTY()
 	FDataTableRowHandle CardRowHandle;
+
+	UPROPERTY()
+	TObjectPtr<ACCPlayerPawn> OwningPawn;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
@@ -113,4 +116,7 @@ public:
 
 	UFUNCTION(BlueprintSetter)
 	void SetDataTableRow(FDataTableRowHandle InRowHandle){CardRowHandle = InRowHandle;}
+
+	UFUNCTION()
+	void SetOwningPawn(ACCPlayerPawn* InOwningPawn){OwningPawn = InOwningPawn;}
 };

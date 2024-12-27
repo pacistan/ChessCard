@@ -47,6 +47,7 @@ void ACCPlayerPawn::DrawCard()
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
 
 	ACCCard* Card = DeckComponent->CreateCard();
+	Card->SetOwningPawn(this);
 	NumberOfCardDrawnOnRoundStart++;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }

@@ -17,8 +17,6 @@ ACCTile::ACCTile()
 	{
 		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Plane.Plane"));
 		MeshComponent->SetStaticMesh(MeshRef.Object);
-		MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
-		MeshComponent->SetMaterial(0, MaterialInstance);
 	}
 }
 
@@ -26,13 +24,13 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 {
 	if(IsHighlighted == bIsHighlight) return;
 	IsHighlighted = bIsHighlight;
-	FColor Color = bIsHighlight ? (IsHovered ?  HoveredColor : HighlightColor) : ColorMap[TileType];
-	MaterialInstance->SetVectorParameterValue("Color", Color);
-	//UMaterialInterface* Mat = bIsHighlight ? HighlightMaterial : nullptr;
-	//MeshComponent->SetOverlayMaterial(Mat);
+	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial) : MaterialMap[TileType];
+	MeshComponent->SetMaterial(0, Material);
+	
 	OnClickEvent = OnClickDelegate;
-
+	
 	auto GridManager = GetGridManager(GetWorld());
+	check(GridManager);
 	if(IsHighlighted)
 	{
 		GridManager->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Highlighted);
@@ -57,7 +55,7 @@ void ACCTile::StartHover(ACCPlayerPawn* Player)
 	IsHovered = true;
 	if(IsHighlighted)
 	{
-		MaterialInstance->SetVectorParameterValue("Color", HoveredColor);
+		MeshComponent->SetMaterial(0, HoveredMaterial);
 	}
 }
 
@@ -65,19 +63,14 @@ void ACCTile::StopHover(ACCPlayerPawn* Player)
 {
 	IsHovered = false;
 
-	FColor Color = IsHighlighted ? HighlightColor : ColorMap[TileType];
-	if(MaterialInstance == nullptr)
-	{
-		DEBUG_ERROR("Material Instance of Tile %s is null", *GetName());
-		return;
-	}
-	MaterialInstance->SetVectorParameterValue("Color", Color);
+	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial : MaterialMap[TileType];
+	MeshComponent->SetMaterial(0, Material);
 }
 
 void ACCTile::BeginPlay()
 {
 	Super::BeginPlay();
-
+	BaseMaterial = MeshComponent->GetMaterial(0);
 }
 
 void ACCTile::Tick(float DeltaTime)
@@ -96,19 +89,24 @@ void ACCTile::BlueprintEditorTick(float DeltaTime)
 	bool bIsHidden = TileType == ETileType::Disabled ? true : false;
 	SetActorHiddenInGame(bIsHidden);
 
-	if(!IsValid(MaterialInstance))
-	{
-		MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
-		MeshComponent->SetMaterial(0, MaterialInstance);
-	}
-	
-	if(!IsValid(MeshComponent) || !IsValid(MaterialInstance))
+	if(!IsValid(MeshComponent) )
 	{
 		TileType = PreviousTileType;
 		return;
 	}
-	MaterialInstance->SetVectorParameterValue("Color", ColorMap[TileType]);
+
+	if(!MaterialMap.Contains(TileType))
+	{
+		return;
+	}
 	
+	UMaterialInterface* Material = MaterialMap[TileType];
+	if(!IsValid(Material))
+	{
+		return;
+	}
+	
+	MeshComponent->SetMaterial(0, Material);
 	PreviousTileType = TileType;
 }
 
