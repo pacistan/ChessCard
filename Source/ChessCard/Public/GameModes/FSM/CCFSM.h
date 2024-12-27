@@ -4,30 +4,34 @@
 #include "Components/ActorComponent.h"
 #include "CCFSM.generated.h"
 
+class ACCGameState;
 class UCCBaseState;
 class ACCGameMode;
+
+UENUM(BlueprintType)
+enum class EGameState : uint8
+{
+	None,
+	DrawingCards,
+	Plannification,
+	Resolve,
+	EndGame
+};
 
 UCLASS()
 class CHESSCARD_API UCCFSM : public UObject
 {
 	GENERATED_BODY()
-
-public:
-	UCCFSM();
-	
+	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	UPROPERTY()
 	TObjectPtr<UCCBaseState> CurrentState;
-
-	UPROPERTY()
-	TObjectPtr<ACCGameMode> Owner;
+	
+	TMap<TSubclassOf<UCCBaseState>, EGameState> StateMap;
 	
 	/* ------------------------------------------ FUNCTIONS -----------------------------------------*/
-protected:
-
 public:
-	UFUNCTION()
-	void OnBeginPlay() ;
+	UCCFSM();
 
 	UFUNCTION()
 	void OnTick(float DeltaTime);

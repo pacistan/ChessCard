@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Macro/CCGetSetMacro.h"
+#include "Player/CCPlayerPawn.h"
 #include "CCGameMode.generated.h"
 
+class ACCPlayerState;
 class ACCPlayerStart;
 class UCCBaseState;
 class UCCFSM;
@@ -29,9 +31,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int NumOfPlayersNeeded = 4;
 
+	UPROPERTY(EditAnywhere)
+	float TimeOfPlanniningPhase = 60.f;
+
 	// Cached player starts
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
+
+	// Map of all the Action of the players, recup at the end of the Draw State
+	TMap<ACCPlayerState*, TArray<FPlayerActionData>> PlayerActions;
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -47,7 +55,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartPlaySequence();
 	
+	void AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions);
+
+	// TODO : Clear the map PlayerActions at the end of the resolve phase
+	
+private:
+	void OnLevelAdded(ULevel* InLevel, UWorld* InWorld);
+	void HandleOnActorSpawned(AActor* SpawnedActor);
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+public:
 	UFUNCTION()
 	virtual TArray<ACCPlayerPawn*> GetPlayerPawns();
 
@@ -59,8 +76,8 @@ private:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	
 	virtual void PreInitializeComponents() override;
-	void OnLevelAdded(ULevel* InLevel, UWorld* InWorld);
-	void HandleOnActorSpawned(AActor* SpawnedActor);
+
+	virtual void Tick(float DeltaSeconds) override;
 	
 	/* ------------------------------------------ GETTERS / SETTERS  -------------------------------------------*/
 public:
@@ -72,4 +89,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	int GetNumOfPlayersNeeded() const { return NumOfPlayersNeeded; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetTimeOfPlanniningPhase() const { return TimeOfPlanniningPhase; }
+	
 };

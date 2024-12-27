@@ -33,6 +33,14 @@ void ACCGameMode::PreInitializeComponents()
 	}
 }
 
+void ACCGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (IsValid(FSM)) {
+		FSM->OnTick(DeltaSeconds);
+	}
+}
+
 void ACCGameMode::OnLevelAdded(ULevel* InLevel, UWorld* InWorld)
 {
 	if (InWorld == GetWorld()) {
@@ -109,7 +117,12 @@ AActor* ACCGameMode::ChoosePlayerStart_Implementation(AController* Player)
 void ACCGameMode::StartPlaySequence()
 {
 	FSM = NewObject<UCCFSM>(this);
-	FSM->OnBeginPlay();
+	FSM->ChangeStateWithClass(StartState);
+}
+
+void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)
+{
+	PlayerActions.Add(PlayerState, Actions);
 }
 
 TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
@@ -123,6 +136,6 @@ TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
 			Players.Add(Player);
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Found %i Players"), Players.Num());
+	DEBUG_WARNING("Found %i Players", Players.Num());
 	return Players;
 }

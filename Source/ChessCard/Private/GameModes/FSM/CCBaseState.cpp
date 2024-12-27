@@ -1,24 +1,35 @@
 #include "GameModes/FSM/CCBaseState.h"
+#include "Macro/CCLogMacro.h"
+#include "GameModes/CCGameMode.h"
+#include "GameModes/CCGameState.h"
 
 UCCBaseState* UCCBaseState::MakeStateWithClass(TSubclassOf<UCCBaseState> NewStateClass, UObject* Outer)
 {
 	return NewObject<UCCBaseState>(Outer, NewStateClass);
 }
 
-void UCCBaseState::Initialization(ACCGameMode* InGameMode)
+void UCCBaseState::Initialization()
 {
-	GameMode = InGameMode;
+	if (ACCGameMode* GameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
+		CCGameMode = GameMode;
+	}
+
+	if (ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>()) {
+		CCGameState = GameState;
+	}
 }
 
 void UCCBaseState::OnEnterState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Enter State: %s"), *GetClass()->GetName())
+	DEBUG_LOG_CATEGORY(LogFSM,"Enter State: %s", *GetClass()->GetName())
 }
 
 void UCCBaseState::OnStateTick(float DeltaTime)
 {
+	DEBUG_LOG_CATEGORY(LogFSM,"Tick State: %s", *GetClass()->GetName())
 }
 
 void UCCBaseState::OnExitState()
 {
+	DEBUG_LOG_CATEGORY(LogFSM,"Exit State: %s", *GetClass()->GetName())
 }

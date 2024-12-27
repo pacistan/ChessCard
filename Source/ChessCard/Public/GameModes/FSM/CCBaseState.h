@@ -3,7 +3,10 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "CCBaseState.generated.h"
-	
+
+class ACCGameState;
+class ACCGameMode;
+
 UCLASS(Blueprintable, BlueprintType)
 class CHESSCARD_API UCCBaseState : public UObject
 {
@@ -11,12 +14,16 @@ class CHESSCARD_API UCCBaseState : public UObject
 
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
-	TObjectPtr<ACCGameMode> GameMode; 
+	UPROPERTY()
+	TObjectPtr<ACCGameState> CCGameState;
+
+	UPROPERTY()
+	TObjectPtr<ACCGameMode> CCGameMode;
 	
 	/* ------------------------------------------ FUNCTIONS -----------------------------------------*/
 public:
 	UFUNCTION()
-	virtual void Initialization(ACCGameMode* InGameMode);
+	virtual void Initialization();
 	
 	UFUNCTION()
 	virtual void OnEnterState();
@@ -27,7 +34,11 @@ public:
 	UFUNCTION()
 	virtual void OnExitState();
 	
+private:
 	/* ------------------------------------------ OVERRIDE -----------------------------------------*/
+
+	/* ------------------------------------------ GETTERS / SETTERS -----------------------------------------*/
+
 	/* ------------------------------------------ STATIC -----------------------------------------*/
 public:
 	UFUNCTION()
