@@ -5,9 +5,14 @@
 #include "GameFramework/Actor.h"
 #include "CCGridManager.generated.h"
 
+enum class EMovementType : uint8;
 struct FUnitMovementData;
+struct FPatternMapEndPoint;
 enum class ETileType : uint8;
 class ACCTile;
+
+
+
 
 DECLARE_DELEGATE_OneParam(FTileTypeDelegate, ACCTile*);
 
@@ -46,10 +51,10 @@ public:
 	static FVector CoordinatesToPosition(FIntPoint Coordinates);
 
 	void GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
-	                    TMap<FIntPoint, TArray<FIntPoint>>& PatternMap);
+	                    TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet);
 	
-	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FIntPoint>>& PatternMap,
-	                            TArray<FIntPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
+	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet,
+	                            TArray<FPatternMapEndPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
 
 	void ApplyLambdaToTileType(ETileType TileType,const FTileTypeDelegate TileLambdaFunc);
 

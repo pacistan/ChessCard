@@ -92,9 +92,6 @@ private:
 	UPROPERTY()
 	int32 CurrentSelectedCardIndex;
 
-	UPROPERTY()
-	int32 PlayerIndex;
-
 	// The player hud class to add to the player when the game start
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PLayerHudClass;
@@ -189,12 +186,6 @@ public:
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}
 
-	UFUNCTION(BlueprintGetter)
-	int32 GetPlayerIndex()const{return PlayerIndex;}
-
-	UFUNCTION(BlueprintSetter)
-	void SetPlayerIndex(int32 InPlayerIndex){PlayerIndex = InPlayerIndex;}
-	
 	UFUNCTION(BlueprintGetter)
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
 
