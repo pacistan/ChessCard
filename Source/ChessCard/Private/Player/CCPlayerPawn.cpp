@@ -35,14 +35,18 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
+	QueueOfPlayerActions.Add(FPlayerActionData());
+	QueueOfPlayerActions.Add(FPlayerActionData());
+	DEBUG_LOG("Call Send Queue of Action on the client");
 	SRV_SendQueueOfAction();
 }
 
 void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation()
 {
-	// Send Queue of Action to GameMode for resolve Phase
+	DEBUG_LOG("Call Send Queue of Action on the Server");
 	if (ACCGameMode* CCGameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
 		CCGameMode->AddPlayerAction(GetPlayerState<ACCPlayerState>(), QueueOfPlayerActions);
+		DEBUG_LOG("Add player action to the game mode");
 	}
 }
 

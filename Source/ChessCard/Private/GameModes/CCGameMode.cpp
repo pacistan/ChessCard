@@ -131,6 +131,7 @@ void ACCGameMode::StartPlaySequence()
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)
 {
 	PlayerActions.Add(PlayerState, Actions);
+	DEBUG_LOG("Player %s has now %d Actions", *PlayerState->GetPlayerName(), Actions.Num());
 }
 
 TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
@@ -144,6 +145,6 @@ TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
 			Players.Add(Player);
 		}
 	}
-	DEBUG_WARNING("Found %i Players", Players.Num());
+	DEBUG_LOG("Found %i Players", Players.Num());
 	return Players;
 }

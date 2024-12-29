@@ -38,9 +38,7 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 			}
 		}
 	}
-
 	
-	DEBUG_LOG_SCREEN_SIMPLE("All Player have ended their turn, need to change state to resolve");
 	CCGameMode->GetFSM()->ChangeStateWithClass(UCCStateResolve::StaticClass());
 }
 
