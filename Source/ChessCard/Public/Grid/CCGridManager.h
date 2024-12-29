@@ -52,7 +52,7 @@ public:
 
 	void GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
 								TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet);
-	
+
 	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet,
 	                            TArray<FPatternMapEndPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
 

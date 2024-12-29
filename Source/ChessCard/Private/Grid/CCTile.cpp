@@ -110,6 +110,7 @@ void ACCTile::BlueprintEditorTick(float DeltaTime)
 	PreviousTileType = TileType;
 }
 
+
 bool ACCTile::ShouldTickIfViewportsOnly() const
 {
 	if (GetWorld() != nullptr && GetWorld()->WorldType == EWorldType::Editor)
