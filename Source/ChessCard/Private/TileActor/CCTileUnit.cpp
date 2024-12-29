@@ -1,16 +1,9 @@
 ﻿#include "TileActor/CCTileUnit.h"
-#include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
-#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Macro/CCLogMacro.h"
-#include "Player/CCPlayerController.h"
 #include "Player/CCPlayerPawn.h"
-#include "GameModes/CCGameState.h"
-#include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
 
 ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -18,85 +11,10 @@ ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	MovementComponent = CreateDefaultSubobject<UCCUnitMovementComponent>(TEXT("Movement"));
 }
 
-void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate,
-	FOnHoverUnitDelegate InOnHoverUnitDelegate)
+void ACCTileUnit::BeginPlay()
 {
-	IsHighlighted = bToHighlight;
-	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
-	MeshComponent->SetMaterial(0, NewMaterial);
-	//FLinearColor Color = IsHighlighted ? HighlightColor : BaseColor;
-	//MaterialInstance->SetVectorParameterValue("Color", Color);
-}
-
-void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
-{
-	auto GridManager = GetGridManager(GetWorld());
-	check(GridManager);
-	check(Pawn);
-	
-	GridManager->UnhighlightTiles();
-
-	for(const auto& MovementData : PatternMap)
-	{
-		if(MovementData.Value.MovementType == EMovementType::Stoppable)
-		{
-			ACCTile* Tile = GridManager->GetTile(MovementData.Key + CurrentCoordinates);
-			//TODO: Add true if TileType is the one of Owning PlayerPawn
-			if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal ||
-								 Tile->GetTileType() == ETileType::BonusTile ||
-								 Tile->GetTileType() == ETileType::ScoreTile))
-			{
-			    ACCCard* Card = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
-				check(Card);
-				if(IsValid(Card))
-				{
-					FOnClickTileDelegate OnClickDelegate;
-					OnClickDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
-					if(OnClickDelegate.IsBound())
-					{
-						Tile->SetHighlight(true, OnClickDelegate);
-						//Tile->OnClickEvent = OnClickDelegate;
-					}					
-				}
-				
-			}
-		}
-		else if(MovementData.Value.MovementType == EMovementType::ApplyEffect)
-		{
-			//TODO: Visual representation of Effect
-		}
-	}
-}
-
-void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
-{
-	check(Tile);
-	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
-	check(GameState);
-	ACCPlayerState* PlayerState = GameState->GetPlayerStateOfTeam(Team);
-	check(PlayerState);
-	ACCPlayerPawn* Player = PlayerState->GetPawn<ACCPlayerPawn>();
-	check(Player);
-	ACCCard* Card = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
-	check(Card);
-	Card->MoveUnit(Tile);
-}
-
-void ACCTileUnit::Select(ACCPlayerPawn* Player)
-{
-	IsSelected = true;
-	Player->SetSelectedUnit(this);
-}
-
-void ACCTileUnit::UnSelect()
-{
-	if(IsSelected)
-	{
-		GetGridManager(GetWorld())->UnhighlightTiles();
-	}
-
-	IsSelected = false;
-	SetHighlight(false);
+	Super::BeginPlay();
+	BaseMaterial = MeshComponent->GetMaterial(0);
 }
 
 void ACCTileUnit::SetTargetMap()
@@ -106,14 +24,73 @@ void ACCTileUnit::SetTargetMap()
 	GridManager->GetTargetTiles(Pattern, PatternMap);
 }
 
-void ACCTileUnit::BeginPlay()
+void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 {
-	Super::BeginPlay();
-	BaseMaterial = MeshComponent->GetMaterial(0);
-	//MaterialInstance = UMaterialInstanceDynamic::Create(MeshComponent->GetMaterial(0), this);
-	//FName ColorParameterName = FName("Color");
-	//MaterialInstance->GetVectorParameterValue(ColorParameterName, BaseColor);
+	auto GridManager = GetGridManager(GetWorld());
+	ACCCard* Card = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
+	check(Card);
+	check(GridManager);
+	check(Pawn);
+	   
+	GridManager->UnhighlightTiles();
 
+	for(const auto& MovementData : PatternMap)
+	{
+		FIntPoint Coordinates = CurrentCoordinates;
+		for(auto& Coordinate : MovementData.Value)
+		{
+			Coordinates += Coordinate.Direction;
+			ACCTile* Tile = GridManager->GetTile(Coordinates);
+			if(IsValid(Tile) && Tile->GetTileType() != ETileType::Disabled)
+			{
+				EHighlightMode HighlightMode;
+				FOnClickTileDelegate OnClickTileDelegate;
+				switch(Coordinate.MovementType)
+				{
+				case EMovementType::Normal:
+					HighlightMode = EHighlightMode::Path;
+					break;
+				case EMovementType::Stoppable:
+					HighlightMode = EHighlightMode::Normal;
+					OnClickTileDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
+					Tile->SetHighlight(true, OnClickTileDelegate, HighlightMode);
+					break;
+				case EMovementType::ApplyEffect:
+					HighlightMode = EHighlightMode::Effect;
+					Tile->SetHighlight(true, OnClickTileDelegate, HighlightMode);
+					break;
+				default:
+					HighlightMode = EHighlightMode::Normal;
+				}
+			}
+		}
+		/*ACCTile* Tile = GridManager->GetTile(MovementData.Key + CurrentCoordinates);
+		//TODO: Add true if TileType is the one of Owning PlayerPawn
+		if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal ||
+							 Tile->GetTileType() == ETileType::BonusTile ||
+							 Tile->GetTileType() == ETileType::ScoreTile))
+		{
+
+			if(IsValid(Card))
+			{
+				FOnClickTileDelegate OnClickDelegate;
+				OnClickDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
+				if(OnClickDelegate.IsBound())
+				{
+					Tile->SetHighlight(true, OnClickDelegate);
+				}					
+			}
+			
+		}*/
+	}
+}
+
+void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate,
+	FOnHoverUnitDelegate InOnHoverUnitDelegate)
+{
+	IsHighlighted = bToHighlight;
+	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
+	MeshComponent->SetMaterial(0, NewMaterial);
 }
 
 void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
@@ -137,6 +114,17 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 	if(IsHighlighted)
 	{
 		IsSelected = true;
-		Select(Player);
+		MeshComponent->SetMaterial(0, SelectedMaterial);
+		Player->SetSelectedUnit(this);
+	}
+}
+
+void ACCTileUnit::UnSelect()
+{
+	if(IsSelected)
+	{
+		GetGridManager(GetWorld())->UnhighlightTiles();
+		MeshComponent->SetMaterial(0, BaseMaterial);
+		IsSelected = false;
 	}
 }

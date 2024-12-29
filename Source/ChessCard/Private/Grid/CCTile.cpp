@@ -13,22 +13,22 @@ ACCTile::ACCTile()
 	PrimaryActorTick.bStartWithTickEnabled = false;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Tile Mesh");
 	RootComponent = MeshComponent;
-	if(!IsValid(MeshComponent->GetStaticMesh()))
-	{
-		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Plane.Plane"));
-		MeshComponent->SetStaticMesh(MeshRef.Object);
-	}
 }
 
-void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate)
+void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate,  EHighlightMode HighlightMode)
 {
-	if(IsHighlighted == bIsHighlight) return;
+	if(IsHighlighted == bIsHighlight && HighlightMode == CurrentHighlightMode)
+	{
+		return;
+	}
 	IsHighlighted = bIsHighlight;
-	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial) : MaterialMap[TileType];
-	MeshComponent->SetMaterial(0, Material);
+
+	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : nullptr;
+	MeshComponent->SetOverlayMaterial(Material);
 	
+	CurrentHighlightMode = HighlightMode;
 	OnClickEvent = OnClickDelegate;
-	
+	  
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
 	if(IsHighlighted)
@@ -55,7 +55,7 @@ void ACCTile::StartHover(ACCPlayerPawn* Player)
 	IsHovered = true;
 	if(IsHighlighted)
 	{
-		MeshComponent->SetMaterial(0, HoveredMaterial);
+		MeshComponent->SetOverlayMaterial(HoveredMaterial);
 	}
 }
 
@@ -63,8 +63,8 @@ void ACCTile::StopHover(ACCPlayerPawn* Player)
 {
 	IsHovered = false;
 
-	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial : MaterialMap[TileType];
-	MeshComponent->SetMaterial(0, Material);
+	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial[CurrentHighlightMode] : nullptr;
+	MeshComponent->SetOverlayMaterial(Material);
 }
 
 void ACCTile::BeginPlay()
@@ -108,11 +108,6 @@ void ACCTile::BlueprintEditorTick(float DeltaTime)
 	
 	MeshComponent->SetMaterial(0, Material);
 	PreviousTileType = TileType;
-}
-
-void ACCTile::Test()
-{
-	BlueprintEditorTick(0);
 }
 
 bool ACCTile::ShouldTickIfViewportsOnly() const

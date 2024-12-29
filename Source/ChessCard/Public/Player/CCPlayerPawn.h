@@ -180,7 +180,7 @@ public:
 	UFUNCTION(BlueprintGetter)
 	int32 GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
 	
-	UFUNCTION(BlueprintSetter, Client, Reliable)
+	UFUNCTION(BlueprintSetter)
 	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex);
 
 	UFUNCTION(BlueprintGetter)

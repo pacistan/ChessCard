@@ -51,11 +51,14 @@ public:
 	static FVector CoordinatesToPosition(FIntPoint Coordinates);
 
 	void GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
-	                    TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet);
+								TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet);
 	
 	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet,
 	                            TArray<FPatternMapEndPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
 
+	TArray<FPatternMapEndPoint> GetArrayOfDirectionData(TArray<FPatternMapEndPoint>& PreviousDirectionData,
+								FIntPoint NewDirection, EMovementType InMovementType);
+	
 	void ApplyLambdaToTileType(ETileType TileType,const FTileTypeDelegate TileLambdaFunc);
 
 	void RegisterTileAsType(FIntPoint TileCoordinates, ETileType TileType);

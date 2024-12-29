@@ -88,8 +88,8 @@ void ACCPlayerController::OnSelectCard()
 	{
 		if(CurrentSelectedElement != nullptr)
 		{
-			CurrentSelectedElement->UnSelect(GetCCPlayerPawn());
-			CurrentSelectedElement = nullptr;
+			//CurrentSelectedElement->UnSelect(GetCCPlayerPawn());
+			//CurrentSelectedElement = nullptr;
 		}
 	}
 }

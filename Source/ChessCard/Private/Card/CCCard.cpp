@@ -151,7 +151,9 @@ void ACCCard::SpawnUnit(ACCTile* Tile)
 
 void ACCCard::MoveUnit(ACCTile* Unit)
 {
-	
+	auto GridManager = GetGridManager(GetWorld());
+	check(GridManager);
+	GridManager->UnhighlightTiles();
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)
