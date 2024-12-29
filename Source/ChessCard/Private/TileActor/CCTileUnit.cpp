@@ -20,20 +20,6 @@ void ACCTileUnit::BeginPlay()
 	BaseMaterial = MeshComponent->GetMaterial(0);
 }
 
-void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
-{
-	check(Tile);
-	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
-	check(GameState);
-	ACCPlayerState* PlayerState = GameState->GetPlayerStateOfTeam(Team);
-	check(PlayerState);
-	ACCPlayerPawn* Player = PlayerState->GetPawn<ACCPlayerPawn>();
-	check(Player);
-	ACCCard* Card = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
-	check(Card);
-	Card->MoveUnit(Tile);
-}
-
 void ACCTileUnit::SetTargetMap()
 {
 	auto GridManager = GetGridManager(GetWorld());

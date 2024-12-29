@@ -74,9 +74,6 @@ public:
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
 
 	UFUNCTION()
-	void OnDestinationTileClicked(ACCTile* Tile);
-
-	UFUNCTION()
 	void UnSelect();
 
 	UFUNCTION()
