@@ -1,9 +1,12 @@
 ﻿#include "TileActor/CCTileUnit.h"
+#include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
+#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 #include "Player/CCPlayerPawn.h"
+#include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
 
 ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -15,6 +18,20 @@ void ACCTileUnit::BeginPlay()
 {
 	Super::BeginPlay();
 	BaseMaterial = MeshComponent->GetMaterial(0);
+}
+
+void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
+{
+	check(Tile);
+	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+	check(GameState);
+	ACCPlayerState* PlayerState = GameState->GetPlayerStateOfTeam(Team);
+	check(PlayerState);
+	ACCPlayerPawn* Player = PlayerState->GetPawn<ACCPlayerPawn>();
+	check(Player);
+	ACCCard* Card = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
+	check(Card);
+	Card->MoveUnit(Tile);
 }
 
 void ACCTileUnit::SetTargetMap()
@@ -64,24 +81,6 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 				}
 			}
 		}
-		/*ACCTile* Tile = GridManager->GetTile(MovementData.Key + CurrentCoordinates);
-		//TODO: Add true if TileType is the one of Owning PlayerPawn
-		if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal ||
-							 Tile->GetTileType() == ETileType::BonusTile ||
-							 Tile->GetTileType() == ETileType::ScoreTile))
-		{
-
-			if(IsValid(Card))
-			{
-				FOnClickTileDelegate OnClickDelegate;
-				OnClickDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
-				if(OnClickDelegate.IsBound())
-				{
-					Tile->SetHighlight(true, OnClickDelegate);
-				}					
-			}
-			
-		}*/
 	}
 }
 

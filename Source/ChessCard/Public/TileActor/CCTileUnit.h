@@ -29,18 +29,14 @@ public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCUnitMovementComponent> MovementComponent;
 
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMaterialInterface> HighlightMat;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UMaterialInterface> SelectedMaterial;
-	
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> BaseMaterial;
 
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> MaterialInstance;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> SelectedMaterial;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
@@ -76,6 +72,9 @@ public:
 
 	UFUNCTION()
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
+
+	UFUNCTION()
+	void OnDestinationTileClicked(ACCTile* Tile);
 
 	UFUNCTION()
 	void UnSelect();

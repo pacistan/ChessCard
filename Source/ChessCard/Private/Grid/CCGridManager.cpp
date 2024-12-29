@@ -83,6 +83,7 @@ void ACCGridManager::GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
 
 		auto LeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, 0), OutMovementData[0].MovementType);
 		SimulateMovementOnGrid(PatternSet, LeftDirectionData, OutMovementData);
+
 	}
 }
 
