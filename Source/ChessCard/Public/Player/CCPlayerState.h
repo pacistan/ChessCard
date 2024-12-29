@@ -48,7 +48,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetHasEndedTurn() const { return bHasEndedTurn; }
 
-	UFUNCTION(BlueprintCallable)
-	void SetEndTurn(bool bInEndTurn) { bHasEndedTurn = bInEndTurn; }
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void SetEndTurn(bool bInEndTurn); 
 	
 };

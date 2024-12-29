@@ -37,6 +37,20 @@ struct FPlayerActionData
 	/* Id of the card in the hand of the player */
 	UPROPERTY()
 	uint32 CardID;
+
+	FPlayerActionData()
+	: CardData(FDataTableRowHandle())
+	, TargetCoord(FIntPoint::ZeroValue)
+	, CardID(0)
+	{
+	}
+	
+	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, uint32 InCardID)
+	: CardData(InCardData)
+	, TargetCoord(InTargetCoord)
+	, CardID(InCardID)
+	{
+	}
 };
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);

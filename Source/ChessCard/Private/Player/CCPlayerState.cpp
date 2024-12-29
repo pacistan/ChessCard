@@ -18,8 +18,14 @@ void ACCPlayerState::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ACCPlayerState::SetEndTurn_Implementation(bool bInEndTurn)
+{
+	bHasEndedTurn = bInEndTurn; 
+}
+
 void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ACCPlayerState, Team);
+	DOREPLIFETIME(ACCPlayerState, bHasEndedTurn);
 }
