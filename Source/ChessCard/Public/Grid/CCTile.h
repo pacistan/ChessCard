@@ -33,6 +33,12 @@ UENUM()
 enum class ETileType : uint8
 {Normal, Disabled, Player1, Player2, Player3, Player4, ScoreTile, BonusTile, Unit, Highlighted};
 
+UENUM()
+enum class EHighlightMode : uint8
+{
+	Normal, Path, Effect
+};
+
 UCLASS()
 class CHESSCARD_API ACCTile : public AActor, public IClickable, public IHoverable, public ICCGridManagerInterface
 {
@@ -63,8 +69,11 @@ private:
 	TMap<ETileType, TObjectPtr<UMaterialInterface>> MaterialMap;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UMaterialInterface> HighlightMaterial;
+	TMap<EHighlightMode, TObjectPtr<UMaterialInterface>> HighlightMaterial;
 
+	UPROPERTY()
+	EHighlightMode CurrentHighlightMode;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInterface> HoveredMaterial;
 
@@ -95,13 +104,10 @@ private:
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void BlueprintEditorTick(float DeltaTime);
-
-	UFUNCTION(CallInEditor)
-	void Test();
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
-	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate);
+	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate, EHighlightMode HighlightMode = EHighlightMode::Normal);
 	
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 private:

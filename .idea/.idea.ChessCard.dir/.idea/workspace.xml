@@ -8,38 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2652706-cea1-40c4-a649-73bbfea905bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.vsconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Bonus.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Highlighted.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Hovered.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player1.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player2.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player3.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player4.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Score.uasset" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/PatternMapEndPoint.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/PatternMapEndPoint.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/projectSettingsUpdater.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Highlighted_Effect.uasset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Highlighted_Path.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCard.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Grid/BP_Tile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Grid/BP_Tile.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerStart.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerStart.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/DataTables/Cards/DT_Cards.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/DataTables/Cards/DT_Cards.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/L_StartMenu.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/M_TileMat.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Deck/CCDeckComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCTile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCTile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileUnit.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileUnit.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCGridManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCGridManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCTile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCTile.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
@@ -193,12 +174,71 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="cidr-memory-view://10" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2qnHzHOzblAqw8u16pw91S1bVfo" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -212,7 +252,7 @@
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Uproject.ChessCard.executor": "Run",
+    "Uproject.ChessCard.executor": "Debug",
     "git-widget-placeholder": "FeatureReady",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
@@ -301,7 +341,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1735291680990</updated>
-      <workItem from="1735291682442" duration="19231000" />
+      <workItem from="1735291682442" duration="31617000" />
+      <workItem from="1735377269219" duration="8796000" />
     </task>
     <servers />
   </component>
@@ -313,6 +354,15 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp</url>
+          <line>344</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="Uproject">
         <watch expression="OnClickDelegate" />

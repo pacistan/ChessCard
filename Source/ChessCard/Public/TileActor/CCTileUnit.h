@@ -33,21 +33,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMaterialInterface> HighlightMat;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UMaterialInterface> SelectedMaterial;
+	
 	UPROPERTY()
 	TObjectPtr<UMaterialInterface> BaseMaterial;
-	
-	UPROPERTY(EditDefaultsOnly)
-	FColor HighlightColor;
-
-	UPROPERTY()
-	FLinearColor BaseColor;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> MaterialInstance;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
-	UPROPERTY()
 	TMap<FIntPoint, TArray<FPatternMapEndPoint>> PatternMap;
 
 	UPROPERTY()
@@ -56,6 +52,9 @@ public:
 	UPROPERTY()
 	bool IsSelected;
 
+	UPROPERTY()
+	bool IsMoved;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	TArray<FUnitMovementData> Pattern;
 
@@ -79,12 +78,6 @@ public:
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
 
 	UFUNCTION()
-	void OnDestinationTileClicked(ACCTile* Tile);
-
-	UFUNCTION()
-	void Select(ACCPlayerPawn* Player);
-
-	UFUNCTION()
 	void UnSelect();
 
 	UFUNCTION()
@@ -95,6 +88,13 @@ public:
 
 	UFUNCTION()
 	void SetTeam(ETeam InTeam) {Team = InTeam;}
+
+	UFUNCTION()
+	bool GetIsMoved(){return IsMoved;}
+
+	UFUNCTION()
+	void SetIsMoved(bool InIsMoved){IsMoved = InIsMoved;}
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
 	virtual void BeginPlay() override;

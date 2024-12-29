@@ -110,9 +110,8 @@ public:
 	UFUNCTION(BlueprintGetter)
 	int32 GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
 	
-	UFUNCTION(BlueprintSetter, Client, Reliable)
+	UFUNCTION(BlueprintSetter)
 	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex);
-	void SetCurrentSelectedCardIndex_Implementation(int32 InSelectedCardIndex);
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}

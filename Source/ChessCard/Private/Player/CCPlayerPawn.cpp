@@ -105,7 +105,7 @@ void ACCPlayerPawn::UnPossessed()
 	}
 }
 
-void ACCPlayerPawn::SetCurrentSelectedCardIndex_Implementation(int32 InSelectedCardIndex)
+void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 {
 	if(CurrentSelectedCardIndex != InSelectedCardIndex && IsValid(SelectedUnit))
 	{
