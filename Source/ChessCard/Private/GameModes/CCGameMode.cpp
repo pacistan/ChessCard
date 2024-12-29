@@ -15,6 +15,8 @@ ACCGameMode::ACCGameMode(const FObjectInitializer& ObjectInitializer)
 	GameStateClass = ACCGameState::StaticClass();
 	PlayerControllerClass = ACCPlayerController::StaticClass();
 	PlayerStateClass = ACCPlayerState::StaticClass();
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ACCGameMode::PreInitializeComponents()
@@ -30,6 +32,14 @@ void ACCGameMode::PreInitializeComponents()
 		if (ACCPlayerStart* PlayerStart = *It) {
 			CachedPlayerStarts.Add(PlayerStart);
 		}
+	}
+}
+
+void ACCGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (IsValid(FSM)) {
+		FSM->OnTick(DeltaSeconds);
 	}
 }
 
@@ -109,7 +119,19 @@ AActor* ACCGameMode::ChoosePlayerStart_Implementation(AController* Player)
 void ACCGameMode::StartPlaySequence()
 {
 	FSM = NewObject<UCCFSM>(this);
-	FSM->OnBeginPlay();
+	FSM->ChangeStateWithClass(StartState);
+	
+	// Add Player HUD to each player (Maybe move in a Init State ?)
+	TArray<ACCPlayerPawn*> Players = GetPlayerPawns();
+	for (auto Player : Players) {
+		Player->AddPlayerHud();
+	}
+}
+
+void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)
+{
+	PlayerActions.Add(PlayerState, Actions);
+	DEBUG_LOG("Player %s has now %d Actions", *PlayerState->GetPlayerName(), Actions.Num());
 }
 
 TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
@@ -123,6 +145,6 @@ TArray<ACCPlayerPawn*> ACCGameMode::GetPlayerPawns()
 			Players.Add(Player);
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Found %i Players"), Players.Num());
+	DEBUG_LOG("Found %i Players", Players.Num());
 	return Players;
 }

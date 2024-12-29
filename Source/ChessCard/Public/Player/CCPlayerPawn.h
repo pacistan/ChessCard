@@ -2,12 +2,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Card/FCardData.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
 
 
 class ACCTileUnit;
-struct FCardData;
 class ACCPieceBase;
 class ACCCard;
 class UCCMainWidget;
@@ -17,8 +17,46 @@ class UCCDeckComponent;
 class UCameraComponent;
 class ACCTile;
 
+// Data structure to store the action of the player 
+USTRUCT(BlueprintType)
+struct FPlayerActionData
+{
+	GENERATED_BODY()
+
+	/* Data of the card use for the action */
+	UPROPERTY()
+	FDataTableRowHandle CardData; 
+	
+	/* Coord in the grid of the target of the tile */
+	UPROPERTY()
+	FIntPoint TargetCoord;
+	
+	// Struct of mvt if the card is a movement card (Tarray<FPatternEndpoint>)
+	// TODO : I don't have the good Struct Now 
+
+	/* Id of the card in the hand of the player */
+	UPROPERTY()
+	uint32 CardID;
+
+	FPlayerActionData()
+	: CardData(FDataTableRowHandle())
+	, TargetCoord(FIntPoint::ZeroValue)
+	, CardID(0)
+	{
+	}
+	
+	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, uint32 InCardID)
+	: CardData(InCardData)
+	, TargetCoord(InTargetCoord)
+	, CardID(InCardID)
+	{
+	}
+};
+
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSelectedCardChange, int, SelectedCardIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionQueueAdd, FPlayerActionData, Action);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActiomQueueUpdate);
 
 UCLASS(/*HideCategories(Rendering, Collision, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick)*/)
 class CHESSCARD_API ACCPlayerPawn : public APawn
@@ -68,6 +106,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<ACCTileUnit> SelectedUnit;
 
+	// Queue of action The player Has Do during the turn
+	UPROPERTY(VisibleInstanceOnly)
+	TArray<FPlayerActionData> QueueOfPlayerActions;
 
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
@@ -75,11 +116,23 @@ public:
 	/** Delegate to call when the selected card change, Needed for Ui */
 	UPROPERTY(BlueprintAssignable)
 	FOnSelectedCardChange OnSelectedCardChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionQueueAdd OnActionQueueAdd;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnActiomQueueUpdate OnActionQueueRemove;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnActiomQueueUpdate OnActionQueueClear;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	UFUNCTION(BlueprintCallable, Client, Unreliable)
-	void DrawCards(int NumberOfCardsToDraw);
+	void RPC_DrawCards(int NumberOfCardsToDraw);
+
+	UFUNCTION(BlueprintCallable, Client, Unreliable)
+	void RPC_SendQueueOfAction();
 
 	UFUNCTION(BlueprintCallable)
 	void DrawCard();
@@ -88,7 +141,7 @@ public:
 	void PlaySelectedCard(ACCTile* Tiles);
 
 	UFUNCTION(Server, Reliable)
-	void OnAllCardDrawServer();
+	void SRV_OnAllCardDrawServer();
 
 	UFUNCTION(BlueprintCallable)
 	void OnGetMovementCardTrigger();
@@ -102,10 +155,27 @@ public:
 	/** Add the Player HUD to the player, need to be call on Start of the game */
 	UFUNCTION(Client, Unreliable)
 	void AddPlayerHud();
-	void AddPlayerHud_Implementation();
+	
+	UFUNCTION(BlueprintCallable)
+	void AddPlayerAction(FPlayerActionData Action);
+
+	// Popn the last action of the player in The Owing Client
+	UFUNCTION(BlueprintCallable)
+	void RemoveLastPlayerAction();
+
+	// Clear the Array of Action of the player in The Owing Client
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void ClearPlayerAction();
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void ForceEndTurn();
+	
+private:
+	UFUNCTION(Server, Unreliable)
+	void SRV_SendQueueOfAction();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-	
+public:
 	virtual void UnPossessed() override;
 	
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
@@ -115,7 +185,6 @@ public:
 	
 	UFUNCTION(BlueprintSetter, Client, Reliable)
 	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex);
-	void SetCurrentSelectedCardIndex_Implementation(int32 InSelectedCardIndex);
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}
@@ -133,4 +202,3 @@ public:
 	void SetSelectedUnit(ACCTileUnit* Unit);
 	
 };
-

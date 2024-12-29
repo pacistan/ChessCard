@@ -7,6 +7,7 @@
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
 #include "Player/CCPlayerPawn.h"
+#include "Player/CCPlayerState.h"
 
 void ACCPlayerController::Tick(float DeltaSeconds)
 {

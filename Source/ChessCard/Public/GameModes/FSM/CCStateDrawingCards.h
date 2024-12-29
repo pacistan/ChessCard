@@ -11,13 +11,19 @@ UCLASS()
 class CHESSCARD_API UCCStateDrawingCards : public UCCBaseState
 {
 	GENERATED_BODY()
-
+	/* ------------------------------------------ MEMBERS -------------------------------------------*/
+protected:
 	UPROPERTY()
 	TArray<TObjectPtr<ACCPlayerPawn>> Players;
-	
-	virtual void Initialization(ACCGameMode* InGameMode) override;
-	virtual void OnEnterState() override;
 
+	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
+	
 	UFUNCTION()
 	void OnPlayerEndDraw(ACCPlayerPawn* Player);
+	
+	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+	virtual void Initialization() override;
+	virtual void OnEnterState() override;
+	virtual void OnExitState() override;
+
 };

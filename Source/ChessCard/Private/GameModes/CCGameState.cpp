@@ -34,10 +34,22 @@ bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
 	return PlayerControllers.AddUnique(PlayerController) != INDEX_NONE;
 }
 
+void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
+{
+	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
+}
+
+void ACCGameState::OnRep_CurrentState()
+{
+	OnGameStateChange.Broadcast(CurrentState);
+}
+
 void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ACCGameState, GridManager);
+	DOREPLIFETIME(ACCGameState, CurrentTimeOfPlanniningPhase);
+	DOREPLIFETIME(ACCGameState, CurrentState);
 }
 
 ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
@@ -51,4 +63,16 @@ ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
 	}
 
 	return nullptr;
+}
+
+void ACCGameState::SetCurrentTimeOfPlanniningPhase(float InCurrentTimeOfPlanniningPhase)
+{
+	CurrentTimeOfPlanniningPhase = InCurrentTimeOfPlanniningPhase;
+	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
+}
+
+void ACCGameState::SetCurrentState(EGameState InCurrentState)
+{
+	CurrentState = InCurrentState;
+	OnGameStateChange.Broadcast(CurrentState);
 }

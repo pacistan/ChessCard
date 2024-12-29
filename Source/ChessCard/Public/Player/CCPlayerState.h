@@ -20,15 +20,19 @@ protected:
 	// The player's team
 	UPROPERTY(VisibleAnywhere, Replicated)
 	ETeam Team;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	bool bHasEndedTurn = false;
+	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
 	ACCPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
 	
-public:
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+public:
 	virtual void BeginPlay() override;
-
+	
+	
 	/* ------------------------------------------ GETTERS / SETTERS ------------------------------------*/
 public:
 	UFUNCTION(BlueprintCallable)
@@ -40,4 +44,11 @@ public:
 		Team = InTeam;
 		DEBUG_LOG_CATEGORY(LogCard, "Team of Player : %s", *UEnum::GetValueAsString(Team));
 	}
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetHasEndedTurn() const { return bHasEndedTurn; }
+
+	UFUNCTION(BlueprintCallable, Server, Unreliable)
+	void SetEndTurn(bool bInEndTurn); 
+	
 };
