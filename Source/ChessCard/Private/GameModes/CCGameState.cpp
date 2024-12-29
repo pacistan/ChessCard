@@ -39,6 +39,11 @@ void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
 	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
 }
 
+void ACCGameState::OnRep_CurrentState()
+{
+	OnGameStateChange.Broadcast(CurrentState);
+}
+
 void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -69,4 +74,5 @@ void ACCGameState::SetCurrentTimeOfPlanniningPhase(float InCurrentTimeOfPlannini
 void ACCGameState::SetCurrentState(EGameState InCurrentState)
 {
 	CurrentState = InCurrentState;
+	OnGameStateChange.Broadcast(CurrentState);
 }

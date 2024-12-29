@@ -2,12 +2,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Card/FCardData.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
 
 
 class ACCTileUnit;
-struct FCardData;
 class ACCPieceBase;
 class ACCCard;
 class UCCMainWidget;
@@ -22,7 +22,21 @@ USTRUCT(BlueprintType)
 struct FPlayerActionData
 {
 	GENERATED_BODY()
-	// TODO : 
+
+	/* Data of the card use for the action */
+	UPROPERTY()
+	FDataTableRowHandle CardData; 
+	
+	/* Coord in the grid of the target of the tile */
+	UPROPERTY()
+	FIntPoint TargetCoord;
+	
+	// Struct of mvt if the card is a movement card (Tarray<FPatternEndpoint>)
+	// TODO : I don't have the good Struct Now 
+
+	/* Id of the card in the hand of the player */
+	UPROPERTY()
+	uint32 CardID;
 };
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);

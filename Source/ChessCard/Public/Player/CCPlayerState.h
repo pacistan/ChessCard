@@ -22,7 +22,7 @@ protected:
 	ETeam Team;
 
 	UPROPERTY(VisibleAnywhere, Replicated)
-	bool bHasEndedTurn;
+	bool bHasEndedTurn = false;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:

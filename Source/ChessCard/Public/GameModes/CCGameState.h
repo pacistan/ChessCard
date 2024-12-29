@@ -11,6 +11,7 @@ class ACCPlayerController;
 class ACCGridManager;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
 
 UCLASS()
 class CHESSCARD_API ACCGameState : public AGameStateBase
@@ -23,19 +24,22 @@ protected:
 	UPROPERTY(Replicated)
 	TObjectPtr<ACCGridManager> GridManager;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_CurrentState)
 	EGameState CurrentState;
 
 	/** List of all player controllers in the game, only True in Server */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<ACCPlayerController*> PlayerControllers;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Replicated, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
 	float CurrentTimeOfPlanniningPhase = 60.f;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCurrentTimeOfPlanniningPhaseChange OnCurrentTimeOfPlanniningPhaseChange;
+
+	UPROPERTY(BlueprintAssignable)
+	FGameStateChange OnGameStateChange;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -47,6 +51,9 @@ public:
 private:
 	UFUNCTION()
 	void OnRep_CurrentTimeOfPlanniningPhase();
+
+	UFUNCTION()
+	void OnRep_CurrentState();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 private:
@@ -68,4 +75,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentState(EGameState InCurrentState);
+
+	UFUNCTION(BlueprintCallable)
+	EGameState GetCurrentState() const {return CurrentState;}
 };

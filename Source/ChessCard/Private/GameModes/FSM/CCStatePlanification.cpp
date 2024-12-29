@@ -21,7 +21,10 @@ void UCCStatePlanification::OnEnterState()
 
 void UCCStatePlanification::OnStateTick(float DeltaTime)
 {
+	Super::OnStateTick(DeltaTime);
 	CurrentTime -= DeltaTime;
+	CCGameState->SetCurrentTimeOfPlanniningPhase(CurrentTime);
+	
 	if (CurrentTime <= 0) {
 		for (auto Pawn : CCGameMode->GetPlayerPawns()) {
 			Pawn->ForceEndTurn();
@@ -36,11 +39,9 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 				}
 			}
 		}
-		
-		CCGameMode->GetFSM()->ChangeStateWithClass(UCCStateResolve::StaticClass());
 	}
 
-	CCGameState->SetCurrentTimeOfPlanniningPhase(CurrentTime);
+	CCGameMode->GetFSM()->ChangeStateWithClass(UCCStateResolve::StaticClass());
 }
 
 void UCCStatePlanification::OnExitState()

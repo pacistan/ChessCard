@@ -11,11 +11,11 @@ class ACCGameMode;
 UENUM(BlueprintType)
 enum class EGameState : uint8
 {
-	None,
-	DrawingCards,
-	Plannification,
-	Resolve,
-	EndGame
+	None UMETA(DisplayName="None"),
+	DrawingCards UMETA(DisplayName="DrawingCards"), 
+	Plannification UMETA(DisplayName="Plannification"),
+	Resolve UMETA(DisplayName="Resolve"),
+	EndGame UMETA(DisplayName="EndGame")
 };
 
 UCLASS()

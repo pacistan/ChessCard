@@ -15,6 +15,8 @@ ACCGameMode::ACCGameMode(const FObjectInitializer& ObjectInitializer)
 	GameStateClass = ACCGameState::StaticClass();
 	PlayerControllerClass = ACCPlayerController::StaticClass();
 	PlayerStateClass = ACCPlayerState::StaticClass();
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ACCGameMode::PreInitializeComponents()
@@ -118,6 +120,12 @@ void ACCGameMode::StartPlaySequence()
 {
 	FSM = NewObject<UCCFSM>(this);
 	FSM->ChangeStateWithClass(StartState);
+	
+	// Add Player HUD to each player (Maybe move in a Init State ?)
+	TArray<ACCPlayerPawn*> Players = GetPlayerPawns();
+	for (auto Player : Players) {
+		Player->AddPlayerHud();
+	}
 }
 
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)
