@@ -84,6 +84,9 @@ private:
 public:
 	UFUNCTION(BlueprintCallable)
 	void Play(ACCPlayerPawn* Pawn);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ConstructCard(FDataTableRowHandle RowHandle);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

@@ -9,11 +9,11 @@
 UENUM()
 enum class ETeam : uint8
 {
-	None,
-	One,
-	Two,
-	Three,
-	Four,
+	None   UMETA(DisplayName = "None"),
+	One    UMETA(DisplayName = "Player1"),
+	Two    UMETA(DisplayName = "Player2"),
+	Three  UMETA(DisplayName = "Player3"),
+	Four   UMETA(DisplayName = "Player4"),
 };
 
 UCLASS()

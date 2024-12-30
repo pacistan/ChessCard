@@ -14,6 +14,15 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	bool AreAllPlayerQueuesSent = false;
+	
+	UFUNCTION()	
+	void OnAllPlayerQueuesSent();
+
 public:
-	void OnEnterState() override;
+	virtual void OnEnterState() override;
+
+	virtual void OnStateTick(float DeltaTime) override;
+
 };

@@ -41,7 +41,7 @@ public:
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
-	TMap<FIntPoint, TArray<FPatternMapEndPoint>> PatternMap;
+	TArray<TArray<FPatternMapEndPoint>> PatternList;
 
 	UPROPERTY()
 	bool IsHighlighted;
@@ -66,6 +66,12 @@ public:
 
 	UPROPERTY()
 	FUnitMovementData MovementData;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> MovementPointActorClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> DestinationPointActorClass;
 	
 
 	FOnClickUnitDelegate OnClickUnitEvent;
@@ -101,6 +107,9 @@ public:
 
 	UFUNCTION()
 	void SetIsMoved(bool InIsMoved){IsMoved = InIsMoved;}
+
+	UFUNCTION()
+	FIntPoint GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>& PatternMovement);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

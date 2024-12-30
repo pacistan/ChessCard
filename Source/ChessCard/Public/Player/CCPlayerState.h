@@ -10,6 +10,9 @@ class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerEndTurn, ACCPlayerState*, Player, bool, IsEndTurn);
+
+
 UCLASS()
 class CHESSCARD_API ACCPlayerState : public APlayerState
 {
@@ -23,6 +26,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bHasEndedTurn = false;
+
+public:
+	FOnPlayerEndTurn EndTurnDelegate;
+
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -48,7 +55,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetHasEndedTurn() const { return bHasEndedTurn; }
 
+	UFUNCTION(BlueprintCallable, Client, Unreliable)
+	void RPC_SetEndTurn(bool bInEndTurn); 
+
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
 	void SetEndTurn(bool bInEndTurn); 
-	
 };

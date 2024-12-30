@@ -53,8 +53,8 @@ private:
 	ACCPlayerPawn* GetCCPlayerPawn();
 
 public:
-	UFUNCTION()
-	void CreateHudForPlayer();
+	UFUNCTION(Client, Reliable)
+	void RPC_CreateHudForPlayer();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void BeginPlay() override;

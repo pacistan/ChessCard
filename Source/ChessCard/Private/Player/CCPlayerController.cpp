@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "GameModes/CCGameState.h"
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
@@ -52,7 +53,19 @@ void ACCPlayerController::Tick(float DeltaSeconds)
 
 void ACCPlayerController::OnSelectCard()
 {
+	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+	check(GameState);
 	if(!GetCCPlayerPawn()) return;
+	if(GameState->GetCurrentState() != EGameState::Plannification)
+	{
+		if(CurrentSelectedElement != nullptr)
+		{
+			CurrentSelectedElement->UnSelect(GetCCPlayerPawn());
+			CurrentSelectedElement = nullptr;
+		}
+		GetCCPlayerPawn()->SetSelectedUnit(nullptr);
+		return;
+	}
 	FVector2D MousePosition;
 	GetMousePosition(MousePosition.X, MousePosition.Y);
 	
@@ -99,16 +112,17 @@ ACCPlayerPawn* ACCPlayerController::GetCCPlayerPawn()
 	return Cast<ACCPlayerPawn>(GetPawn());
 }
 
-void ACCPlayerController::CreateHudForPlayer()
+void ACCPlayerController::RPC_CreateHudForPlayer_Implementation()
 {
-	if (IsLocalController()) {
+	//if (IsLocalController()) {
 		if (InGameUiClass) {
 			InGameHud = CreateWidget<UUserWidget>(this, InGameUiClass);
+			DEBUG_LOG("ADD HUD");
 			if (InGameHud) {
-				InGameHud->AddToPlayerScreen();
+				InGameHud->AddToViewport();
 			}
 		}
-	}
+	//}
 }
 
 void ACCPlayerController::BeginPlay()

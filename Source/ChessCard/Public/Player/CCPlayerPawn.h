@@ -57,7 +57,6 @@ struct FPlayerActionData
 };
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerEndTurn, ACCPlayerPawn*, Player, bool, IsEndTurn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSelectedCardChange, int, SelectedCardIndex);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionQueueAdd, FPlayerActionData, Action);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActiomQueueUpdate);
@@ -103,7 +102,6 @@ private:
 
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
-	FOnPlayerEndTurn EndTurnDelegate;
 
 	/** Delegate to call when the selected card change, Needed for Ui */
 	UPROPERTY(BlueprintAssignable)
@@ -135,6 +133,9 @@ public:
 	UFUNCTION(Server, Reliable)
 	void SRV_OnAllCardDrawServer();
 
+	UFUNCTION()
+	void OnEndTurnBtnPressed(bool bIsEndTurn);
+	
 	UFUNCTION(BlueprintCallable)
 	void OnGetMovementCardTrigger();
 

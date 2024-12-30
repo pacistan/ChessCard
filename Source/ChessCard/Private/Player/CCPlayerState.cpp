@@ -20,7 +20,15 @@ void ACCPlayerState::BeginPlay()
 
 void ACCPlayerState::SetEndTurn_Implementation(bool bInEndTurn)
 {
-	bHasEndedTurn = bInEndTurn; 
+	bHasEndedTurn = bInEndTurn;
+	DEBUG_LOG("Is Server = %s, Player : %s", HasAuthority() ? TEXT("true") : TEXT("false"), *UEnum::GetValueAsString(Team));
+	EndTurnDelegate.Broadcast(this, bInEndTurn);
+}
+
+void ACCPlayerState::RPC_SetEndTurn_Implementation(bool bInEndTurn)
+{
+	DEBUG_LOG("Is Server = %s, Player : %s", HasAuthority() ? TEXT("true") : TEXT("false"), *GetName());
+	SetEndTurn(bInEndTurn);
 }
 
 void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

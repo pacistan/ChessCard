@@ -66,6 +66,7 @@ void ACCGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	OnUserPostLogin.Broadcast(NewPlayer);
+	PlayerControllers.Add(Cast<ACCPlayerController>(NewPlayer));
 }
 
 void ACCGameMode::Logout(AController* Exiting)
@@ -126,6 +127,10 @@ void ACCGameMode::StartPlaySequence()
 	for (auto Player : Players) {
 		Player->AddPlayerHud();
 	}
+	/*for(auto PlayerController : PlayerControllers)
+	{
+		PlayerController->RPC_CreateHudForPlayer();
+	}*/
 }
 
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)

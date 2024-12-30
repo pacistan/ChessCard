@@ -42,7 +42,6 @@ void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 
 void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation()
 {
-	DEBUG_LOG("Call Send Queue of Action on the Server");
 	if (ACCGameMode* CCGameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
 		CCGameMode->AddPlayerAction(GetPlayerState<ACCPlayerState>(), QueueOfPlayerActions);
 		DEBUG_LOG("Add player action to the game mode");
@@ -72,6 +71,10 @@ void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 	Card->UnSelect(this);
 	Card->Play(this);
 	PlayedCardsIndex.Add(Card->CardIndex);
+}
+
+void ACCPlayerPawn::OnEndTurnBtnPressed(bool bIsEndTurn)
+{
 }
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
@@ -118,7 +121,7 @@ void ACCPlayerPawn::ForceEndTurn_Implementation()
 	// TODO : Block the Player From Playing new Action
 	
 	if (ACCPlayerState* CCPlayerState =  GetPlayerState<ACCPlayerState>()) {
-		CCPlayerState->SetEndTurn(true);
+		CCPlayerState->RPC_SetEndTurn(true);
 	}
 }
 
@@ -130,9 +133,11 @@ void ACCPlayerPawn::ClearPlayerAction_Implementation()
 
 void ACCPlayerPawn::AddPlayerHud_Implementation()
 {
+	DEBUG_LOG("TEST : %s for %s", IsPlayerControlled() ? TEXT("True") :TEXT("False"), *GetName());
 	if(PLayerHudClass) {
 		PlayerHud = CreateWidget(GetWorld(), PLayerHudClass);
 		if(PlayerHud) {
+			//PlayerHud->AddToViewport();
 			PlayerHud->AddToPlayerScreen();
 		}
 	}

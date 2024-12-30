@@ -15,7 +15,7 @@ ACCTile::ACCTile()
 	RootComponent = MeshComponent;
 }
 
-void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate,  EHighlightMode HighlightMode)
+void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate, EHighlightMode HighlightMode)
 {
 	if(IsHighlighted == bIsHighlight && HighlightMode == CurrentHighlightMode)
 	{
@@ -25,7 +25,7 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 
 	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : nullptr;
 	MeshComponent->SetOverlayMaterial(Material);
-	
+
 	CurrentHighlightMode = HighlightMode;
 	OnClickEvent = OnClickDelegate;
 	  
@@ -33,6 +33,8 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 	check(GridManager);
 	if(IsHighlighted)
 	{
+		FString EnumName = FindObject<UEnum>(ANY_PACKAGE, TEXT("EHighlightMode"), true)->GetNameStringByValue(static_cast<int64>(HighlightMode));
+		//DEBUG_LOG("%i %i To Highlight, with Mode %s, FunctionName is: %s", RowNum, ColumnNum, *EnumName, *OnClickDelegate.GetFunctionName().ToString());
 		GridManager->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Highlighted);
 	}
 	else
@@ -45,15 +47,17 @@ void ACCTile::Click(ACCPlayerPawn* Player)
 {
 	if(IsHighlighted)
 	{
-		Player->PlaySelectedCard(this);
+		FString EnumName = FindObject<UEnum>(ANY_PACKAGE, TEXT("EHighlightMode"), true)->GetNameStringByValue(static_cast<int64>(CurrentHighlightMode));
+		DEBUG_LOG("%i %i Is Clicked, with Mode %s, FunctionName is: %s", RowNum, ColumnNum, *EnumName, *OnClickEvent.GetFunctionName().ToString());
 		OnClickEvent.ExecuteIfBound(this);
+		Player->PlaySelectedCard(this);
 	}
 }
 
 void ACCTile::StartHover(ACCPlayerPawn* Player)
 {
 	IsHovered = true;
-	if(IsHighlighted)
+	if(IsHighlighted && CurrentHighlightMode == EHighlightMode::Normal)
 	{
 		MeshComponent->SetOverlayMaterial(HoveredMaterial);
 	}
@@ -110,6 +114,11 @@ void ACCTile::BlueprintEditorTick(float DeltaTime)
 	PreviousTileType = TileType;
 }
 
+void ACCTile::UpdateMaterial()
+{
+	MeshComponent->SetMaterial(0, MaterialMap[TileType]);
+}
+
 
 bool ACCTile::ShouldTickIfViewportsOnly() const
 {
@@ -150,4 +159,30 @@ void ACCTile::RemovePiece(ACCPieceBase* Piece)
 	{
 		GetGridManager(GetWorld())->UnregisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
 	}
+}
+
+bool ACCTile::IsAccessibleForTeam(ETeam Team)
+{
+	bool Result;
+	switch(TileType)
+	{
+	case ETileType::Disabled:
+		Result = false;
+		break;
+	case ETileType::Player1:
+		Result = Team == ETeam::One ? true : false;
+		break;
+	case ETileType::Player2:
+		Result = Team == ETeam::Two ? true : false;
+		break;
+	case ETileType::Player3:
+		Result = Team == ETeam::Three ? true : false;
+		break;
+	case ETileType::Player4:
+		Result = Team == ETeam::Four ? true : false;
+		break;
+	default:
+		Result = true;
+	}
+	return Result;
 }
