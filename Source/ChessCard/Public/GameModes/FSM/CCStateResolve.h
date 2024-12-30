@@ -13,4 +13,7 @@ UCLASS()
 class CHESSCARD_API UCCStateResolve : public UCCBaseState
 {
 	GENERATED_BODY()
+
+public:
+	void OnEnterState() override;
 };

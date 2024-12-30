@@ -10,7 +10,7 @@
 void UCCStateDrawingCards::Initialization()
 {
 	Super::Initialization();
-	Players = CCGameMode->GetPlayerPawns();
+	Players = GameMode->GetPlayerPawns();
 
 }
 
@@ -32,7 +32,7 @@ void UCCStateDrawingCards::OnPlayerEndDraw(ACCPlayerPawn* Player)
 	}
 	
 	if (Players.Num() == 0) {
-		CCGameMode->GetFSM()->ChangeStateWithClass(UCCStatePlanification::StaticClass());
+		GameMode->GetFSM()->ChangeStateWithClass(UCCStatePlanification::StaticClass());
 	}
 }
 

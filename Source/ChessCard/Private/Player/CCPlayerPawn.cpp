@@ -12,6 +12,7 @@
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCPieceBase.h"
+#include "TileActor/CCTileUnit.h"
 #include "UI/CCMainWidget.h"
 
 
@@ -35,8 +36,6 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
-	QueueOfPlayerActions.Add(FPlayerActionData());
-	QueueOfPlayerActions.Add(FPlayerActionData());
 	DEBUG_LOG("Call Send Queue of Action on the client");
 	SRV_SendQueueOfAction();
 }
@@ -101,7 +100,6 @@ void ACCPlayerPawn::RemoveCardFromHand()
 	SetCurrentSelectedCardIndex(-1);
 }
 
-
 void ACCPlayerPawn::AddPlayerAction(FPlayerActionData Action)
 {
 	QueueOfPlayerActions.Add(Action);
@@ -139,7 +137,6 @@ void ACCPlayerPawn::AddPlayerHud_Implementation()
 		}
 	}
 }
-
 
 void ACCPlayerPawn::UnPossessed()
 {

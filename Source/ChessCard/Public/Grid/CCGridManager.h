@@ -50,24 +50,34 @@ private:
 public:
 	static FVector CoordinatesToPosition(FIntPoint Coordinates);
 
+	// On Unit Spawn we create the Pattern Map. We want to get all possible path the unit can make when moving.
+	// We want to store those paths for Movement and highlighting.
+	// This process would be the same for every instance of the same unit type. It could perhaps be moved out of the game loop.
 	void GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
-								TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet);
+								TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternMap);
 
-	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet,
-	                            TArray<FPatternMapEndPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData);
+	// Recursively build elements of the Pattern Map. Keys are the end point of the potential movement 
+	void SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternMap,
+	                            TArray<FPatternMapEndPoint>& CurrentArray, TArray<FUnitMovementData>& MovementData, bool IsPotentialEnd);
 
+	// Return an element of the PatternMap from its data. IsPotentialEnd will be true if the next element is stoppable.
+	// If IsPotentialEnd is true the next iteration will create an endpoint for one of the elements of the PatternMap.
 	TArray<FPatternMapEndPoint> GetArrayOfDirectionData(TArray<FPatternMapEndPoint>& PreviousDirectionData,
-								FIntPoint NewDirection, EMovementType InMovementType);
-	
-	void ApplyLambdaToTileType(ETileType TileType,const FTileTypeDelegate TileLambdaFunc);
+	                                                    FIntPoint NewDirection, EMovementType InMovementType, bool& IsPotentialEnd);
 
+	// Will apply delegate to every Tile of the given type.
+	void ApplyLambdaToTileType(ETileType TileType, FTileTypeDelegate TileLambdaFunc);
+
+	UFUNCTION()
 	void RegisterTileAsType(FIntPoint TileCoordinates, ETileType TileType);
 
+	UFUNCTION()		
 	void UnregisterTileAsType(FIntPoint TileCoordinates, ETileType TileType);
 
 	UFUNCTION()
 	void UnhighlightTiles();
 
+	UFUNCTION()
 	ACCTile* GetTile(FIntPoint Coordinates);
 
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/

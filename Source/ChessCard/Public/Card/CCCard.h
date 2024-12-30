@@ -4,14 +4,16 @@
 #include "GameFramework/Actor.h"
 #include "Interfaces/CCGridManagerInterface.h"
 #include "Interfaces/Selectable.h"
-#include "TileActor/CCTileUnit.h"
-#include "Card/FCardData.h"
+#include "TileActor/PatternMapEndPoint.h"
 #include "CCCard.generated.h"
 
 
 class ACCTile;
 class UCCCardMovementComponent;
 class ACCPieceBase;
+class ACCTileUnit;
+class UCCCardMovementComponent;
+struct FCardData;
 
 UENUM(BlueprintType)
 enum class ECardState : uint8
@@ -46,6 +48,8 @@ public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UStaticMeshComponent> CardMesh;
 
+	FGuid CardUniqueID;
+	
 	UPROPERTY(VisibleAnywhere, Category="")
 	ECardState CurrentCardState;
 
@@ -88,9 +92,13 @@ protected:
 	UFUNCTION()
 	void SpawnUnit(ACCTile* Tile);
 
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateCardVisuals(FDataTableRowHandle DataTableRowHandle);
+	
 public:
 	UFUNCTION()
-	void MoveUnit(ACCTile* Unit);
+	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData);
 
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 

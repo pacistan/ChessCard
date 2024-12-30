@@ -30,17 +30,17 @@ void ACCTileUnit::SetTargetMap()
 void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 {
 	auto GridManager = GetGridManager(GetWorld());
-	ACCCard* Card = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
-	check(Card);
+	LinkedCard = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
+	check(LinkedCard);
 	check(GridManager);
 	check(Pawn);
 	   
 	GridManager->UnhighlightTiles();
 
-	for(const auto& MovementData : PatternMap)
+	for(const auto& MvtData : PatternMap)
 	{
 		FIntPoint Coordinates = CurrentCoordinates;
-		for(auto& Coordinate : MovementData.Value)
+		for(auto& Coordinate : MvtData.Value)
 		{
 			Coordinates += Coordinate.Direction;
 			ACCTile* Tile = GridManager->GetTile(Coordinates);
@@ -55,7 +55,7 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 					break;
 				case EMovementType::Stoppable:
 					HighlightMode = EHighlightMode::Normal;
-					OnClickTileDelegate.BindDynamic(Card, &ACCCard::ACCCard::MoveUnit);
+					OnClickTileDelegate.BindDynamic(this, &ACCTileUnit::OnDestinationTileClicked);
 					Tile->SetHighlight(true, OnClickTileDelegate, HighlightMode);
 					break;
 				case EMovementType::ApplyEffect:
@@ -68,6 +68,11 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 			}
 		}
 	}
+}
+
+void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
+{
+	LinkedCard->MoveUnit(Tile, PatternMap[FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum())]);
 }
 
 void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate,

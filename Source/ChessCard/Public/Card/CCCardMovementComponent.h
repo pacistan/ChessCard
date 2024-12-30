@@ -2,13 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Player/CCPlayerPawn.h"
 #include "CCCardMovementComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCardMovementEnd);
 
 
 enum class ECardState : uint8;
+class ACCPlayerPawn;
 class ACCCard;
 
 USTRUCT()

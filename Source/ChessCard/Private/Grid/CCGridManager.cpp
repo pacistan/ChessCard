@@ -51,45 +51,48 @@ FVector ACCGridManager::CoordinatesToPosition(FIntPoint Coordinates)
 }
 
 void ACCGridManager::GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
-	TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet)
+	TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternMap)
 {
-		TArray<FPatternMapEndPoint> BaseArray;
-		BaseArray.Reserve(OutMovementData.Num());
+	TArray<FPatternMapEndPoint> BaseArray;
+	BaseArray.Reserve(OutMovementData.Num());
+	
+	bool IsPotentialEnd;
 	
 	if(OutMovementData[0].MovementDirection == EMovementDirection::Diagonal)
 	{
-		auto UpRightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, 1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, UpRightDirectionData, OutMovementData);
+		auto UpRightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, 1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, UpRightDirectionData, OutMovementData, IsPotentialEnd);
 
-		auto DownRightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, -1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, DownRightDirectionData, OutMovementData);
+		auto DownRightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, -1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, DownRightDirectionData, OutMovementData, IsPotentialEnd);
 		
-		auto DownLeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, -1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, DownLeftDirectionData, OutMovementData);
+		auto DownLeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, -1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, DownLeftDirectionData, OutMovementData, IsPotentialEnd);
 
-		auto UpLeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, 1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, UpLeftDirectionData, OutMovementData);
+		auto UpLeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, 1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, UpLeftDirectionData, OutMovementData, IsPotentialEnd);
 	}
 	else
 	{
-		auto UpDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(0, 1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, UpDirectionData, OutMovementData);
+		auto UpDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(0, 1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, UpDirectionData, OutMovementData, IsPotentialEnd);
 
-		auto RightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, 0), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, RightDirectionData, OutMovementData);
+		auto RightDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(1, 0), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, RightDirectionData, OutMovementData, IsPotentialEnd);
 		
-		auto DownDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(0, -1), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, DownDirectionData, OutMovementData);
+		auto DownDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(0, -1), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, DownDirectionData, OutMovementData, IsPotentialEnd);
 
-		auto LeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, 0), OutMovementData[0].MovementType);
-		SimulateMovementOnGrid(PatternSet, LeftDirectionData, OutMovementData);
+		auto LeftDirectionData = GetArrayOfDirectionData(BaseArray, FIntPoint(-1, 0), OutMovementData[0].MovementType, IsPotentialEnd);
+		SimulateMovementOnGrid(PatternMap, LeftDirectionData, OutMovementData, IsPotentialEnd);
 
 	}
 }
 
-void ACCGridManager::SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternSet,
-	TArray<FPatternMapEndPoint>& CurrentArray,TArray<FUnitMovementData>& MovementData)
+void ACCGridManager::SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEndPoint>>& PatternMap,
+	TArray<FPatternMapEndPoint>& CurrentArray,TArray<FUnitMovementData>& MovementData, bool IsPotentialEnd)
 {
+	// If All the movement data elements have been run through we stop the recursion and register the Movement Data with a key in the PatternMap.
 	if(MovementData.Num() == CurrentArray.Num())
 	{
 		FIntPoint RelativeEndPosition = FIntPoint(0, 0);
@@ -97,9 +100,18 @@ void ACCGridManager::SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEn
 		{
 			RelativeEndPosition = FIntPoint(RelativeEndPosition.X + CurrentArray[i].Direction.X, RelativeEndPosition.Y + CurrentArray[i].Direction.Y);
 		}
-		PatternSet.Add(RelativeEndPosition, CurrentArray);
+		PatternMap.Add(RelativeEndPosition, CurrentArray);
 		return;	
-	}	
+	}
+	else if(IsPotentialEnd)
+	{
+		FIntPoint RelativeEndPosition = FIntPoint(0, 0);
+		for(int i = 0; i < CurrentArray.Num(); i++)
+		{
+			RelativeEndPosition = FIntPoint(RelativeEndPosition.X + CurrentArray[i].Direction.X, RelativeEndPosition.Y + CurrentArray[i].Direction.Y);
+		}
+		PatternMap.Add(RelativeEndPosition, CurrentArray);
+	}
 	
 	FPatternMapEndPoint LastDirectionData = CurrentArray.Last();
 	int DirectionMagnitude = FMath::Abs(LastDirectionData.Direction.X) + FMath::Abs(LastDirectionData.Direction.Y);
@@ -107,191 +119,191 @@ void ACCGridManager::SimulateMovementOnGrid(TMap<FIntPoint, TArray<FPatternMapEn
 	{
 		switch(MovementData[CurrentArray.Num()].MovementDirection)
 		{
-		case EMovementDirection::Up:
+			case EMovementDirection::Up:
+				{
+					auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+					SimulateMovementOnGrid(PatternMap, UpArray1, MovementData, IsPotentialEnd);
+	
+					auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+					SimulateMovementOnGrid(PatternMap, UpArray2, MovementData, IsPotentialEnd);
+				}
+				break;
+			case EMovementDirection::Side:
 			{
-				auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray1, MovementData);
-
-				auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray2, MovementData);
+			    auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+			
+			    auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
 			}
 			break;
-		case EMovementDirection::Side:
+			case EMovementDirection::Diagonal:
 			{
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
+			    auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, DiagonalArray, MovementData, IsPotentialEnd);
 			}
 			break;
-		case EMovementDirection::Diagonal:
+			case EMovementDirection::Up_Side:
 			{
-				auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray, MovementData);
+			    auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray1, MovementData, IsPotentialEnd);
+			
+			    auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray2, MovementData, IsPotentialEnd);
+			
+			    auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+			
+			    auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
 			}
 			break;
-		case EMovementDirection::Up_Side:
+			case EMovementDirection::Up_Diagonal:
 			{
-				auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray1, MovementData);
+			    auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray1, MovementData, IsPotentialEnd);
 			
-				auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray2, MovementData);
+			    auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray2, MovementData, IsPotentialEnd);
 			
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
+			    auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, DiagonalArray, MovementData, IsPotentialEnd);
 			}
 			break;
-		case EMovementDirection::Up_Diagonal:
+			case EMovementDirection::Up_Side_Diagonal:
 			{
-				auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray1, MovementData);
+			    auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray1, MovementData, IsPotentialEnd);
 			
-				auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray2, MovementData);
+			    auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, UpArray2, MovementData, IsPotentialEnd);
 			
-				auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray, MovementData);
+			    auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+			
+			    auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
+			
+			    auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, DiagonalArray, MovementData, IsPotentialEnd);
 			}
 			break;
-		case EMovementDirection::Up_Side_Diagonal:
+			case EMovementDirection::Side_Diagonal:
 			{
-				auto UpArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray1, MovementData);
+			    auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
 			
-				auto UpArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, UpArray2, MovementData);
+			    auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
 			
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-			
-				auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray, MovementData);
-			}
-			break;
-		case EMovementDirection::Side_Diagonal:
-			{
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.X, 0), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-		
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(0, -LastDirectionData.Direction.Y), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-		
-				auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray, MovementData);
+			    auto DiagonalArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+			    SimulateMovementOnGrid(PatternMap, DiagonalArray, MovementData, IsPotentialEnd);
 			}
 			break;
 		}
 	}
 	else if(DirectionMagnitude == 1)
 	{
-		switch(MovementData[CurrentArray.Num()].MovementDirection)
-		{
-			case EMovementDirection::Up:
-			{
-			    auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, UpArray, MovementData);
-			}
-			break;
-			case EMovementDirection::Side:
-			{
-			    auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-			    auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-			}
-			break;
-			case EMovementDirection::Diagonal:
-			{
-			    auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, DiagonalArray1, MovementData);
-			
-			    auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, DiagonalArray2, MovementData);
-			}
-			break;
-			case EMovementDirection::Up_Side:
-			{
-			    auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, UpArray, MovementData);
-					
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-			}
-			break;
-			case EMovementDirection::Up_Diagonal:
-			{
-			    auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, UpArray, MovementData);
-					
-				auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray1, MovementData);
-			
-				auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray2, MovementData);
-			}
-			break;
-			case EMovementDirection::Up_Side_Diagonal:
-			{
-			    auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType);
-			    SimulateMovementOnGrid(PatternSet, UpArray, MovementData);
-					
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-			
-				auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray1, MovementData);
-			
-				auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray2, MovementData);
-			
-			}
-			break;
-			case EMovementDirection::Side_Diagonal:
-			{
-				auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray1, MovementData);
-			
-				auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, SideArray2, MovementData);
-			
-				auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray1, MovementData);
-			
-				auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType);
-				SimulateMovementOnGrid(PatternSet, DiagonalArray2, MovementData);
-			}
-			break;
+	    switch(MovementData[CurrentArray.Num()].MovementDirection)
+    	{
+    	    case EMovementDirection::Up:
+    	    {
+    	        auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, UpArray, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Side:
+    	    {
+    	        auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Diagonal:
+    	    {
+    	        auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray1, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Up_Side:
+    	    {
+    	        auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, UpArray, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Up_Diagonal:
+    	    {
+    	        auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, UpArray, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray1, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Up_Side_Diagonal:
+    	    {
+    	        auto UpArray = GetArrayOfDirectionData(CurrentArray, LastDirectionData.Direction, MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, UpArray, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray1, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
+    	    case EMovementDirection::Side_Diagonal:
+    	    {
+    	        auto SideArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.Y, -LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray1, MovementData, IsPotentialEnd);
+	
+    	        auto SideArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(-LastDirectionData.Direction.Y, LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, SideArray2, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray1 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X + LastDirectionData.Direction.Y, LastDirectionData.Direction.Y - LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray1, MovementData, IsPotentialEnd);
+	
+    	        auto DiagonalArray2 = GetArrayOfDirectionData(CurrentArray, FIntPoint(LastDirectionData.Direction.X - LastDirectionData.Direction.Y, LastDirectionData.Direction.Y + LastDirectionData.Direction.X), MovementData[CurrentArray.Num()].MovementType, IsPotentialEnd);
+    	        SimulateMovementOnGrid(PatternMap, DiagonalArray2, MovementData, IsPotentialEnd);
+    	    }
+    	    break;
 		}
 	}
 }
 
 TArray<FPatternMapEndPoint> ACCGridManager::GetArrayOfDirectionData(TArray<FPatternMapEndPoint>& PreviousDirectionData,
-	FIntPoint NewDirection, EMovementType InMovementType)
+	FIntPoint NewDirection, EMovementType InMovementType, bool& IsPotentialEnd)
 {
 	TArray<FPatternMapEndPoint> NewDirectionDataArray = PreviousDirectionData;
 	FPatternMapEndPoint NewDirectionData;
 	NewDirectionData.Direction = NewDirection;
 	NewDirectionData.MovementType = InMovementType;
 	NewDirectionDataArray.Add(NewDirectionData);
+	IsPotentialEnd = InMovementType == EMovementType::Stoppable;
 	return NewDirectionDataArray;
 }
 
-void ACCGridManager::ApplyLambdaToTileType(ETileType TileType, const FTileTypeDelegate TileLambdaFunc)
+void ACCGridManager::ApplyLambdaToTileType(ETileType TileType, FTileTypeDelegate TileLambdaFunc)
 {
 	for(const auto& TileCoordinates : MappedGrid[TileType])
 	{

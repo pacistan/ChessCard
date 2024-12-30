@@ -10,13 +10,8 @@ UCCBaseState* UCCBaseState::MakeStateWithClass(TSubclassOf<UCCBaseState> NewStat
 
 void UCCBaseState::Initialization()
 {
-	if (ACCGameMode* GameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
-		CCGameMode = GameMode;
-	}
-
-	if (ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>()) {
-		CCGameState = GameState;
-	}
+	GameMode = GetWorld()->GetAuthGameMode<ACCGameMode>();
+	GameState = GetWorld()->GetGameState<ACCGameState>();
 }
 
 void UCCBaseState::OnEnterState()

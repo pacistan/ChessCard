@@ -7,6 +7,7 @@
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "PatternMapEndPoint.h"
+#include "Card/CCCard.h"
 #include "CCTileUnit.generated.h"
 
 
@@ -59,11 +60,18 @@ public:
 	
 	UPROPERTY()
 	ETeam Team;
+
+	UPROPERTY()
+	TObjectPtr<ACCCard> LinkedCard;
+
+	UPROPERTY()
+	FUnitMovementData MovementData;
 	
+
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 
-	
+
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
 	ACCTileUnit(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -72,6 +80,9 @@ public:
 
 	UFUNCTION()
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
+
+	UFUNCTION()
+	void OnDestinationTileClicked(ACCTile* Tile);
 
 	UFUNCTION()
 	void UnSelect();

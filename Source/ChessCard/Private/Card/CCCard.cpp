@@ -2,12 +2,11 @@
 
 #include "Card/CCCardMovementComponent.h"
 #include "Card/FCardData.h"
-#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
+#include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCPieceBase.h"
 #include "TileActor/CCTileUnit.h"
@@ -114,6 +113,7 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 void ACCCard::BeginPlay()
 {
 	Super::BeginPlay();
+	CardUniqueID = FGuid::NewGuid();
 }
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)
@@ -146,14 +146,19 @@ void ACCCard::SpawnUnit(ACCTile* Tile)
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
 	GridManager->UnhighlightTiles();
-	//TODO : Add Summon Action to Queue of Actions For Resolve and historic.
+
+	FPlayerActionData PlayerActionData(CardRowHandle, Unit->CurrentCoordinates, CardUniqueID);
+	OwningPawn->AddPlayerAction(PlayerActionData);
 }
 
-void ACCCard::MoveUnit(ACCTile* Unit)
+void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData)
 {
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
 	GridManager->UnhighlightTiles();
+	
+	FPlayerActionData PlayerActionData(CardRowHandle, FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()), CardUniqueID, MovementData);
+	OwningPawn->AddPlayerAction(PlayerActionData);
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)
@@ -189,7 +194,6 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 	bool bToSelected = true;
 	if(CurrentCardState == ECardState::Played)
 	{
-		bToSelected = false;
 		CurrentCardState = ECardState::Hovered;
 		Pawn->GetPlayedCardIndex().Remove(CardIndex);
 
@@ -217,8 +221,6 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 
 void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 {
-	
-	//TODO: Check if In Planning Mode
 	if(!CardMovement->IsInterruptable)
 	{
 		return;

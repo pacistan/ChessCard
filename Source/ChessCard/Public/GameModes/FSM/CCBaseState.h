@@ -15,10 +15,10 @@ class CHESSCARD_API UCCBaseState : public UObject
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
 protected:
 	UPROPERTY()
-	TObjectPtr<ACCGameState> CCGameState;
+	TObjectPtr<ACCGameState> GameState;
 
 	UPROPERTY()
-	TObjectPtr<ACCGameMode> CCGameMode;
+	TObjectPtr<ACCGameMode> GameMode;
 	
 	/* ------------------------------------------ FUNCTIONS -----------------------------------------*/
 public:

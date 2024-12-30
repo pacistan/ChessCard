@@ -3,10 +3,12 @@
 
 #include "CoreMinimal.h"
 #include "Card/FCardData.h"
+#include "TileActor/PatternMapEndPoint.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
 
 
+class UPlayerWidget;
 class ACCTileUnit;
 class ACCPieceBase;
 class ACCCard;
@@ -31,32 +33,35 @@ struct FPlayerActionData
 	UPROPERTY()
 	FIntPoint TargetCoord;
 	
-	// Struct of mvt if the card is a movement card (Tarray<FPatternEndpoint>)
-	// TODO : I don't have the good Struct Now 
-
 	/* Id of the card in the hand of the player */
 	UPROPERTY()
-	uint32 CardID;
+	FGuid CardID;
+	
+	// Struct of mvt if the card is a movement card (Tarray<FPatternEndpoint>)
+	TArray<FPatternMapEndPoint> MovementData;
+
 
 	FPlayerActionData()
 	: CardData(FDataTableRowHandle())
 	, TargetCoord(FIntPoint::ZeroValue)
-	, CardID(0)
 	{
 	}
 	
-	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, uint32 InCardID)
+	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, FGuid InCardID, TArray<FPatternMapEndPoint> InMovementData = TArray<FPatternMapEndPoint>())
 	: CardData(InCardData)
 	, TargetCoord(InTargetCoord)
 	, CardID(InCardID)
+	, MovementData(InMovementData)
 	{
 	}
 };
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerEndTurn, ACCPlayerPawn*, Player, bool, IsEndTurn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSelectedCardChange, int, SelectedCardIndex);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionQueueAdd, FPlayerActionData, Action);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActiomQueueUpdate);
+
 
 UCLASS(/*HideCategories(Rendering, Collision, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick)*/)
 class CHESSCARD_API ACCPlayerPawn : public APawn
@@ -76,9 +81,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
 	
-	//UPROPERTY(EditAnywhere, Category = "Camera", meta=(AllowPrivateAccess))
-	//UCameraComponent* FollowCamera;
-	
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardDrawnOnRoundStart;
 
@@ -92,14 +94,6 @@ private:
 	UPROPERTY()
 	int32 CurrentSelectedCardIndex;
 
-	// The player hud class to add to the player when the game start
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> PLayerHudClass;
-
-	// Keep a reference to the player hud for removing it when the player is unpossessed
-	UPROPERTY()
-	TObjectPtr<UUserWidget> PlayerHud;
-
 	UPROPERTY()
 	TObjectPtr<ACCTileUnit> SelectedUnit;
 
@@ -109,6 +103,7 @@ private:
 
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
+	FOnPlayerEndTurn EndTurnDelegate;
 
 	/** Delegate to call when the selected card change, Needed for Ui */
 	UPROPERTY(BlueprintAssignable)
@@ -166,12 +161,21 @@ public:
 
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void ForceEndTurn();
+
+	// The player hud class to add to the player when the game start
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PLayerHudClass;
+
+	// Keep a reference to the player hud for removing it when the player is unpossessed
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PlayerHud;
 	
 private:
 	UFUNCTION(Server, Unreliable)
 	void SRV_SendQueueOfAction();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+
 public:
 	virtual void UnPossessed() override;
 	
@@ -191,5 +195,4 @@ public:
 
 	UFUNCTION()
 	void SetSelectedUnit(ACCTileUnit* Unit);
-	
 };

@@ -55,6 +55,7 @@ private:
 	UFUNCTION()
 	void OnRep_CurrentState();
 	
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 private:
 	virtual void BeginPlay() override;
@@ -75,6 +76,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentState(EGameState InCurrentState);
+
 
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentState() const {return CurrentState;}

@@ -7,25 +7,76 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2652706-cea1-40c4-a649-73bbfea905bc" name="Changes" comment="">
+    <list default="true" id="71a38f1c-a526-4b0f-9e4f-d64522468760" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/projectSettingsUpdater.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ChessCard.uproject.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCGameState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCBaseState.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCBaseState.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateDrawingCards.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateDrawingCards.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStatePlanification.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStatePlanification.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateResolve.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateResolve.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileUnit.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCTileUnit.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCard.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/CCCardMovementComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/CCGameState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCBaseState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCBaseState.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStatePlanification.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStatePlanification.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStateResolve.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/GameModes/FSM/CCStateResolve.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCGridManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Grid/CCGridManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCTileUnit.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCTileUnit.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Uproject.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2quMf5dvdWPZKtL2ZKjR61uG560" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Uproject.ChessCard.executor": "Run",
+    "git-widget-placeholder": "FeatureReady",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Sneakysunset\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Sneakysunset\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\Sneakysunset\\AppData\\Local\\Symbols\\src"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RunManager">
-    <configuration name="Unnamed" type="Uproject" factoryName="rider.uproject" nameIsGenerated="true">
+    <configuration name="ChessCard" type="Uproject" factoryName="rider.uproject">
       <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/ChessCard.uproject" />
       <configuration_2>
         <option name="CONFIGURATION" value="DebugGame Editor" />
@@ -87,7 +138,22 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="71a38f1c-a526-4b0f-9e4f-d64522468760" name="Changes" comment="" />
+      <created>1735508107229</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1735508107229</updated>
+      <workItem from="1735508109007" duration="4402000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
 </project>

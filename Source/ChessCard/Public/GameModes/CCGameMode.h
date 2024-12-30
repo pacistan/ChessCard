@@ -8,6 +8,7 @@
 #include "Player/CCPlayerPawn.h"
 #include "CCGameMode.generated.h"
 
+class ACCPlayerController;
 class ACCPlayerState;
 class ACCPlayerStart;
 class UCCBaseState;
@@ -40,6 +41,9 @@ protected:
 
 	// Map of all the Action of the players, recup at the end of the Draw State
 	TMap<ACCPlayerState*, TArray<FPlayerActionData>> PlayerActions;
+
+	UPROPERTY()
+	TArray<TObjectPtr<ACCPlayerController>> PlayerControllers;
 
 public:
 	UPROPERTY(BlueprintAssignable)
