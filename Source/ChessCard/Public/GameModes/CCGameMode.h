@@ -96,5 +96,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetTimeOfPlanniningPhase() const { return TimeOfPlanniningPhase; }
+
+	TMap<ACCPlayerState*, TArray<FPlayerActionData>> GetPlayerActionsQueue() {return PlayerActions;}
 	
 };

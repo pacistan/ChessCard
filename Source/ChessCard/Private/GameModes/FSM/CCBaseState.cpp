@@ -21,7 +21,7 @@ void UCCBaseState::OnEnterState()
 
 void UCCBaseState::OnStateTick(float DeltaTime)
 {
-	DEBUG_LOG_CATEGORY(LogFSM,"Tick State: %s", *GetClass()->GetName())
+	//DEBUG_LOG_CATEGORY(LogFSM,"Tick State: %s", *GetClass()->GetName())
 }
 
 void UCCBaseState::OnExitState()

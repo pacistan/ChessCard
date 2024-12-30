@@ -114,6 +114,7 @@ void ACCCard::BeginPlay()
 {
 	Super::BeginPlay();
 	CardUniqueID = FGuid::NewGuid();
+	ConstructCard(CardRowHandle);
 }
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)

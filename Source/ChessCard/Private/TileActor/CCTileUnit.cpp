@@ -5,6 +5,7 @@
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
@@ -12,6 +13,16 @@
 ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	MovementComponent = CreateDefaultSubobject<UCCUnitMovementComponent>(TEXT("Movement"));
+}
+
+FIntPoint ACCTileUnit::GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>& PatternMovement)
+{
+	FIntPoint EndPoint = FIntPoint();
+	for(auto Movement : PatternMovement)
+	{
+		EndPoint += Movement.Direction;
+	}
+	return EndPoint;
 }
 
 void ACCTileUnit::BeginPlay()
@@ -24,7 +35,7 @@ void ACCTileUnit::SetTargetMap()
 {
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
-	GridManager->GetTargetTiles(Pattern, PatternMap);
+	GridManager->GetTargetTiles(Pattern, PatternList);
 }
 
 void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
@@ -37,10 +48,16 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 	   
 	GridManager->UnhighlightTiles();
 
-	for(const auto& MvtData : PatternMap)
+	for(auto& MvtData : PatternList)
 	{
 		FIntPoint Coordinates = CurrentCoordinates;
-		for(auto& Coordinate : MvtData.Value)
+		FIntPoint Destination = Coordinates + GetTravelRelativeCoordinates(MvtData);
+		ACCTile* DestinationTile = GridManager->GetTile(Destination);
+		if(!IsValid(DestinationTile) ||!DestinationTile->IsAccessibleForTeam(Pawn->GetPlayerState<ACCPlayerState>()->GetTeam()))
+		{
+			continue;
+		}
+		for(auto& Coordinate : MvtData)
 		{
 			Coordinates += Coordinate.Direction;
 			ACCTile* Tile = GridManager->GetTile(Coordinates);
@@ -52,6 +69,7 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 				{
 				case EMovementType::Normal:
 					HighlightMode = EHighlightMode::Path;
+					Tile->SetHighlight(true, OnClickTileDelegate, HighlightMode);
 					break;
 				case EMovementType::Stoppable:
 					HighlightMode = EHighlightMode::Normal;
@@ -72,7 +90,33 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 
 void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 {
-	LinkedCard->MoveUnit(Tile, PatternMap[FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum())]);
+	FIntPoint EndPoint = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
+	FIntPoint Travel = EndPoint - CurrentCoordinates;
+	TArray<FPatternMapEndPoint> OutPatternMovement;
+	for(auto PatternMovement : PatternList)
+	{
+		if(Travel == GetTravelRelativeCoordinates(PatternMovement))
+		{
+			OutPatternMovement = PatternMovement;
+			break;
+		}
+	}
+	if(IsValid(MovementPointActorClass) && IsValid(DestinationPointActorClass))
+	{
+		FIntPoint ProgressPoint = CurrentCoordinates;
+		FActorSpawnParameters SpawnParameters;
+		for(int i = 0; i < OutPatternMovement.Num(); i++)
+		{
+			ProgressPoint += OutPatternMovement[i].Direction;
+			FVector PointPosition =  GetGridManager(GetWorld())->CoordinatesToPosition(ProgressPoint);
+			TSubclassOf<AActor> Subclass = i == OutPatternMovement.Num() - 1 ? DestinationPointActorClass : MovementPointActorClass;
+			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
+			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
+			GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters); 
+		}
+	}
+	
+	LinkedCard->MoveUnit(Tile, OutPatternMovement);
 }
 
 void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate,

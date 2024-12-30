@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameModes/FSM/CCBaseState.h"
+#include "Player/CCPlayerState.h"
 #include "CCStatePlanification.generated.h"
 
 
-class ACCPlayerPawn;
+class ACCPlayerState;
 
 UCLASS()
 class CHESSCARD_API UCCStatePlanification : public UCCBaseState
@@ -17,11 +18,11 @@ protected:
 	float CurrentTime;
 
 	UPROPERTY()
-	TArray<ACCPlayerPawn*> ReadyPlayers;
+	TArray<ACCPlayerState*> ReadyPlayers;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 	UFUNCTION()
-	void PlayerEndTurnCallback(ACCPlayerPawn* Player, bool IsEndTurn);
+	void PlayerEndTurnCallback(ACCPlayerState* Player, bool IsEndTurn);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 public:

@@ -20,8 +20,8 @@ void UCCStatePlanification::Initialization()
 void UCCStatePlanification::OnEnterState()
 {
 	GameState->SetCurrentTimeOfPlanniningPhase(CurrentTime);
-	for(auto Player : GameMode->GetPlayerPawns()) {
-		Player->EndTurnDelegate.AddDynamic(this, &UCCStatePlanification::PlayerEndTurnCallback);
+	for(auto Player : GameState->PlayerArray) {
+		Cast<ACCPlayerState>(Player)->EndTurnDelegate.AddDynamic(this, &UCCStatePlanification::PlayerEndTurnCallback);
 	}
 }
 
@@ -52,7 +52,7 @@ void UCCStatePlanification::OnExitState()
 	}
 }
 
-void UCCStatePlanification::PlayerEndTurnCallback(ACCPlayerPawn* Player, bool IsEndTurn)
+void UCCStatePlanification::PlayerEndTurnCallback(ACCPlayerState* Player, bool IsEndTurn)
 {
 	if(IsEndTurn)
 	{

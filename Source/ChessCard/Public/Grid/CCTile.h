@@ -36,7 +36,9 @@ enum class ETileType : uint8
 UENUM()
 enum class EHighlightMode : uint8
 {
-	Normal, Path, Effect
+	Normal UMETA(DisplayName = "Normal"),
+	Path UMETA(DisplayName = "Path"),
+	Effect UMETA(DisplayName = "Effect")
 };
 
 UCLASS()
@@ -71,7 +73,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<EHighlightMode, TObjectPtr<UMaterialInterface>> HighlightMaterial;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	EHighlightMode CurrentHighlightMode;
 	
 	UPROPERTY(EditDefaultsOnly)
@@ -95,15 +97,19 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	int ColumnNum;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	bool IsHovered;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	bool IsHighlighted;
 	
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void BlueprintEditorTick(float DeltaTime);
+
+public:
+	UFUNCTION()
+	void UpdateMaterial();
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -147,6 +153,9 @@ public:
 
 	UFUNCTION()
 	void RemovePiece(ACCPieceBase* Piece);
+
+	UFUNCTION()
+	bool IsAccessibleForTeam(ETeam Team);
 
 	UFUNCTION()
 	bool ContainPiece(){return Pieces.Num() > 0;}
