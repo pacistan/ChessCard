@@ -1,11 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "Card/FCardData.h"
 #include "GameFramework/Actor.h"
 #include "Card/FUnitMovementData.h"
+#include "Interfaces/CCGridManagerInterface.h"
 #include "CCPieceBase.generated.h"
 
 class ACCPlayerState;
@@ -17,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileEffectTriggered, ACCPieceBase
  *  Base class for all the Actor that will be placed on the board
  */
 UCLASS()
-class CHESSCARD_API ACCPieceBase : public AActor
+class CHESSCARD_API ACCPieceBase : public AActor, public ICCGridManagerInterface
 {
 	GENERATED_BODY()
 	/* ------------------------------------------ MEMBERS -------------------------------------------*/
@@ -28,21 +27,38 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
-	TArray<FUnitMovementData> MovementDatas;
-	
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
-	int Level = 1;
-	
-	FIntVector2 Position;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CC|Runtime")
-	ACCPlayerState* OwnerPlayerState;
 
 public:
 	FOnTileEffectTriggered OnDeathEffect;
 	FOnTileEffectTriggered OnSpawnEffect;
 	FOnTileEffectTriggered OnKillEffect;
+
+	UPROPERTY()
+	FGuid UnitGuid;
+
+	UPROPERTY(Replicated)
+	FIntPoint CurrentCoordinates;
+
+	UPROPERTY()
+	FDataTableRowHandle CardDataRowHandle;
+
+	UPROPERTY()
+	ETeam Team;
+	
+	UFUNCTION()
+	void DestroyPiece();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MLC_DestroyPiece();
+	
+	//Init Unit (GUID, Team, TargetMap)
+	UFUNCTION()
+	virtual void InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle
+				  InCardDataRowHandle);
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MLC_InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle
+				  InCardDataRowHandle);
 	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
@@ -50,5 +66,7 @@ public:
 
 	void Initialize(ACCPlayerState* PlayerState, FString RawName, FIntVector2 Position, TArray<FUnitMovementData>& MovementPattern, int Level = 1);  
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
   
 };

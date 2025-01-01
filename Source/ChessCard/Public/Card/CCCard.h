@@ -52,9 +52,6 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category="")
 	ECardState CurrentCardState;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACCPieceBase> PieceClass;
 	
 	UPROPERTY()
 	int32 CardIndex;
@@ -86,22 +83,26 @@ public:
 	void Play(ACCPlayerPawn* Pawn);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void ConstructCard(FDataTableRowHandle RowHandle);
+	void ConstructCard(FCardData RowHandle);
+
+	UFUNCTION()
+	void Initialize();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 protected:
 	UFUNCTION()
-	void SpawnUnit(ACCTile* Tile);
+	void SpawnLocalUnit(ACCTile* Tile);
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void CreateCardVisuals(FDataTableRowHandle DataTableRowHandle);
+	void CreateCardVisuals(FCardData DataTableRowHandle);
 	
 public:
 	UFUNCTION()
-	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData);
+	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit
+	              * Unit);
 
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 

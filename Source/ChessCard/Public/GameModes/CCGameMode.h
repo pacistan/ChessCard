@@ -32,6 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int NumOfPlayersNeeded = 4;
 
+	
 	UPROPERTY(EditAnywhere)
 	float TimeOfPlanniningPhase = 60.f;
 
@@ -39,6 +40,10 @@ protected:
 	UPROPERTY(Transient)
 	TArray<TWeakObjectPtr<ACCPlayerStart>> CachedPlayerStarts;
 
+public:
+	UPROPERTY(EditAnywhere)
+	int BaseNumberOfCardsToDraw;
+	
 	// Map of all the Action of the players, recup at the end of the Draw State
 	TMap<ACCPlayerState*, TArray<FPlayerActionData>> PlayerActions;
 

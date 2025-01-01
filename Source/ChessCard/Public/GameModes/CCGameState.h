@@ -9,6 +9,7 @@
 class ACCPlayerState;
 class ACCPlayerController;
 class ACCGridManager;
+class ACCPieceBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
@@ -40,6 +41,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FGameStateChange OnGameStateChange;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACCPieceBase> PieceClass;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:

@@ -18,16 +18,27 @@ void ACCPlayerState::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ACCPlayerState::SetEndTurn_Implementation(bool bInEndTurn)
+void ACCPlayerState::SetEndTurn(bool bEndTurn)
+{
+	bHasEndedTurn = bEndTurn;
+	if(!HasAuthority())
+	{
+		SRV_SetEndTurn(bHasEndedTurn);
+	}
+	else
+	{
+		EndTurnDelegate.Broadcast(this, bEndTurn);
+	}
+}
+
+void ACCPlayerState::SRV_SetEndTurn_Implementation(bool bInEndTurn)
 {
 	bHasEndedTurn = bInEndTurn;
-	DEBUG_LOG("Is Server = %s, Player : %s", HasAuthority() ? TEXT("true") : TEXT("false"), *UEnum::GetValueAsString(Team));
 	EndTurnDelegate.Broadcast(this, bInEndTurn);
 }
 
 void ACCPlayerState::RPC_SetEndTurn_Implementation(bool bInEndTurn)
 {
-	DEBUG_LOG("Is Server = %s, Player : %s", HasAuthority() ? TEXT("true") : TEXT("false"), *GetName());
 	SetEndTurn(bInEndTurn);
 }
 

@@ -117,7 +117,6 @@ void ACCPlayerController::RPC_CreateHudForPlayer_Implementation()
 	//if (IsLocalController()) {
 		if (InGameUiClass) {
 			InGameHud = CreateWidget<UUserWidget>(this, InGameUiClass);
-			DEBUG_LOG("ADD HUD");
 			if (InGameHud) {
 				InGameHud->AddToViewport();
 			}

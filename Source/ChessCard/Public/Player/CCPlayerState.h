@@ -59,5 +59,8 @@ public:
 	void RPC_SetEndTurn(bool bInEndTurn); 
 
 	UFUNCTION(BlueprintCallable, Server, Unreliable)
-	void SetEndTurn(bool bInEndTurn); 
+	void SRV_SetEndTurn(bool bInEndTurn);
+
+	UFUNCTION(BlueprintCallable)
+	void SetEndTurn(bool bEndTurn);
 };

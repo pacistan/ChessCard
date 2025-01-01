@@ -36,10 +36,13 @@ struct FPlayerActionData
 	/* Id of the card in the hand of the player */
 	UPROPERTY()
 	FGuid CardID;
+
+	UPROPERTY()
+	FGuid UnitID;
 	
 	// Struct of mvt if the card is a movement card (Tarray<FPatternEndpoint>)
+	UPROPERTY()
 	TArray<FPatternMapEndPoint> MovementData;
-
 
 	FPlayerActionData()
 	: CardData(FDataTableRowHandle())
@@ -47,13 +50,26 @@ struct FPlayerActionData
 	{
 	}
 	
-	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, FGuid InCardID, TArray<FPatternMapEndPoint> InMovementData = TArray<FPatternMapEndPoint>())
+	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, FGuid InCardID, FGuid InUnitGuid, TArray<FPatternMapEndPoint> InMovementData = TArray<FPatternMapEndPoint>())
 	: CardData(InCardData)
 	, TargetCoord(InTargetCoord)
 	, CardID(InCardID)
+	, UnitID(InUnitGuid)
 	, MovementData(InMovementData)
 	{
 	}
+};
+
+USTRUCT()
+struct FActionLocalElements
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TObjectPtr<ACCCard> Card;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AActor>> RelatedActors;
 };
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnEndDrawDelegate, ACCPlayerPawn*, Player);
@@ -100,6 +116,9 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TArray<FPlayerActionData> QueueOfPlayerActions;
 
+	UPROPERTY()
+	TArray<FActionLocalElements> QueueOfLocalActionElements;
+
 public:
 	FOnEndDrawDelegate EndDrawDelegate;
 
@@ -122,8 +141,14 @@ public:
 	void RPC_DrawCards(int NumberOfCardsToDraw);
 
 	UFUNCTION(BlueprintCallable, Client, Unreliable)
+	void RPC_ClearActions();
+	
+	UFUNCTION(BlueprintCallable, Client, Unreliable)
 	void RPC_SendQueueOfAction();
 
+	UFUNCTION(Server, Reliable)
+	void SRV_SendQueueOfAction(const TArray<FPlayerActionData>& ActionData);
+	
 	UFUNCTION(BlueprintCallable)
 	void DrawCard();
 
@@ -132,9 +157,6 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void SRV_OnAllCardDrawServer();
-
-	UFUNCTION()
-	void OnEndTurnBtnPressed(bool bIsEndTurn);
 	
 	UFUNCTION(BlueprintCallable)
 	void OnGetMovementCardTrigger();
@@ -152,10 +174,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddPlayerAction(FPlayerActionData Action);
 
-	// Popn the last action of the player in The Owing Client
+	UFUNCTION(BlueprintCallable)
+	void AddPlayerActionClientElement(TArray<AActor*>& Actors, ACCCard* Card);
+	
+	// Pop the last action of the player in The Owing Client. Is it useful?
+	// We can Clear queue on planification Start
 	UFUNCTION(BlueprintCallable)
 	void RemoveLastPlayerAction();
 
+	// Pop Elements on Client as the actions are played out during resolve phase.
+	// Should be called at end of Movement
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void RPC_RemoveFirstActionClientElements();
+	
 	// Clear the Array of Action of the player in The Owing Client
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void ClearPlayerAction();
@@ -171,9 +202,6 @@ public:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> PlayerHud;
 	
-private:
-	UFUNCTION(Server, Unreliable)
-	void SRV_SendQueueOfAction();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

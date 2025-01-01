@@ -33,6 +33,10 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 	
 	if (CurrentTime <= 0)
 	{
+		// Force all player to end their turn
+		for (auto Pawn : GameMode->GetPlayerPawns()) {
+			Pawn->ForceEndTurn();
+		}
 		GameMode->GetFSM()->ChangeStateWithClass(UCCStateResolve::StaticClass());
 		return;
 	}
@@ -40,11 +44,6 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 
 void UCCStatePlanification::OnExitState()
 {
-	// Force all player to end their turn
-	for (auto Pawn : GameMode->GetPlayerPawns()) {
-		Pawn->ForceEndTurn();
-	}
-	
 	// Ask all players to send their queue of actions to the server
 	TArray<ACCPlayerPawn*> Players = GameMode->GetPlayerPawns();
 	for(auto Player : Players) {

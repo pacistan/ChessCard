@@ -19,8 +19,10 @@ void UCCStateDrawingCards::OnEnterState()
 	Super::OnEnterState();
 	for(auto Player : Players) {
 		Player->EndDrawDelegate.BindDynamic(this, &UCCStateDrawingCards::OnPlayerEndDraw);
-		Player->RPC_DrawCards(5);
+		Player->RPC_DrawCards(GameMode->BaseNumberOfCardsToDraw);
+		Player->RPC_ClearActions();
 	}
+	GameMode->PlayerActions.Empty();
 }
 
 void UCCStateDrawingCards::OnPlayerEndDraw(ACCPlayerPawn* Player)

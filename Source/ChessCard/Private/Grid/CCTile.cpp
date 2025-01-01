@@ -23,9 +23,8 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 	}
 	IsHighlighted = bIsHighlight;
 
-	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : nullptr;
-	MeshComponent->SetOverlayMaterial(Material);
-
+	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : MaterialMap[TileType];
+	MeshComponent->SetMaterial(0, Material); 
 	CurrentHighlightMode = HighlightMode;
 	OnClickEvent = OnClickDelegate;
 	  
@@ -33,8 +32,6 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 	check(GridManager);
 	if(IsHighlighted)
 	{
-		FString EnumName = FindObject<UEnum>(ANY_PACKAGE, TEXT("EHighlightMode"), true)->GetNameStringByValue(static_cast<int64>(HighlightMode));
-		//DEBUG_LOG("%i %i To Highlight, with Mode %s, FunctionName is: %s", RowNum, ColumnNum, *EnumName, *OnClickDelegate.GetFunctionName().ToString());
 		GridManager->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Highlighted);
 	}
 	else
@@ -47,8 +44,6 @@ void ACCTile::Click(ACCPlayerPawn* Player)
 {
 	if(IsHighlighted)
 	{
-		FString EnumName = FindObject<UEnum>(ANY_PACKAGE, TEXT("EHighlightMode"), true)->GetNameStringByValue(static_cast<int64>(CurrentHighlightMode));
-		DEBUG_LOG("%i %i Is Clicked, with Mode %s, FunctionName is: %s", RowNum, ColumnNum, *EnumName, *OnClickEvent.GetFunctionName().ToString());
 		OnClickEvent.ExecuteIfBound(this);
 		Player->PlaySelectedCard(this);
 	}
@@ -59,7 +54,7 @@ void ACCTile::StartHover(ACCPlayerPawn* Player)
 	IsHovered = true;
 	if(IsHighlighted && CurrentHighlightMode == EHighlightMode::Normal)
 	{
-		MeshComponent->SetOverlayMaterial(HoveredMaterial);
+		MeshComponent->SetMaterial(0, HoveredMaterial);
 	}
 }
 
@@ -67,8 +62,8 @@ void ACCTile::StopHover(ACCPlayerPawn* Player)
 {
 	IsHovered = false;
 
-	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial[CurrentHighlightMode] : nullptr;
-	MeshComponent->SetOverlayMaterial(Material);
+	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial[CurrentHighlightMode] : MaterialMap[TileType];
+	MeshComponent->SetMaterial(0, Material);
 }
 
 void ACCTile::BeginPlay()
@@ -119,7 +114,6 @@ void ACCTile::UpdateMaterial()
 	MeshComponent->SetMaterial(0, MaterialMap[TileType]);
 }
 
-
 bool ACCTile::ShouldTickIfViewportsOnly() const
 {
 	if (GetWorld() != nullptr && GetWorld()->WorldType == EWorldType::Editor)
@@ -132,7 +126,21 @@ bool ACCTile::ShouldTickIfViewportsOnly() const
 	}
 }
 
-void ACCTile::AddPieceLocal(ACCPieceBase* Piece)
+void ACCTile::AddPiece(ACCPieceBase* Piece)
+{
+	if(Pieces.Num() == 0)
+	{
+		GetGridManager(GetWorld())->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
+	}
+	if(Pieces.Contains(Piece))
+	{
+		DEBUG_ERROR("Piece %s already in Tile %s", *Piece->GetName(), *GetName());
+		return;
+	}
+	Pieces.Add(Piece);
+}
+
+void ACCTile::MLC_AddPiece_Implementation(ACCPieceBase* Piece)
 {
 	if(Pieces.Num() == 0)
 	{
@@ -148,7 +156,6 @@ void ACCTile::AddPieceLocal(ACCPieceBase* Piece)
 
 void ACCTile::RemovePiece(ACCPieceBase* Piece)
 {
-	Pieces.Add(Piece);
 	if(!Pieces.Contains(Piece))
 	{
 		DEBUG_ERROR("Piece %s already in Tile %s", *Piece->GetName(), *GetName());
@@ -159,6 +166,10 @@ void ACCTile::RemovePiece(ACCPieceBase* Piece)
 	{
 		GetGridManager(GetWorld())->UnregisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
 	}
+}
+
+void ACCTile::MLC_RemovePiece_Implementation(ACCPieceBase* Piece)
+{
 }
 
 bool ACCTile::IsAccessibleForTeam(ETeam Team)
@@ -185,4 +196,17 @@ bool ACCTile::IsAccessibleForTeam(ETeam Team)
 		Result = true;
 	}
 	return Result;
+}
+
+ACCPieceBase* ACCTile::GetPiece(FGuid TargetID)
+{
+	for(auto Piece : Pieces)
+	{
+		if(Piece->UnitGuid == TargetID)
+		{
+			return Piece;
+		}
+	}
+
+	return nullptr;
 }
