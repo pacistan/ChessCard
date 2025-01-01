@@ -16,8 +16,9 @@
 ACCCard::ACCCard()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	CCRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Card Sleeve"));
-	RootComponent = CardMesh;
+	RootComponent = CCRootComponent;
 	if(!IsValid(CardMesh->GetStaticMesh()))
 	{
 		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Cube.Cube"));

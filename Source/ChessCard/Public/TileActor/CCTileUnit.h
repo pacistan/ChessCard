@@ -93,11 +93,7 @@ public:
 	UFUNCTION()
 	void SetTargetMap();
 
-	UFUNCTION()
-	ETeam GetTeam() {return Team;};
 
-	UFUNCTION()
-	void SetTeam(ETeam InTeam) {Team = InTeam;}
 
 	UFUNCTION()
 	bool GetIsMoved(){return IsMoved;}

@@ -33,7 +33,7 @@ struct FMaterialArrayWrapper
 	TArray<UMaterialInterface*> Materials;
 };
 
-UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
+UCLASS(HideCategories(Collision, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
 class CHESSCARD_API ACCCard : public AActor, public ISelectable, public IHoverable, public ICCGridManagerInterface
 {
 	GENERATED_BODY()
@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UStaticMeshComponent> CardMesh;
 
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<USceneComponent> CCRootComponent;
+	
 	FGuid CardUniqueID;
 	
 	UPROPERTY(VisibleAnywhere, Category="")

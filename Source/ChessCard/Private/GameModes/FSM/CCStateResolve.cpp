@@ -31,6 +31,17 @@ void UCCStateResolve::OnStateTick(float DeltaTime)
 void UCCStateResolve::OnExitState()
 {
 	Super::OnExitState();
+	
+	FTileTypeDelegate TileTypeDelegate;
+	auto Lambda = [this](ACCTile* Tile)
+	{
+		for(auto Unit : Tile->GetPieces())
+		{
+			//TODO : Add Score to Team
+			//GameState->AddScore(Unit->GetTeam());
+		}	
+	};
+	GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::ScoreTile,TileTypeDelegate);
 }
 
 void UCCStateResolve::OnAllPlayerQueuesSent()
@@ -93,7 +104,6 @@ void UCCStateResolve::StartNewAction()
 				Unit->MovementComponent->StartMovement(Action.TargetCoord, Action, TileActorMovementDelegate, Queue.Key);
 				
 				TargetTile->RemovePiece(Unit);
-
 				FIntPoint EndMovementCoordinates = Unit->CurrentCoordinates;
 				for(auto MvtData : Action.MovementData) EndMovementCoordinates += MvtData.Direction; 
 				ACCTile* EndMovementTile = GameState->GetGridManager()->GetTile(EndMovementCoordinates);
@@ -144,6 +154,14 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 	{
 		ACCPlayerPawn* PlayerPawn = PlayerState->GetPawn<ACCPlayerPawn>();
 		PlayerPawn->RPC_RemoveFirstActionClientElements();
+
+		if(ACCTile* PieceTile = GameState->GetGridManager()->GetTile(LastPiece->CurrentCoordinates))
+		{
+			if(PieceTile->GetTileType() == ETileType::BonusTile)
+			{
+				GameMode->BonusTileMap[PieceTile] = LastPiece->GetTeam();
+			}
+		}
 	}
 	else
 	{

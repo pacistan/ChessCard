@@ -3,6 +3,7 @@
 #include "EngineUtils.h"
 #include "GameModes/CCGameState.h"
 #include "GameModes/FSM/CCFSM.h"
+#include "Grid/CCGridManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerController.h"
@@ -124,13 +125,11 @@ void ACCGameMode::StartPlaySequence()
 	
 	// Add Player HUD to each player (Maybe move in a Init State ?)
 	TArray<ACCPlayerPawn*> Players = GetPlayerPawns();
-	for (auto Player : Players) {
+	for (auto Player : Players)
+	{
 		Player->AddPlayerHud();
 	}
-	/*for(auto PlayerController : PlayerControllers)
-	{
-		PlayerController->RPC_CreateHudForPlayer();
-	}*/
+	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->InitializeBonusTileMap();
 }
 
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)

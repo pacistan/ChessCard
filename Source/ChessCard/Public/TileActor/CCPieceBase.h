@@ -64,9 +64,13 @@ public:
 public:
 	ACCPieceBase( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void Initialize(ACCPlayerState* PlayerState, FString RawName, FIntVector2 Position, TArray<FUnitMovementData>& MovementPattern, int Level = 1);  
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-  
+
+	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
+public:
+	ETeam GetTeam() {return Team;};
+
+	UFUNCTION()
+	void SetTeam(ETeam InTeam) {Team = InTeam;}
 };

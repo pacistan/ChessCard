@@ -83,6 +83,9 @@ public:
 	UFUNCTION()
 	ACCTile* GetTile(FIntPoint Coordinates);
 
+	UFUNCTION()
+	void InitializeBonusTileMap();
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:
 	virtual void BeginPlay() override;

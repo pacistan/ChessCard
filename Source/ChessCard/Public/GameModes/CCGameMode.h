@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
@@ -13,6 +11,7 @@ class ACCPlayerState;
 class ACCPlayerStart;
 class UCCBaseState;
 class UCCFSM;
+enum class ETeam : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUserLogin, AController*, NewPlayer);
 
@@ -31,7 +30,6 @@ protected:
 	// Number of players needed to start the game (default 4)
 	UPROPERTY(EditAnywhere)
 	int NumOfPlayersNeeded = 4;
-
 	
 	UPROPERTY(EditAnywhere)
 	float TimeOfPlanniningPhase = 60.f;
@@ -50,6 +48,9 @@ public:
 	UPROPERTY()
 	TArray<TObjectPtr<ACCPlayerController>> PlayerControllers;
 
+	UPROPERTY()
+	TMap<ACCTile*, ETeam> BonusTileMap;
+	
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnUserLogin OnUserPostLogin;
@@ -66,7 +67,6 @@ public:
 	
 	void AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions);
 
-	// TODO : Clear the map PlayerActions at the end of the resolve phase
 	
 private:
 	void OnLevelAdded(ULevel* InLevel, UWorld* InWorld);
