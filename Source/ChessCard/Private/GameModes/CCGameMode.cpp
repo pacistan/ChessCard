@@ -129,7 +129,7 @@ void ACCGameMode::StartPlaySequence()
 
 	// Init the Size of the Array for teh Score of the game 
 	if (ACCGameState* CCGameState = Cast<ACCGameState>(GameState)) {
-		CCGameState->InitScoreArray(NumOfPlayersNeeded);
+		CCGameState->InitScoreArray();
 	}
 }
 

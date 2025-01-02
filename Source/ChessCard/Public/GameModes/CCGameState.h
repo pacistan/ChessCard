@@ -10,9 +10,21 @@ class ACCPlayerState;
 class ACCPlayerController;
 class ACCGridManager;
 
+USTRUCT(BlueprintType)
+struct FPlayerScore
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	TArray<APlayerState*> PlayerStates;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	TArray<int> Score;
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdate, TArray<int>, Score); 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdate, FPlayerScore, Score); 
 
 UCLASS()
 class CHESSCARD_API ACCGameState : public AGameStateBase
@@ -32,11 +44,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<ACCPlayerController*> PlayerControllers;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Replicated, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
 	float CurrentTimeOfPlanniningPhase = 60.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, ReplicatedUsing = OnRep_Score)
-	TArray<int> Score;
+	FPlayerScore PlayerScore;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -60,7 +72,7 @@ public:
 	void AddPointToPlayer(APlayerState* Player);
 	
 	UFUNCTION(BlueprintCallable)
-	void InitScoreArray(int NumberOfPlayer);
+	void InitScoreArray();
 
 private:
 	UFUNCTION()
