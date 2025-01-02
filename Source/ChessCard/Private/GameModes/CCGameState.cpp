@@ -36,20 +36,29 @@ bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
 
 void ACCGameState::AddPointToPlayer(APlayerState* Player)
 {
-	if (int index = PlayerArray.IndexOfByKey(Player)) {
-		if (Score.IsValidIndex(index)) {
-			Score[index] = Score[index]++;
+	if (!IsValid(Player) || !PlayerScore.PlayerStates.Contains(Player)) {
+		DEBUG_ERROR("try to update Score with a non valid Player")
+		return;
+	}
+	
+	int index = PlayerScore.PlayerStates.Find(Player);
+	
+	if (index != INDEX_NONE) {
+		if (PlayerScore.Score.IsValidIndex(index)) {
+			PlayerScore.Score[index]++;
 		} else {
 			DEBUG_ERROR("try to update Score with a non valid Index")
-		}
-	} 
-
-	OnScoreUpdate.Broadcast(Score);
+			return;
+		} 
+	}
+	
+	OnScoreUpdate.Broadcast(PlayerScore);
 }
 
-void ACCGameState::InitScoreArray(int NumberOfPlayer)
+void ACCGameState::InitScoreArray()
 {
-	Score.Init(NumberOfPlayer, 0);
+	PlayerScore.PlayerStates = PlayerArray;
+	PlayerScore.Score.Init(0, PlayerScore.PlayerStates.Num());
 }
 
 void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
@@ -64,7 +73,7 @@ void ACCGameState::OnRep_CurrentState()
 
 void ACCGameState::OnRep_Score()
 {
-	OnScoreUpdate.Broadcast(Score);
+	OnScoreUpdate.Broadcast(PlayerScore);
 }
 
 void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -73,7 +82,7 @@ void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
     DOREPLIFETIME(ACCGameState, GridManager);
 	DOREPLIFETIME(ACCGameState, CurrentTimeOfPlanniningPhase);
 	DOREPLIFETIME(ACCGameState, CurrentState);
-	DOREPLIFETIME(ACCGameState, Score);
+	DOREPLIFETIME(ACCGameState, PlayerScore);
 	
 }
 
