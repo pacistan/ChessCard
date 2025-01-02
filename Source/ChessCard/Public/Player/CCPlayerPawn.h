@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Card/FCardData.h"
+#include "Deck/CCDeckComponent.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
@@ -18,6 +19,7 @@ class UCCHandComponent;
 class UCCDeckComponent;
 class UCameraComponent;
 class ACCTile;
+enum class EAddCardType : uint8;
 
 // Data structure to store the action of the player 
 USTRUCT(BlueprintType)
@@ -118,8 +120,21 @@ private:
 
 	UPROPERTY()
 	TArray<FActionLocalElements> QueueOfLocalActionElements;
+	
+public:
+	// The player hud class to add to the player when the game start
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PLayerHudClass;
+
+	// Keep a reference to the player hud for removing it when the player is unpossessed
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PlayerHud;
+
+	UPROPERTY(EditAnywhere)
+	int MaxNumberOfCardsInHand;
 
 public:
+	UPROPERTY()
 	FOnEndDrawDelegate EndDrawDelegate;
 
 	/** Delegate to call when the selected card change, Needed for Ui */
@@ -165,7 +180,8 @@ public:
 	void DrawMovementCard();
 
 	UFUNCTION()
-	void RemoveCardFromHand();
+	void RemoveSelectedCardFromHand();
+	void RemoveLastDrawnCardFromHand();
 
 	/** Add the Player HUD to the player, need to be call on Start of the game */
 	UFUNCTION(Client, Unreliable)
@@ -194,14 +210,8 @@ public:
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void ForceEndTurn();
 
-	// The player hud class to add to the player when the game start
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> PLayerHudClass;
-
-	// Keep a reference to the player hud for removing it when the player is unpossessed
-	UPROPERTY()
-	TObjectPtr<UUserWidget> PlayerHud;
-	
+	UFUNCTION(Client, Reliable)
+	void RPC_AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType InAddCardType = EAddCardType::Random);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

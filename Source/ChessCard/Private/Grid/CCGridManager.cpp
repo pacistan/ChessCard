@@ -62,11 +62,39 @@ FVector ACCGridManager::CoordinatesToPosition(FIntPoint Coordinates)
 	return FVector(Coordinates.X * ((TileWidth + TileSpacingWidth) * 100), Coordinates.Y * ((TileWidth + TileSpacingWidth) * 100), 0);
 }
 
+ACCTile* ACCGridManager::GetValidRandomAdjacentTile(ACCTile* OriginTile, bool AcceptOccupiedTiles)
+{
+	TArray<ACCTile*> AdjacentTiles;
+	for(int i = -1; i <= 1; i++)
+	{
+		for(int j = -1; j <= 1; j++)
+		{
+			int X = OriginTile->GetRowNum() + i;
+			int Y = OriginTile->GetColumnNum() + i;
+			if(X >= 0 && X < Grid.Num() && Y >= 0 && Y < Grid[0].Num())
+			{
+				bool ConditionOccupied = AcceptOccupiedTiles ? true : Grid[X][Y]->GetPieces().IsEmpty();
+				ETileType TargetTileType = Grid[X][Y]->GetTileType();
+				bool ConditionTileType = TargetTileType	== ETileType::BonusTile
+					|| TargetTileType	== ETileType::Normal
+					|| TargetTileType	== ETileType::ScoreTile;
+				if(ConditionOccupied && ConditionTileType)
+				{
+					AdjacentTiles.Add(Grid[X][Y]);
+				}
+			}
+		}
+	}
+	return AdjacentTiles[FMath::RandRange(0, AdjacentTiles.Num() - 1)];
+}
+
 void ACCGridManager::GetTargetTiles(TArray<FUnitMovementData>& OutMovementData,
-	TArray<TArray<FPatternMapEndPoint>>& PatternList)
+                                    TArray<TArray<FPatternMapEndPoint>>& PatternList)
 {
 	TArray<FPatternMapEndPoint> BaseArray;
 	BaseArray.Reserve(OutMovementData.Num());
+
+	if(OutMovementData.IsEmpty()) return;
 	
 	bool IsPotentialEnd;
 	if(OutMovementData[0].MovementDirection == EMovementDirection::Diagonal)

@@ -15,7 +15,9 @@ void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(ACCPieceBase, InitilizationProperties);
 	DOREPLIFETIME(ACCPieceBase, CurrentCoordinates);
+	DOREPLIFETIME(ACCPieceBase, IsInitialized);
 }
 
 void ACCPieceBase::DestroyPiece()
@@ -30,17 +32,27 @@ void ACCPieceBase::MLC_DestroyPiece_Implementation()
 	Destroy();
 }
 
-void ACCPieceBase::InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle)
+void ACCPieceBase::InitUnit(const FInitilizationProperties& InInitilizationProperties)
 {
-	CurrentCoordinates = StartCoordinates;
-	CardDataRowHandle = InCardDataRowHandle;
-	Team = InTeam;
-	UnitGuid = NewGuid;
-	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
+	InitilizationProperties = InInitilizationProperties;
+	IsInitialized = true;
+	InternalInit();
 }
 
-void ACCPieceBase::MLC_InitUnit_Implementation(FIntPoint StartCoordinates, ETeam InTeam,
-	const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle)
+void ACCPieceBase::InternalInit()
 {
-	InitUnit(StartCoordinates, InTeam, InPattern, NewGuid, InCardDataRowHandle);
+	CurrentCoordinates = InitilizationProperties.Coordinates;
+	CardDataRowHandle = InitilizationProperties.CardDataRowHandle;
+	Team = InitilizationProperties.Team;
+	UnitGuid = InitilizationProperties.InstanceID;
+	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
+	IsInitialized = true;
+}
+
+void ACCPieceBase::OnRep_InitProperties()
+{
+	if(!IsInitialized)
+	{
+		InternalInit();
+	}
 }

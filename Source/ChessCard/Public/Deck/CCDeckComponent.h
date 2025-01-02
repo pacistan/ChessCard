@@ -5,7 +5,8 @@
 
 #include "CCDeckComponent.generated.h"
 
-
+UENUM()
+enum class EAddCardType :uint8{ Top, Bottom, Random };
 class ACCCard;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), HideCategories(Variable, "Sockets", Tags, Component_Tick, Component_Replication, Activation, Cooking, Events, Asset_User_Data, Replication, Navigation))
@@ -27,8 +28,12 @@ public:
 	FVector DeckPosition;
 	
 	/* -----------------------------------------FUNCTIONS -------------------------------------------*/
+	UFUNCTION()
 	ACCCard* CreateCard();
 
+	UFUNCTION()
+	void AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType = EAddCardType::Random);
+	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:
 	virtual void BeginPlay() override;

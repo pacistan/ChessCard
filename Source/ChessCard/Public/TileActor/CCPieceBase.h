@@ -7,10 +7,35 @@
 #include "Interfaces/CCGridManagerInterface.h"
 #include "CCPieceBase.generated.h"
 
+enum class ETeam : uint8;
 class ACCPlayerState;
 class ACCPlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileEffectTriggered, ACCPieceBase* , Owner);
+
+USTRUCT()
+struct FInitilizationProperties
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FIntPoint Coordinates;
+
+	UPROPERTY()
+	ETeam Team;
+
+	UPROPERTY()
+	FGuid InstanceID;
+
+	UPROPERTY()
+	FDataTableRowHandle CardDataRowHandle;
+
+	FInitilizationProperties(){}
+	
+	FInitilizationProperties(FIntPoint InCoordinates, ETeam InTeam, FGuid InInstanceID, FDataTableRowHandle InCardDataRowHandle):
+	Coordinates(InCoordinates), Team(InTeam), InstanceID(InInstanceID), CardDataRowHandle(InCardDataRowHandle){}
+};
 
 /**
  *  Base class for all the Actor that will be placed on the board
@@ -33,6 +58,12 @@ public:
 	FOnTileEffectTriggered OnSpawnEffect;
 	FOnTileEffectTriggered OnKillEffect;
 
+	UPROPERTY(ReplicatedUsing = OnRep_InitProperties)
+	FInitilizationProperties InitilizationProperties;
+
+	UPROPERTY(Replicated)
+	bool IsInitialized;
+	
 	UPROPERTY()
 	FGuid UnitGuid;
 
@@ -45,6 +76,10 @@ public:
 	UPROPERTY()
 	ETeam Team;
 	
+	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
+public:
+	ACCPieceBase( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 	UFUNCTION()
 	void DestroyPiece();
 
@@ -53,17 +88,14 @@ public:
 	
 	//Init Unit (GUID, Team, TargetMap)
 	UFUNCTION()
-	virtual void InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle
-				  InCardDataRowHandle);
+	virtual void InitUnit(const FInitilizationProperties& InInitializationProperties);
 
-	UFUNCTION(NetMulticast, Reliable)
-	virtual void MLC_InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle
-				  InCardDataRowHandle);
+	UFUNCTION()
+	virtual void InternalInit();
+
+	UFUNCTION()
+	void OnRep_InitProperties();
 	
-	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
-public:
-	ACCPieceBase( const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

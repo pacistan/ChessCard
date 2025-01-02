@@ -6,6 +6,7 @@
 #include "GameModes/FSM/CCFSM.h"
 #include "CCGameState.generated.h"
 
+class UCCEffectManagerComponent;
 class ACCPlayerState;
 class ACCPlayerController;
 class ACCGridManager;
@@ -38,6 +39,9 @@ protected:
 	UPROPERTY(Replicated)
 	TObjectPtr<ACCGridManager> GridManager;
 
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UCCEffectManagerComponent> EffectManager;
+	
 	UPROPERTY(Replicated, ReplicatedUsing = OnRep_CurrentState)
 	EGameState CurrentState;
 
