@@ -130,6 +130,9 @@ public:
 	UPROPERTY()
 	TObjectPtr<UUserWidget> PlayerHud;
 
+	UPROPERTY(EditAnywhere)
+	int MaxNumberOfCardsInHand;
+
 public:
 	UPROPERTY()
 	FOnEndDrawDelegate EndDrawDelegate;
