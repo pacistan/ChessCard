@@ -126,6 +126,11 @@ void ACCGameMode::StartPlaySequence()
 	for (auto Player : Players) {
 		Player->AddPlayerHud();
 	}
+
+	// Init the Size of the Array for teh Score of the game 
+	if (ACCGameState* CCGameState = Cast<ACCGameState>(GameState)) {
+		CCGameState->InitScoreArray(NumOfPlayersNeeded);
+	}
 }
 
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)
