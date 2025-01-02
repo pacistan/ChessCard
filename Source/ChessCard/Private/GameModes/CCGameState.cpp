@@ -34,6 +34,33 @@ bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
 	return PlayerControllers.AddUnique(PlayerController) != INDEX_NONE;
 }
 
+void ACCGameState::AddPointToPlayer(APlayerState* Player)
+{
+	if (!IsValid(Player) || !PlayerScore.PlayerStates.Contains(Player)) {
+		DEBUG_ERROR("try to update Score with a non valid Player")
+		return;
+	}
+	
+	int index = PlayerScore.PlayerStates.Find(Player);
+	
+	if (index != INDEX_NONE) {
+		if (PlayerScore.Score.IsValidIndex(index)) {
+			PlayerScore.Score[index]++;
+		} else {
+			DEBUG_ERROR("try to update Score with a non valid Index")
+			return;
+		} 
+	}
+	
+	OnScoreUpdate.Broadcast(PlayerScore);
+}
+
+void ACCGameState::InitScoreArray()
+{
+	PlayerScore.PlayerStates = PlayerArray;
+	PlayerScore.Score.Init(0, PlayerScore.PlayerStates.Num());
+}
+
 void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
 {
 	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
@@ -44,12 +71,19 @@ void ACCGameState::OnRep_CurrentState()
 	OnGameStateChange.Broadcast(CurrentState);
 }
 
+void ACCGameState::OnRep_Score()
+{
+	OnScoreUpdate.Broadcast(PlayerScore);
+}
+
 void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ACCGameState, GridManager);
 	DOREPLIFETIME(ACCGameState, CurrentTimeOfPlanniningPhase);
 	DOREPLIFETIME(ACCGameState, CurrentState);
+	DOREPLIFETIME(ACCGameState, PlayerScore);
+	
 }
 
 ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
