@@ -23,18 +23,6 @@ struct FPlayerScore
 	TArray<int> Score;
 };
 
-USTRUCT(BlueprintType)
-struct FPlayerScore
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	TArray<APlayerState*> PlayerStates;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	TArray<int> Score;
-};
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdate, FPlayerScore, Score); 
@@ -76,10 +64,6 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACCPieceBase> PieceClass;
-	
-	// Call back Ui for Score 
-	UPROPERTY(BlueprintAssignable)
-	FOnScoreUpdate OnScoreUpdate;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
