@@ -13,6 +13,7 @@ class ACCPieceBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdate, TArray<int>, Score); 
 
 UCLASS()
 class CHESSCARD_API ACCGameState : public AGameStateBase
@@ -34,6 +35,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Replicated, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
 	float CurrentTimeOfPlanniningPhase = 60.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, ReplicatedUsing = OnRep_Score)
+	TArray<int> Score;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -41,9 +45,13 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FGameStateChange OnGameStateChange;
-
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACCPieceBase> PieceClass;
+	
+	// Call back Ui for Score 
+	UPROPERTY(BlueprintAssignable)
+	FOnScoreUpdate OnScoreUpdate;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -52,6 +60,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool AddPlayerController(ACCPlayerController* PlayerController);
 
+	UFUNCTION(BlueprintCallable)
+	void AddPointToPlayer(APlayerState* Player);
+	
+	UFUNCTION(BlueprintCallable)
+	void InitScoreArray(int NumberOfPlayer);
+
 private:
 	UFUNCTION()
 	void OnRep_CurrentTimeOfPlanniningPhase();
@@ -59,6 +73,8 @@ private:
 	UFUNCTION()
 	void OnRep_CurrentState();
 	
+	UFUNCTION()
+	void OnRep_Score();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 private:

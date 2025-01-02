@@ -129,7 +129,13 @@ void ACCGameMode::StartPlaySequence()
 	{
 		Player->AddPlayerHud();
 	}
+
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->InitializeBonusTileMap();
+
+	// Init the Size of the Array for teh Score of the game 
+	if (ACCGameState* CCGameState = Cast<ACCGameState>(GameState)) {
+		CCGameState->InitScoreArray(NumOfPlayersNeeded);
+	}
 }
 
 void ACCGameMode::AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions)

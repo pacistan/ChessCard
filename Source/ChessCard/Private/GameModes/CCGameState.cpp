@@ -34,6 +34,24 @@ bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
 	return PlayerControllers.AddUnique(PlayerController) != INDEX_NONE;
 }
 
+void ACCGameState::AddPointToPlayer(APlayerState* Player)
+{
+	if (int index = PlayerArray.IndexOfByKey(Player)) {
+		if (Score.IsValidIndex(index)) {
+			Score[index] = Score[index]++;
+		} else {
+			DEBUG_ERROR("try to update Score with a non valid Index")
+		}
+	} 
+
+	OnScoreUpdate.Broadcast(Score);
+}
+
+void ACCGameState::InitScoreArray(int NumberOfPlayer)
+{
+	Score.Init(NumberOfPlayer, 0);
+}
+
 void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
 {
 	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
@@ -44,12 +62,19 @@ void ACCGameState::OnRep_CurrentState()
 	OnGameStateChange.Broadcast(CurrentState);
 }
 
+void ACCGameState::OnRep_Score()
+{
+	OnScoreUpdate.Broadcast(Score);
+}
+
 void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ACCGameState, GridManager);
 	DOREPLIFETIME(ACCGameState, CurrentTimeOfPlanniningPhase);
 	DOREPLIFETIME(ACCGameState, CurrentState);
+	DOREPLIFETIME(ACCGameState, Score);
+	
 }
 
 ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
