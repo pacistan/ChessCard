@@ -17,23 +17,24 @@ ACCCard::ACCCard()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	CCRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Card Sleeve"));
 	RootComponent = CCRootComponent;
-	if(!IsValid(CardMesh->GetStaticMesh()))
-	{
-		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Cube.Cube"));
-		CardMesh->SetStaticMesh(MeshRef.Object);
-	}
+	//CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Card Sleeve"));
+	//CardMesh->SetupAttachment(CCRootComponent);
+	//if(!IsValid(CardMesh->GetStaticMesh()))
+	//{
+	//	ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	//	CardMesh->SetStaticMesh(MeshRef.Object);
+	//}
 	CardMovement = CreateDefaultSubobject<UCCCardMovementComponent>(TEXT("Card Movement"));
 }
 
-void ACCCard::UpdateMaterials()
+/*void ACCCard::UpdateMaterials()
 {
 	for(int i = 0; i < MaterialMap[CurrentCardState].Materials.Num(); i++)
 	{
 		CardMesh->SetMaterial(i, MaterialMap[CurrentCardState].Materials[i]);
 	}
-}
+}*/
 
 void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 {
@@ -144,9 +145,8 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 	UnitSpawnParams.bNoFail = true;
 	
 	ACCTileUnit* Unit =  GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
-	//Tile->AddPiece(Unit);
-	Unit->InitUnit(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()) ,
-	               OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), CardRowHandle.GetRow<FCardData>( GetNameSafe(this))->Pattern, FGuid::NewGuid(), CardRowHandle);
+	Unit->InitUnit(FInitilizationProperties(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()) ,
+				   OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), FGuid::NewGuid(), CardRowHandle));
 
 	Unit->SetReplicates(false);
 	GetGridManager(GetWorld())->UnhighlightTiles();

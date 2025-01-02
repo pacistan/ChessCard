@@ -122,7 +122,7 @@ void UCCStateResolve::StartNewAction()
 			UnitSpawnParams.bNoFail = true;
 			
 			ACCTileUnit* Unit = GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
-			check(Unit);
+			Unit->InitUnit(FInitilizationProperties(Action.TargetCoord, Queue.Key->GetTeam(), Action.UnitID, Action.CardData));
 			
 			//Delete Preview
 			Queue.Key->GetPawn<ACCPlayerPawn>()->RPC_RemoveFirstActionClientElements();
@@ -162,14 +162,6 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 				GameMode->BonusTileMap[PieceTile] = LastPiece->GetTeam();
 			}
 		}
-	}
-	else
-	{
-		ACCTile* PieceTile = GameState->GetGridManager()->GetTile(LastAction.TargetCoord);
-
-		auto Pattern = LastAction.CardData.GetRow<FCardData>( GetNameSafe(this))->Pattern;
-		LastPiece->MLC_InitUnit(FIntPoint(PieceTile->GetRowNum(), PieceTile->GetColumnNum()) ,
-						   PlayerState->GetTeam(), Pattern, LastAction.UnitID, LastAction.CardData);
 	}
 
 	ACCTile* NewTile = GameState->GetGridManager()->GetTile(LastPiece->CurrentCoordinates);

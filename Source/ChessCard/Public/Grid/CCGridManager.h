@@ -51,8 +51,12 @@ private:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
+	UFUNCTION()
 	FVector CoordinatesToPosition(FIntPoint Coordinates);
 
+	UFUNCTION()
+	ACCTile* GetValidRandomAdjacentTile(ACCTile* OriginTile, bool AcceptOccupiedTiles = false);
+	
 	// On Unit Spawn we create the Pattern Map. We want to get all possible path the unit can make when moving.
 	// We want to store those paths for Movement and highlighting.
 	// This process would be the same for every instance of the same unit type. It could perhaps be moved out of the game loop.

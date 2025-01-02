@@ -59,6 +59,7 @@ void ACCPlayerPawn::RPC_ClearActions_Implementation()
 
 void ACCPlayerPawn::DrawCard()
 {
+	
 	if(NumberOfCardsToDrawThisRound == NumberOfCardDrawnOnRoundStart)
 	{
 		SRV_OnAllCardDrawServer();
@@ -68,7 +69,12 @@ void ACCPlayerPawn::DrawCard()
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
 
+	
 	ACCCard* Card = DeckComponent->CreateCard();
+	if(Card->CardRowHandle.GetRow<FCardData>(TEXT(""))->CardName == TEXT("Gold"))
+	{
+		OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveLastDrawnCardFromHand);
+	}
 	Card->Initialize();
 	Card->SetOwningPawn(this);
 	NumberOfCardDrawnOnRoundStart++;
@@ -91,7 +97,7 @@ void ACCPlayerPawn::OnGetMovementCardTrigger()
 		return;
 	}
 	FOnCardMovementEnd CardMovementEnd;
-	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveCardFromHand);
+	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawMovementCard);
 	HandComponent->SendSelectedCardToMovementDeck(CurrentSelectedCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
 }
@@ -105,10 +111,15 @@ void ACCPlayerPawn::DrawMovementCard()
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
-void ACCPlayerPawn::RemoveCardFromHand()
+void ACCPlayerPawn::RemoveSelectedCardFromHand()
 {
 	HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
 	SetCurrentSelectedCardIndex(-1);
+}
+
+void ACCPlayerPawn::RemoveLastDrawnCardFromHand()
+{
+	HandComponent->RemoveCardFromHand(HandComponent->Cards.Num() - 1);
 }
 
 void ACCPlayerPawn::AddPlayerAction(FPlayerActionData Action)
@@ -153,8 +164,6 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 void ACCPlayerPawn::ForceEndTurn_Implementation()
 {
 	// TODO : Cancel Action if the player is in the middle of an action
-	// TODO : Block the Player From Playing new Action
-	
 	if (ACCPlayerState* CCPlayerState =  GetPlayerState<ACCPlayerState>()) {
 		CCPlayerState->RPC_SetEndTurn(true);
 	}
@@ -163,7 +172,6 @@ void ACCPlayerPawn::ForceEndTurn_Implementation()
 void ACCPlayerPawn::ClearPlayerAction_Implementation()
 {
 	QueueOfPlayerActions.Empty();
-	//OnActionQueueClear.Broadcast();
 }
 
 void ACCPlayerPawn::AddPlayerHud_Implementation()
@@ -172,10 +180,14 @@ void ACCPlayerPawn::AddPlayerHud_Implementation()
 	if(PLayerHudClass) {
 		PlayerHud = CreateWidget(GetWorld(), PLayerHudClass);
 		if(PlayerHud) {
-			//PlayerHud->AddToViewport();
 			PlayerHud->AddToPlayerScreen();
 		}
 	}
+}
+
+void ACCPlayerPawn::RPC_AddCardToDeck_Implementation(FDataTableRowHandle CardRowHandle, EAddCardType InAddCardType)
+{
+	DeckComponent->AddCardToDeck(CardRowHandle);
 }
 
 void ACCPlayerPawn::UnPossessed()

@@ -45,21 +45,21 @@ public:
 	UPROPERTY(EditAnywhere, Category="", BlueprintReadOnly, meta=(AllowPrivateAccess))
 	TObjectPtr<UCCCardMovementComponent> CardMovement;
 
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> CardMesh;
+	//UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	//TObjectPtr<UStaticMeshComponent> CardMesh;
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<USceneComponent> CCRootComponent;
 	
 	FGuid CardUniqueID;
 	
-	UPROPERTY(VisibleAnywhere, Category="")
+	UPROPERTY(VisibleAnywhere, Category="", BlueprintReadWrite)
 	ECardState CurrentCardState;
 	
 	UPROPERTY()
 	int32 CardIndex;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<ECardState, FMaterialArrayWrapper> MaterialMap;
 
 	UPROPERTY()
@@ -73,8 +73,6 @@ public:
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
-	UFUNCTION()
-	void UpdateMaterials();
 
 	UFUNCTION()
 	void OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn);
@@ -82,6 +80,9 @@ private:
 	virtual void BeginPlay() override;
 	
 public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateMaterials();
+	
 	UFUNCTION(BlueprintCallable)
 	void Play(ACCPlayerPawn* Pawn);
 

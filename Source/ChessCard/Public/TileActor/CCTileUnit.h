@@ -40,10 +40,18 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
 	TArray<FUnitMovementData> MovementDatas;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
+	TArray<FUnitMovementData> DivineAngerMovementDatas;
+	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
+	int DivineAngerCounter;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
 	TArray<TArray<FPatternMapEndPoint>> PatternList;
+
+	TArray<TArray<FPatternMapEndPoint>> DivineAngerPatternList;
 
 	UPROPERTY()
 	bool IsHighlighted;
@@ -53,10 +61,10 @@ public:
 
 	UPROPERTY()
 	bool IsMoved;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	TArray<FUnitMovementData> Pattern;
 
+	UPROPERTY(Replicated)
+	bool IsStunned;
+	
 	UPROPERTY()
 	TObjectPtr<ACCCard> LinkedCard;
 
@@ -93,8 +101,6 @@ public:
 	UFUNCTION()
 	void SetTargetMap();
 
-
-
 	UFUNCTION()
 	bool GetIsMoved(){return IsMoved;}
 
@@ -110,6 +116,6 @@ public:
 	virtual void StartHover(ACCPlayerPawn* Player) override;
 	virtual void StopHover(ACCPlayerPawn* Player) override;
 	virtual void Click(ACCPlayerPawn* Player) override;
-	virtual void InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle) override;
+	virtual void InternalInit() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };
