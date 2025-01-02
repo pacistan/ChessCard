@@ -9,6 +9,7 @@
 #include "GameModes/CCGameState.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCPieceBase.h"
@@ -36,16 +37,24 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
-	DEBUG_LOG("Call Send Queue of Action on the client");
-	SRV_SendQueueOfAction();
+	SRV_SendQueueOfAction(QueueOfPlayerActions);
 }
 
-void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation()
+void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation(const TArray<FPlayerActionData>& ActionData)
 {
-	if (ACCGameMode* CCGameMode = GetWorld()->GetAuthGameMode<ACCGameMode>()) {
-		CCGameMode->AddPlayerAction(GetPlayerState<ACCPlayerState>(), QueueOfPlayerActions);
-		DEBUG_LOG("Add player action to the game mode");
+	if (ACCGameMode* CCGameMode = GetWorld()->GetAuthGameMode<ACCGameMode>())
+	{
+		CCGameMode->AddPlayerAction(GetPlayerState<ACCPlayerState>(), ActionData);
 	}
+}
+
+void ACCPlayerPawn::RPC_ClearActions_Implementation()
+{
+	QueueOfPlayerActions.Empty();
+	OnActionQueueClear.Broadcast();
+	TArray<AActor*> Units;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTileUnit::StaticClass(), Units);
+	for(auto Unit : Units) Cast<ACCTileUnit>(Unit)->IsMoved = false;
 }
 
 void ACCPlayerPawn::DrawCard()
@@ -60,6 +69,7 @@ void ACCPlayerPawn::DrawCard()
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
 
 	ACCCard* Card = DeckComponent->CreateCard();
+	Card->Initialize();
 	Card->SetOwningPawn(this);
 	NumberOfCardDrawnOnRoundStart++;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
@@ -71,10 +81,6 @@ void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 	Card->UnSelect(this);
 	Card->Play(this);
 	PlayedCardsIndex.Add(Card->CardIndex);
-}
-
-void ACCPlayerPawn::OnEndTurnBtnPressed(bool bIsEndTurn)
-{
 }
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
@@ -94,6 +100,8 @@ void ACCPlayerPawn::DrawMovementCard()
 {
 	FOnCardMovementEnd OnCardMovementEnd;
 	ACCCard* Card = MovementDeckComponent->CreateCard();
+	Card->Initialize();
+	Card->SetOwningPawn(this);
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
@@ -109,10 +117,37 @@ void ACCPlayerPawn::AddPlayerAction(FPlayerActionData Action)
 	OnActionQueueAdd.Broadcast(Action);
 }
 
+void ACCPlayerPawn::AddPlayerActionClientElement(TArray<AActor*>& Actors, ACCCard* Card)
+{
+	FActionLocalElements ActionLocalElements;
+	ActionLocalElements.Card = Card;
+	ActionLocalElements.RelatedActors = Actors;
+	QueueOfLocalActionElements.Add(ActionLocalElements);
+}
+
 void ACCPlayerPawn::RemoveLastPlayerAction()
 {
 	QueueOfPlayerActions.Pop();
 	OnActionQueueRemove.Broadcast();
+}
+
+void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
+{
+	if(QueueOfLocalActionElements.IsEmpty())
+	{
+		return;
+	}
+
+	TArray<TObjectPtr<AActor>> RelatedActors = QueueOfLocalActionElements[0].RelatedActors;
+	for(int i = RelatedActors.Num() - 1; i >= 0; i--)
+	{
+		if(ACCTileUnit* Unit = Cast<ACCTileUnit>(RelatedActors[i]))
+			Unit->DestroyPiece();
+		else
+			RelatedActors[i]->Destroy();
+	}
+	HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+	QueueOfLocalActionElements.RemoveAt(0);
 }
 
 void ACCPlayerPawn::ForceEndTurn_Implementation()
@@ -128,7 +163,7 @@ void ACCPlayerPawn::ForceEndTurn_Implementation()
 void ACCPlayerPawn::ClearPlayerAction_Implementation()
 {
 	QueueOfPlayerActions.Empty();
-	OnActionQueueClear.Broadcast();
+	//OnActionQueueClear.Broadcast();
 }
 
 void ACCPlayerPawn::AddPlayerHud_Implementation()
@@ -160,7 +195,7 @@ void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 		SelectedUnit = nullptr;
 	}
 	CurrentSelectedCardIndex = InSelectedCardIndex;
-	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
+	//OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
 }
 
 void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)

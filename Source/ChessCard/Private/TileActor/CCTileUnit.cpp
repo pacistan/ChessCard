@@ -6,6 +6,7 @@
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
@@ -93,6 +94,7 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 	FIntPoint EndPoint = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
 	FIntPoint Travel = EndPoint - CurrentCoordinates;
 	TArray<FPatternMapEndPoint> OutPatternMovement;
+	IsMoved = true;
 	for(auto PatternMovement : PatternList)
 	{
 		if(Travel == GetTravelRelativeCoordinates(PatternMovement))
@@ -101,6 +103,9 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 			break;
 		}
 	}
+	
+	TArray<AActor*> MovementVisualActors;
+	MovementVisualActors.Reserve(OutPatternMovement.Num());
 	if(IsValid(MovementPointActorClass) && IsValid(DestinationPointActorClass))
 	{
 		FIntPoint ProgressPoint = CurrentCoordinates;
@@ -112,16 +117,16 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 			TSubclassOf<AActor> Subclass = i == OutPatternMovement.Num() - 1 ? DestinationPointActorClass : MovementPointActorClass;
 			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
-			GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters); 
+			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters)); 
 		}
 	}
-	
-	LinkedCard->MoveUnit(Tile, OutPatternMovement);
+	LinkedCard->MoveUnit(Tile, OutPatternMovement, MovementVisualActors, this);
 }
 
-void ACCTileUnit::SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate,
+void ACCTileUnit::SetHighlight(bool bToHighlight, ETeam InTeam, FOnClickUnitDelegate InOnClickDelegate,
 	FOnHoverUnitDelegate InOnHoverUnitDelegate)
 {
+	if(bToHighlight && (IsMoved || InTeam != Team)) return;
 	IsHighlighted = bToHighlight;
 	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
 	MeshComponent->SetMaterial(0, NewMaterial);
@@ -137,7 +142,7 @@ void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
 
 void ACCTileUnit::StopHover(ACCPlayerPawn* Player)
 {
-	if(!IsSelected)
+	if(!IsSelected && IsHighlighted)
 	{
 		GetGridManager(GetWorld())->UnhighlightTiles();
 	}
@@ -151,6 +156,19 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 		MeshComponent->SetMaterial(0, SelectedMaterial);
 		Player->SetSelectedUnit(this);
 	}
+}
+
+void ACCTileUnit::InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern,
+	const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle)
+{
+	Super::InitUnit(StartCoordinates, InTeam, InPattern, NewGuid, InCardDataRowHandle);
+	Pattern = InPattern;
+	SetTargetMap();
+}
+
+void ACCTileUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 void ACCTileUnit::UnSelect()

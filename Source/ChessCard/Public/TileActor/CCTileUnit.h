@@ -10,7 +10,6 @@
 #include "Card/CCCard.h"
 #include "CCTileUnit.generated.h"
 
-
 enum class ETeam : uint8;
 DECLARE_DYNAMIC_DELEGATE(FOnHoverUnitDelegate);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnClickUnitDelegate, ACCPlayerPawn*, Player);
@@ -21,7 +20,7 @@ class UCCUnitMovementComponent;
  *  Tile Actor that Have a the ability to move 
  */
 UCLASS()
-class CHESSCARD_API ACCTileUnit : public ACCPieceBase, public IHoverable, public IClickable, public ICCGridManagerInterface
+class CHESSCARD_API ACCTileUnit : public ACCPieceBase, public IHoverable, public IClickable
 {
 	GENERATED_BODY()
 
@@ -29,7 +28,7 @@ class CHESSCARD_API ACCTileUnit : public ACCPieceBase, public IHoverable, public
 public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCUnitMovementComponent> MovementComponent;
-
+	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMaterialInterface> HighlightMat;
 
@@ -38,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMaterialInterface> SelectedMaterial;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
+	TArray<FUnitMovementData> MovementDatas;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
 	//of movement value is array of directions to get to key
@@ -54,12 +56,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	TArray<FUnitMovementData> Pattern;
-
-	UPROPERTY()
-	FIntPoint CurrentCoordinates;
-	
-	UPROPERTY()
-	ETeam Team;
 
 	UPROPERTY()
 	TObjectPtr<ACCCard> LinkedCard;
@@ -82,7 +78,8 @@ public:
 public:
 	ACCTileUnit(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	void SetHighlight(bool bToHighlight, FOnClickUnitDelegate InOnClickDelegate = FOnClickUnitDelegate(), FOnHoverUnitDelegate InOnHoverUnitDelegate = FOnHoverUnitDelegate());
+	void SetHighlight(bool bToHighlight, ETeam InTeam, FOnClickUnitDelegate InOnClickDelegate = FOnClickUnitDelegate(), FOnHoverUnitDelegate
+	                  InOnHoverUnitDelegate = FOnHoverUnitDelegate());
 
 	UFUNCTION()
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
@@ -96,11 +93,7 @@ public:
 	UFUNCTION()
 	void SetTargetMap();
 
-	UFUNCTION()
-	ETeam GetTeam() {return Team;};
 
-	UFUNCTION()
-	void SetTeam(ETeam InTeam) {Team = InTeam;}
 
 	UFUNCTION()
 	bool GetIsMoved(){return IsMoved;}
@@ -117,4 +110,6 @@ public:
 	virtual void StartHover(ACCPlayerPawn* Player) override;
 	virtual void StopHover(ACCPlayerPawn* Player) override;
 	virtual void Click(ACCPlayerPawn* Player) override;
+	virtual void InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern, const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

@@ -35,7 +35,13 @@ struct FCardData : public FTableRowBase
 	FString CardDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
-	TSoftObjectPtr<UTexture2D> CardTexture;
+	TSoftObjectPtr<UMaterialInterface> CardMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	TSoftObjectPtr<UStaticMesh> CardUnitStaticMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	TSoftObjectPtr<UStaticMesh> UnitStaticMesh;
 	
 	// On Death 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects", meta = (InlineEditConditionToggle))

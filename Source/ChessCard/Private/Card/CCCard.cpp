@@ -2,6 +2,7 @@
 
 #include "Card/CCCardMovementComponent.h"
 #include "Card/FCardData.h"
+#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Hand/CCHandComponent.h"
@@ -15,8 +16,9 @@
 ACCCard::ACCCard()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	CCRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Card Sleeve"));
-	RootComponent = CardMesh;
+	RootComponent = CCRootComponent;
 	if(!IsValid(CardMesh->GetStaticMesh()))
 	{
 		ConstructorHelpers::FObjectFinder<UStaticMesh> MeshRef(TEXT("/Engine/BasicShapes/Cube.Cube"));
@@ -75,7 +77,7 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 				if(!Tile->ContainPiece())
 				{
 					FOnClickTileDelegate OnClickDelegate;
-					OnClickDelegate.BindDynamic(this, &ACCCard::SpawnUnit);
+					OnClickDelegate.BindDynamic(this, &ACCCard::SpawnLocalUnit);
 					Tile->SetHighlight(bIsSelected, OnClickDelegate);
 				}
 			};
@@ -93,7 +95,7 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 					auto Unit = Cast<ACCTileUnit>(Piece);
 					if(IsValid(Unit))
 					{
-						Unit->SetHighlight(bIsSelected);
+						Unit->SetHighlight(bIsSelected, OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
 					}
 				}
 			};
@@ -114,7 +116,6 @@ void ACCCard::BeginPlay()
 {
 	Super::BeginPlay();
 	CardUniqueID = FGuid::NewGuid();
-	ConstructCard(CardRowHandle);
 }
 
 void ACCCard::Play(ACCPlayerPawn* Pawn)
@@ -129,37 +130,40 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 }
 
-void ACCCard::SpawnUnit(ACCTile* Tile)
+void ACCCard::Initialize()
+{
+	ConstructCard(*CardRowHandle.GetRow<FCardData>( GetNameSafe(this)));
+}
+
+void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 {
 	const FRotator UnitRotation;
 	const FVector UnitPosition = Tile->GetActorLocation() + FVector::UpVector * 20;
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.bNoFail = true;
-	auto Unit =  GetWorld()->SpawnActor<ACCTileUnit>(PieceClass, UnitPosition, UnitRotation, SpawnParams);
-	Tile->AddPieceLocal(Unit);
-	Unit->CurrentCoordinates = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
-	if (FCardData* CardData = CardRowHandle.GetRow<FCardData>( GetNameSafe(this))){
-		Unit->Pattern = CardData->Pattern;
-	}
-	Unit->SetTargetMap();
-	Unit->SetTeam(OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
-	auto GridManager = GetGridManager(GetWorld());
-	check(GridManager);
-	GridManager->UnhighlightTiles();
+	FActorSpawnParameters UnitSpawnParams;
+	UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	UnitSpawnParams.bNoFail = true;
+	
+	ACCTileUnit* Unit =  GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
+	//Tile->AddPiece(Unit);
+	Unit->InitUnit(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()) ,
+	               OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), CardRowHandle.GetRow<FCardData>( GetNameSafe(this))->Pattern, FGuid::NewGuid(), CardRowHandle);
 
-	FPlayerActionData PlayerActionData(CardRowHandle, Unit->CurrentCoordinates, CardUniqueID);
+	Unit->SetReplicates(false);
+	GetGridManager(GetWorld())->UnhighlightTiles();
+	TArray<AActor*> LocalVisualActors {Unit};
+
+	FPlayerActionData PlayerActionData(CardRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid);
 	OwningPawn->AddPlayerAction(PlayerActionData);
+	OwningPawn->AddPlayerActionClientElement(LocalVisualActors, this);
 }
 
-void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData)
+void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit)
 {
-	auto GridManager = GetGridManager(GetWorld());
-	check(GridManager);
-	GridManager->UnhighlightTiles();
-	
-	FPlayerActionData PlayerActionData(CardRowHandle, FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()), CardUniqueID, MovementData);
+	GetGridManager(GetWorld())->UnhighlightTiles();
+
+	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData);
 	OwningPawn->AddPlayerAction(PlayerActionData);
+	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)

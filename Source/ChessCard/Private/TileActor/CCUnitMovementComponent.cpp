@@ -3,6 +3,9 @@
 
 #include "TileActor/CCUnitMovementComponent.h"
 
+#include "GameModes/CCGameState.h"
+#include "TileActor/CCTileUnit.h"
+
 
 // Sets default values for this component's properties
 UCCUnitMovementComponent::UCCUnitMovementComponent()
@@ -19,9 +22,7 @@ UCCUnitMovementComponent::UCCUnitMovementComponent()
 void UCCUnitMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
+	OwnerUnit = Cast<ACCTileUnit>(GetOwner());
 }
 
 
@@ -31,6 +32,50 @@ void UCCUnitMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if(InterpolateValue <= 1 && IsMoving)
+	{
+		MovementTick(DeltaTime);
+	}
+}
+
+void UCCUnitMovementComponent::StartMovement(FIntPoint InStartCoordinates, const FPlayerActionData& InAction, FTileActorMovementDelegate InTileActorMovementDelegate, ACCPlayerState* InPlayerState)
+{
+	InterpolateValue = 0;
+	ActionData = InAction;
+	UnitMovementData.Empty();
+	UnitMovementData.SetNum(InAction.MovementData.Num());
+	ACCGridManager* GridManager	= GetWorld()->GetGameState<ACCGameState>()->GetGridManager();
+	PlayerState = InPlayerState;
+	IsMoving = true;
+	
+	FIntPoint ProgressCoordinates = InStartCoordinates;
+	for(int i = 0; i < InAction.MovementData.Num(); i++)
+	{
+		ProgressCoordinates += InAction.MovementData[i].Direction;
+		UnitMovementData[i] = GridManager->CoordinatesToPosition(ProgressCoordinates);
+	}
+	TileActorMovementDelegate = InTileActorMovementDelegate;
+}
+
+void UCCUnitMovementComponent::MovementTick(float DeltaTime)
+{
+	InterpolateValue += DeltaTime / MovementDuration;
+	float InterpolateTileValue = 1 / (UnitMovementData.Num() + .00001f);
+	int MvtDataIndex = FMath::FloorToInt(InterpolateValue / InterpolateTileValue);
+	float EvaluatedValue = FMath::Modulo(InterpolateValue, InterpolateTileValue) / InterpolateTileValue;
+
+	FVector Position = FMath::Lerp(
+			UnitMovementData[FMath::Min(MvtDataIndex, UnitMovementData.Num() - 1)],
+			UnitMovementData[FMath::Min(MvtDataIndex + 1, UnitMovementData.Num() - 1)],
+			MovementAnimCurve->FloatCurve.Eval(EvaluatedValue));
+
+	GetOwner()->SetActorLocation(Position);
+
+	if(InterpolateValue >= 1)
+	{
+		GetOwner()->SetActorLocation(UnitMovementData.Last());
+		TileActorMovementDelegate.ExecuteIfBound(PlayerState, ActionData, OwnerUnit);
+		IsMoving = false;
+	}
 }
 

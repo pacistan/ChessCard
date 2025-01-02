@@ -6,6 +6,7 @@
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Player/CCPlayerStart.h"
+#include "TileActor/CCPieceBase.h"
 
 #include "CCTile.generated.h"
 
@@ -149,11 +150,17 @@ public:
 	ETileType GetTileType()const {return TileType;}
 
 	UFUNCTION()
-	void AddPieceLocal(ACCPieceBase* Piece);
+	void AddPiece(ACCPieceBase* Piece);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MLC_AddPiece(ACCPieceBase* Piece);
+	
 	UFUNCTION()
 	void RemovePiece(ACCPieceBase* Piece);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MLC_RemovePiece(ACCPieceBase* Piece);
+	
 	UFUNCTION()
 	bool IsAccessibleForTeam(ETeam Team);
 
@@ -162,4 +169,7 @@ public:
 
 	UFUNCTION()
 	TArray<ACCPieceBase*> GetPieces(){return Pieces;};
+
+	UFUNCTION()
+	ACCPieceBase* GetPiece(FGuid TargetID);
 };

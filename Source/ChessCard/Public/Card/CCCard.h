@@ -33,7 +33,7 @@ struct FMaterialArrayWrapper
 	TArray<UMaterialInterface*> Materials;
 };
 
-UCLASS(HideCategories(Rendering, Collision, Actor, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
+UCLASS(HideCategories(Collision, Input, HLOD, Physics, Events, Level_Instance, Cooking, World_Partition, Data_Layers,  Actor_Tick))
 class CHESSCARD_API ACCCard : public AActor, public ISelectable, public IHoverable, public ICCGridManagerInterface
 {
 	GENERATED_BODY()
@@ -48,13 +48,13 @@ public:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UStaticMeshComponent> CardMesh;
 
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<USceneComponent> CCRootComponent;
+	
 	FGuid CardUniqueID;
 	
 	UPROPERTY(VisibleAnywhere, Category="")
 	ECardState CurrentCardState;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACCPieceBase> PieceClass;
 	
 	UPROPERTY()
 	int32 CardIndex;
@@ -86,22 +86,26 @@ public:
 	void Play(ACCPlayerPawn* Pawn);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void ConstructCard(FDataTableRowHandle RowHandle);
+	void ConstructCard(FCardData RowHandle);
+
+	UFUNCTION()
+	void Initialize();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 protected:
 	UFUNCTION()
-	void SpawnUnit(ACCTile* Tile);
+	void SpawnLocalUnit(ACCTile* Tile);
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void CreateCardVisuals(FDataTableRowHandle DataTableRowHandle);
+	void CreateCardVisuals(FCardData DataTableRowHandle);
 	
 public:
 	UFUNCTION()
-	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData);
+	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit
+	              * Unit);
 
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 

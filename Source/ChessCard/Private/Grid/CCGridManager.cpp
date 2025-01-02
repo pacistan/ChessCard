@@ -7,6 +7,7 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Macro/CCLogMacro.h"
 #include "..\..\Public\TileActor\PatternMapEndPoint.h"
+#include "GameModes/CCGameMode.h"
 
 ACCGridManager::ACCGridManager()
 {
@@ -363,6 +364,14 @@ ACCTile* ACCGridManager::GetTile(FIntPoint Coordinates)
 	return nullptr;
 }
 
+void ACCGridManager::InitializeBonusTileMap()
+{
+	for(auto Tile : MappedGrid[ETileType::BonusTile])
+	{
+		GetWorld()->GetAuthGameMode<ACCGameMode>()->BonusTileMap.Add(GetTile(Tile), ETeam::None);
+	}
+}
+
 void ACCGridManager::BeginPlay()
 {
 	Super::BeginPlay();
@@ -401,4 +410,5 @@ void ACCGridManager::BeginPlay()
 		Grid[Tile->GetRowNum()][Tile->GetColumnNum()] = Tile;
 		MappedGrid[Tile->GetTileType()].Add(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()));
 	}
+
 }
