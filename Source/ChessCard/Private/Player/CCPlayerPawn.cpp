@@ -59,9 +59,7 @@ void ACCPlayerPawn::RPC_ClearActions_Implementation()
 
 void ACCPlayerPawn::DrawCard()
 {
-	
-
-	if(NumberOfCardsToDrawThisRound == NumberOfCardDrawnOnRoundStart && HandComponent->GetCardNum() == MaxNumberOfCardsInHand)
+	if(NumberOfCardsToDrawThisRound == NumberOfCardDrawnOnRoundStart || HandComponent->GetCardNum() == MaxNumberOfCardsInHand)
 	{
 		SRV_OnAllCardDrawServer();
 		return;
