@@ -22,6 +22,8 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 
 	UFUNCTION()
 	void OnActionResolved(ACCPlayerState* PlayerState, FPlayerActionData LastAction, ACCPieceBase* LastPiece);
+
+	UFUNCTION()
 	void ApplyActionEffects(ACCPlayerState* PlayerState, const FPlayerActionData& LastAction, ACCPieceBase* LastPiece, bool IsMovementAction);
 
 	UFUNCTION()

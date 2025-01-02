@@ -31,6 +31,23 @@ ACCCard* UCCDeckComponent::CreateCard()
 	return Card;
 }
 
+void UCCDeckComponent::AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType)
+{
+	int InsertIndex = 0;
+	switch(AddType)
+	{
+	case EAddCardType::Top:
+		break;
+	case EAddCardType::Bottom:
+		InsertIndex = DeckCards.Num();
+		break;
+	case EAddCardType::Random:
+		InsertIndex = FMath::RandRange(0, DeckCards.Num());
+		break;
+	}
+	DeckCards.Insert(CardRowHandle, InsertIndex);
+}
+
 void UCCDeckComponent::BeginPlay()
 {
 	Super::BeginPlay();

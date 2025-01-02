@@ -1,6 +1,7 @@
 ﻿#include "GameModes/CCGameState.h"
 #include "EngineUtils.h"
 #include "Engine/PlayerStartPIE.h"
+#include "GameModes/CCEffectManagerComponent.h"
 #include "Macro/CCLogMacro.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
@@ -17,6 +18,7 @@ ACCGameState::ACCGameState(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	EffectManager = CreateDefaultSubobject<UCCEffectManagerComponent>("EffectManager");
 }
 
 void ACCGameState::BeginPlay()

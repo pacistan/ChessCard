@@ -1,4 +1,6 @@
 ﻿#include "TileActor/CCTileUnit.h"
+
+#include "MeshCardBuild.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
 #include "GameModes/CCGameState.h"
@@ -34,9 +36,11 @@ void ACCTileUnit::BeginPlay()
 
 void ACCTileUnit::SetTargetMap()
 {
+	FCardData CardData = *CardDataRowHandle.GetRow<FCardData>(TEXT(""));
 	auto GridManager = GetGridManager(GetWorld());
 	check(GridManager);
-	GridManager->GetTargetTiles(Pattern, PatternList);
+	GridManager->GetTargetTiles(CardData.Pattern, PatternList);
+	GridManager->GetTargetTiles(CardData.DivineAngerPattern, DivineAngerPatternList);
 }
 
 void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
@@ -158,17 +162,16 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 	}
 }
 
-void ACCTileUnit::InitUnit(FIntPoint StartCoordinates, ETeam InTeam, const TArray<FUnitMovementData>& InPattern,
-	const FGuid& NewGuid, FDataTableRowHandle InCardDataRowHandle)
+void ACCTileUnit::InternalInit()
 {
-	Super::InitUnit(StartCoordinates, InTeam, InPattern, NewGuid, InCardDataRowHandle);
-	Pattern = InPattern;
+	Super::InternalInit();
 	SetTargetMap();
 }
 
 void ACCTileUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACCTileUnit, IsStunned);
 }
 
 void ACCTileUnit::UnSelect()

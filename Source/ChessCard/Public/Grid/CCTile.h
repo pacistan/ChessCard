@@ -6,7 +6,6 @@
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Player/CCPlayerStart.h"
-#include "TileActor/CCPieceBase.h"
 
 #include "CCTile.generated.h"
 
