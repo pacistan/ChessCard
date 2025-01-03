@@ -44,7 +44,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
 	TArray<FUnitMovementData> DivineAngerMovementDatas;
 	
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime", Replicated)
 	int DivineAngerCounter;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
@@ -91,6 +91,7 @@ public:
 
 	UFUNCTION()
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
+	void MinotaurHighlightDestinationTiles();
 
 	UFUNCTION()
 	void OnDestinationTileClicked(ACCTile* Tile);

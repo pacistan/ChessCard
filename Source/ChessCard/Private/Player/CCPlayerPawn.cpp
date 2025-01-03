@@ -24,12 +24,13 @@ ACCPlayerPawn::ACCPlayerPawn(const FObjectInitializer& ObjectInitializer): Super
 	SetRootComponent(RootComponent);
 	DeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Deck"));
 	MovementDeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Movement Deck"));
+	DiscardPileComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Discard Pile"));
 	HandComponent = CreateDefaultSubobject<UCCHandComponent>(TEXT("Hand"));
 }
 
 void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 {
-	NumberOfCardsToDrawThisRound = NumberOfCardsToDraw;
+	NumberOfCardsToDrawThisRound = IsFirstRound ? NumberOfCardsToDrawFirstRound : NumberOfCardsToDraw;
 	NumberOfCardDrawnOnRoundStart = 0;
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this](){ DrawCard(); }), 1, false);
@@ -68,6 +69,10 @@ void ACCPlayerPawn::DrawCard()
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
 
+	if(DeckComponent->DeckCards.IsEmpty())
+	{
+		DeckComponent->GenerateDeck(DiscardPileComponent->DeckCards);
+	}
 	
 	ACCCard* Card = DeckComponent->CreateCard();
 	if(Card->CardRowHandle.GetRow<FCardData>(TEXT(""))->CardName == TEXT("Gold"))
@@ -78,6 +83,7 @@ void ACCPlayerPawn::DrawCard()
 	Card->SetOwningPawn(this);
 	NumberOfCardDrawnOnRoundStart++;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
+	DiscardPileComponent->AddCardToDeck(Card->CardRowHandle);
 }
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
@@ -107,13 +113,15 @@ void ACCPlayerPawn::DrawMovementCard()
 	ACCCard* Card = MovementDeckComponent->CreateCard();
 	Card->Initialize();
 	Card->SetOwningPawn(this);
+	Card->IsCore = false;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
 void ACCPlayerPawn::RemoveSelectedCardFromHand()
 {
-	HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
+	auto Handle = HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
 	SetCurrentSelectedCardIndex(-1);
+	DiscardPileComponent->AddCardToDeck(Handle);
 }
 
 void ACCPlayerPawn::RemoveLastDrawnCardFromHand()
@@ -156,7 +164,11 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 		else
 			RelatedActors[i]->Destroy();
 	}
-	HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+	auto Handle = HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+	if(QueueOfLocalActionElements[0].Card->IsCore)
+	{
+		DiscardPileComponent->AddCardToDeck(Handle);
+	}
 	QueueOfLocalActionElements.RemoveAt(0);
 }
 

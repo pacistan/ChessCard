@@ -3,6 +3,7 @@
 #include "MeshCardBuild.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
+#include "GameModes/CCEffectManagerComponent.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
@@ -53,6 +54,15 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 	   
 	GridManager->UnhighlightTiles();
 
+	FCardData CardData = *CardDataRowHandle.GetRow<FCardData>("");
+	if(CardData.EffectType == EEffectType::Minotaur && CardData.DivineAngerTriggerNumber <= DivineAngerCounter)
+	{
+		DEBUG_LOG("MINOTAUR!");
+		MinotaurHighlightDestinationTiles();
+		return;
+	}
+	
+	
 	for(auto& MvtData : PatternList)
 	{
 		FIntPoint Coordinates = CurrentCoordinates;
@@ -90,6 +100,44 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 				}
 			}
 		}
+	}
+}
+
+void ACCTileUnit::MinotaurHighlightDestinationTiles()
+{
+	ACCGridManager* GridManager = GetGridManager(GetWorld());
+	TArray<FIntPoint> Directions {FIntPoint(0, 1), FIntPoint(0, -1), FIntPoint(1, 0), FIntPoint(-1, 0)};
+	for(int i = 0; i < Directions.Num() ; i++)
+	{
+		FOnClickTileDelegate OnClickTileDelegate;
+		ACCTile* CurrentTile = GridManager->GetTile(CurrentCoordinates + Directions[i]);
+		ACCTile* NextTile = GridManager->GetTile(CurrentCoordinates + Directions[i] * 2);
+		if(!IsValid(CurrentTile) || !CurrentTile->IsAccessibleForTeam(Team))
+		{
+			continue;
+		}
+		else if(!IsValid(NextTile)  || !NextTile->IsAccessibleForTeam(Team))
+		{
+			OnClickTileDelegate.BindDynamic(this, &ACCTileUnit::OnDestinationTileClicked);
+			CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Normal);
+			continue;
+		}
+		else
+		{
+			CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Effect);
+		}
+		int Counter = 1;
+
+		
+		while(IsValid(NextTile) && NextTile->IsAccessibleForTeam(Team) && Counter < 100)
+		{
+			Counter++;
+			CurrentTile = NextTile;
+			NextTile = GridManager->GetTile(CurrentCoordinates + Directions[i] * (Counter + 1));
+			CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Effect);
+		}
+		OnClickTileDelegate.BindDynamic(this, &ACCTileUnit::OnDestinationTileClicked);
+		CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Normal);
 	}
 }
 
@@ -172,6 +220,7 @@ void ACCTileUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ACCTileUnit, IsStunned);
+	DOREPLIFETIME(ACCTileUnit, DivineAngerCounter);
 }
 
 void ACCTileUnit::UnSelect()

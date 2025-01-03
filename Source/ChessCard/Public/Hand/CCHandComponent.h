@@ -42,7 +42,7 @@ public:
 	void SendSelectedCardToMovementDeck(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition);
 
 	UFUNCTION()
-	void RemoveCardFromHand(int InCardIndex);
+	FDataTableRowHandle RemoveCardFromHand(int InCardIndex);
 
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/

@@ -14,7 +14,6 @@ ACCCard* UCCDeckComponent::CreateCard()
 {
 	auto DeckCard = DeckCards[0];
 	DeckCards.RemoveAt(0);
-	DeckCards.Add(DeckCard);
 	const FCardData* CardData = DeckCard.DataTable ? DeckCards[0].GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
 	check(CardData);
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
@@ -29,6 +28,16 @@ ACCCard* UCCDeckComponent::CreateCard()
 	Card->SetDataTableRow(DeckCards[0]);
 	
 	return Card;
+}
+
+void UCCDeckComponent::GenerateDeck(TArray<FDataTableRowHandle>& NewCards)
+{
+	while(!NewCards.IsEmpty())
+	{
+		int TransferIndex = FMath::RandRange(0, NewCards.Num() - 1);
+		DeckCards.Add(NewCards[TransferIndex]);
+		NewCards.RemoveAt(TransferIndex);
+	}
 }
 
 void UCCDeckComponent::AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType)

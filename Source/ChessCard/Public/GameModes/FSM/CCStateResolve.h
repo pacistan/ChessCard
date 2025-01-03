@@ -17,6 +17,11 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 	UPROPERTY()
 	bool AreAllPlayerQueuesSent = false;
 
+	TMap<ACCTile*, TArray<ACCPieceBase*>> KillerTiles;
+
+	UPROPERTY()
+	TSet<ACCTile*> SlaughterTiles;
+	
 	UFUNCTION()	
 	void OnAllPlayerQueuesSent();
 
@@ -25,6 +30,7 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 
 	UFUNCTION()
 	void ApplyActionEffects(ACCPlayerState* PlayerState, const FPlayerActionData& LastAction, ACCPieceBase* LastPiece, bool IsMovementAction);
+	void BloodSlaughterAndDeath();
 
 	UFUNCTION()
 	void StartNewAction();

@@ -6,10 +6,21 @@
 #include "CCEffectManagerComponent.generated.h"
 
 UENUM()
-enum class EEffectTriggerType : uint8{OnKill, OnDeath, OnMove, DivineAnger};
+enum class EEffectTriggerType : uint8{OnKill, OnDeath, OnMove};
 
 UENUM()
-enum class EEffectType : uint8{Midas, Promethee, Minotaur, Trojan, Meduse, Persee, Circe, Heracles, Embrasement};
+enum class EEffectType : uint8
+{
+	Midas UMETA(DisplayName = "Midas"),
+	Promethee UMETA(DisplayName = "Promethee"),
+	Minotaur UMETA(DisplayName = "Minotaur"),
+	Trojan UMETA(DisplayName = "Trojan"),
+	Meduse UMETA(DisplayName = "Meduse"),
+	Persee UMETA(DisplayName = "Persee"),
+	Circe UMETA(DisplayName = "Circe"),
+	Heracles UMETA(DisplayName = "Heracles"),
+	Embrasement UMETA(DisplayName = "Embrasement")
+};
 
 class ACCPieceBase;
 
@@ -31,6 +42,6 @@ public:
 	UCCEffectManagerComponent();
 
 	UFUNCTION()
-	void TriggerResolveEffect(FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece, ACCTile* InEffectTiles, EEffectTriggerType
-	                          InTriggerType, ACCPieceBase* RelevantUnit, FIntPoint Direction);
+	void TriggerResolveEffect(bool IsDivineAnger, FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece, TArray<ACCTile*> InEffectTiles, EEffectTriggerType
+	                          InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction);
 };

@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "GameplayTagContainer.h"
+#include "Card/FUnitMovementData.h"
 #include "FCardData.generated.h"
 
 enum class EEffectType : uint8;
-struct FUnitMovementData;
 struct FCardAbilities;
 
 UENUM()

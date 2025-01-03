@@ -2,11 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "IndexTypes.h"
+#include "Card/FUnitMovementData.h"	
 #include "GameFramework/Actor.h"
 #include "CCGridManager.generated.h"
 
 enum class EMovementType : uint8;
-struct FUnitMovementData;
 struct FPatternMapEndPoint;
 enum class ETileType : uint8;
 class ACCTile;

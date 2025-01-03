@@ -46,18 +46,22 @@ struct FPlayerActionData
 	UPROPERTY()
 	TArray<FPatternMapEndPoint> MovementData;
 
+	UPROPERTY()
+	bool IsDivineAnger;
+	
 	FPlayerActionData()
 	: CardData(FDataTableRowHandle())
 	, TargetCoord(FIntPoint::ZeroValue)
 	{
 	}
 	
-	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, FGuid InCardID, FGuid InUnitGuid, TArray<FPatternMapEndPoint> InMovementData = TArray<FPatternMapEndPoint>())
+	FPlayerActionData(FDataTableRowHandle InCardData, FIntPoint InTargetCoord, FGuid InCardID, FGuid InUnitGuid, TArray<FPatternMapEndPoint> InMovementData = TArray<FPatternMapEndPoint>(), bool InIsDivineAnger = false)
 	: CardData(InCardData)
 	, TargetCoord(InTargetCoord)
 	, CardID(InCardID)
 	, UnitID(InUnitGuid)
 	, MovementData(InMovementData)
+	, IsDivineAnger(IsDivineAnger)
 	{
 	}
 };
@@ -94,6 +98,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCDeckComponent> MovementDeckComponent;
+
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UCCDeckComponent> DiscardPileComponent;
 
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCHandComponent> HandComponent;
@@ -133,6 +140,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	int MaxNumberOfCardsInHand;
 
+	UPROPERTY(EditAnywhere)
+	int NumberOfCardsToDrawFirstRound = 5;
+
+	UPROPERTY()
+	bool IsFirstRound = true;
+	
 public:
 	UPROPERTY()
 	FOnEndDrawDelegate EndDrawDelegate;

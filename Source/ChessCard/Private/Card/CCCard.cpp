@@ -161,7 +161,9 @@ void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, 
 {
 	GetGridManager(GetWorld())->UnhighlightTiles();
 
-	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData);
+	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData,
+		Unit->DivineAngerCounter >= Unit->CardDataRowHandle.GetRow<FCardData>("")->DivineAngerTriggerNumber);
+	
 	OwningPawn->AddPlayerAction(PlayerActionData);
 	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
 }

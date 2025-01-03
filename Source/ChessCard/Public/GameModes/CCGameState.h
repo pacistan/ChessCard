@@ -91,7 +91,7 @@ private:
 	
 	UFUNCTION()
 	void OnRep_Score();
-	
+
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 private:
 	virtual void BeginPlay() override;
@@ -113,7 +113,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentState(EGameState InCurrentState);
 
-
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentState() const {return CurrentState;}
+
+	UFUNCTION()
+	UCCEffectManagerComponent* GetEffectManager() {return EffectManager;};
 };

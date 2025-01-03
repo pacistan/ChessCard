@@ -70,6 +70,9 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<ACCPlayerPawn> OwningPawn;
+
+	UPROPERTY()
+	bool IsCore = true;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:

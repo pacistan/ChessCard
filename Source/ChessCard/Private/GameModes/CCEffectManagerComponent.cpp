@@ -13,8 +13,8 @@ UCCEffectManagerComponent::UCCEffectManagerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UCCEffectManagerComponent::TriggerResolveEffect(FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece,
-	ACCTile* InEffectTiles, EEffectTriggerType InTriggerType, ACCPieceBase* RelevantUnit, FIntPoint Direction)
+void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece,
+	TArray<ACCTile*> InEffectTiles, EEffectTriggerType InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction)
 {
 	FCardData CardData = *InRowHandle.GetRow<FCardData>(TEXT(""));
 	ACCGameState* GameState = GetOwner<ACCGameState>();
@@ -24,8 +24,11 @@ void UCCEffectManagerComponent::TriggerResolveEffect(FDataTableRowHandle InRowHa
 	case EEffectType::Midas:
 		if(InTriggerType == EEffectTriggerType::OnDeath)
 		{
-			ACCPlayerPawn* TargetPlayer = GameState->GetPlayerStateOfTeam(RelevantUnit->GetTeam())->GetPawn<ACCPlayerPawn>();
-			TargetPlayer->RPC_AddCardToDeck(GoldRowHandle);
+			for(auto Unit : RelevantUnits)
+			{
+				ACCPlayerPawn* TargetPlayer = GameState->GetPlayerStateOfTeam(Unit->GetTeam())->GetPawn<ACCPlayerPawn>();
+				TargetPlayer->RPC_AddCardToDeck(GoldRowHandle);
+			}
 		}
 		else if(InTriggerType == EEffectTriggerType::OnMove)
 		{
@@ -52,19 +55,31 @@ void UCCEffectManagerComponent::TriggerResolveEffect(FDataTableRowHandle InRowHa
 			ACCPieceBase* Unit = GetWorld()->SpawnActor<ACCPieceBase>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
 			Unit->InitUnit(FInitilizationProperties(FIntPoint(SpawnTile->GetRowNum(), SpawnTile->GetColumnNum()), InPiece->GetTeam(), FGuid::NewGuid(), EmbrasementRowHandle));
 		}
-		else if(InTriggerType == EEffectTriggerType::DivineAnger)
+		else if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
 		{
+			if(!IsValid(InEffectTiles[0]))
+			{
+				return;
+			}
 			const FRotator UnitRotation;
-			const FVector UnitPosition = InEffectTiles->GetActorLocation() + FVector::UpVector * 20;
+			const FVector UnitPosition = InEffectTiles[0]->GetActorLocation() + FVector::UpVector * 20;
 			FActorSpawnParameters UnitSpawnParams;
 			UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			UnitSpawnParams.bNoFail = true;
 			
 			ACCPieceBase* Unit = GetWorld()->SpawnActor<ACCPieceBase>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
-			Unit->InitUnit(FInitilizationProperties(FIntPoint(InEffectTiles->GetRowNum(), InEffectTiles->GetColumnNum()), InPiece->GetTeam(), FGuid::NewGuid(), EmbrasementRowHandle));
+			Unit->InitUnit(FInitilizationProperties(FIntPoint(InEffectTiles[0]->GetRowNum(), InEffectTiles[0]->GetColumnNum()), InPiece->GetTeam(), FGuid::NewGuid(), EmbrasementRowHandle));
 		}
 		break;
 	case EEffectType::Minotaur:
+		for(auto Tile : InEffectTiles)
+		{
+			for(auto Piece : Tile->GetPieces())
+			{
+				TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint());
+				Piece->MLC_DestroyPiece();
+			}
+		}
 		break;
 	case EEffectType::Trojan:
 		if(InTriggerType == EEffectTriggerType::OnDeath)
@@ -95,8 +110,6 @@ void UCCEffectManagerComponent::TriggerResolveEffect(FDataTableRowHandle InRowHa
 	case EEffectType::Meduse:
 		break;
 	case EEffectType::Persee:
-		//GameState->GetGridManager
-		//GameMode->
 		break;
 	case EEffectType::Circe:
 		break;

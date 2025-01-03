@@ -32,6 +32,9 @@ public:
 	ACCCard* CreateCard();
 
 	UFUNCTION()
+	void GenerateDeck(TArray<FDataTableRowHandle>& NewCards);
+	
+	UFUNCTION()
 	void AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType = EAddCardType::Random);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
