@@ -98,6 +98,9 @@ public:
 
 	UFUNCTION()
 	void OnRep_InitProperties();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ConstructTile(FCardData Card);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

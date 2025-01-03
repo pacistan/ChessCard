@@ -225,7 +225,7 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 
 void ACCCard::Select(ACCPlayerPawn* Pawn)
 {
-	if(!CardMovement->IsInterruptable)
+	if(!CardMovement->IsInterruptable || CurrentCardState == ECardState::Played)
 	{
 		return;
 	}

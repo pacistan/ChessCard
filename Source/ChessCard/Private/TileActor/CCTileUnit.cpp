@@ -22,11 +22,16 @@ ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(Ob
 FIntPoint ACCTileUnit::GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>& PatternMovement)
 {
 	FIntPoint EndPoint = FIntPoint();
+	FIntPoint OutPoint = FIntPoint();
 	for(auto Movement : PatternMovement)
 	{
 		EndPoint += Movement.Direction;
+		if(Movement.MovementType == EMovementType::Stoppable)
+		{
+			OutPoint = EndPoint;
+		}
 	}
-	return EndPoint;
+	return OutPoint;
 }
 
 void ACCTileUnit::BeginPlay()
@@ -141,13 +146,13 @@ void ACCTileUnit::MinotaurHighlightDestinationTiles()
 void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 {
 	FIntPoint EndPoint = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
-	FIntPoint Travel = EndPoint - CurrentCoordinates;
 	TArray<FPatternMapEndPoint> OutPatternMovement;
 	IsMoved = true;
 	FCardData CardData = *CardDataRowHandle.GetRow<FCardData>("");
 	
 	if(CardData.EffectType == EEffectType::Minotaur && CardData.DivineAngerTriggerNumber <= DivineAngerCounter)
 	{
+			FIntPoint Travel = EndPoint - CurrentCoordinates;
 		int Magnitude = FMath::Abs(Travel.X) + FMath::Abs(Travel.Y);
 		OutPatternMovement.Init(FPatternMapEndPoint(EMovementType::ApplyEffect, Travel / Magnitude), Magnitude);
 		OutPatternMovement.Last().MovementType = EMovementType::Stoppable;
@@ -155,13 +160,23 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 	else
 	{
 		auto TargetPatternList = CardData.DivineAngerTriggerNumber <= DivineAngerCounter ? DivineAngerPatternList : PatternList;
-		for(auto PatternMovement : TargetPatternList)
+		for(auto& PatternMovement : TargetPatternList)
 		{
-			if(Travel == GetTravelRelativeCoordinates(PatternMovement))
+			FIntPoint Progress = CurrentCoordinates;
+			for(auto& Mvt : PatternMovement)
 			{
-				OutPatternMovement = PatternMovement;
-				break;
+				DEBUG_LOG("%i %i EndPoint = %i %i" , Progress.X, Progress.Y, EndPoint.X, EndPoint.Y);
+				Progress += Mvt.Direction;
+				if(Progress == EndPoint)
+				{
+					if(Mvt.MovementType == EMovementType::Stoppable)
+					{
+						OutPatternMovement = PatternMovement;
+					}
+					break;
+				}
 			}
+			if(!OutPatternMovement.IsEmpty()) break;
 		}
 	}
 	
@@ -174,8 +189,10 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 		for(int i = 0; i < OutPatternMovement.Num(); i++)
 		{
 			ProgressPoint += OutPatternMovement[i].Direction;
+			auto LastTile = GetGridManager(GetWorld())->GetTile(ProgressPoint);
+			if(!IsValid(LastTile) || !LastTile->IsAccessibleForTeam(Team)) continue;
 			FVector PointPosition =  GetGridManager(GetWorld())->CoordinatesToPosition(ProgressPoint) + FVector::UpVector * 20;
-			TSubclassOf<AActor> Subclass = OutPatternMovement[i].MovementType == EMovementType::Stoppable ? DestinationPointActorClass :
+			TSubclassOf<AActor> Subclass = OutPatternMovement[i].MovementType == EMovementType::Stoppable && Tile == LastTile ? DestinationPointActorClass :
 				OutPatternMovement[i].MovementType == EMovementType::ApplyEffect ? EffectPointActorClass : MovementPointActorClass;
 			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);

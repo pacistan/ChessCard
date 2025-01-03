@@ -44,6 +44,9 @@ protected:
 	TArray<FVector> UnitMovementData;
 
 	UPROPERTY()
+	TArray<FRotator> UnitRotationData;
+
+	UPROPERTY()
 	FPlayerActionData ActionData;
 	
 	UPROPERTY()
