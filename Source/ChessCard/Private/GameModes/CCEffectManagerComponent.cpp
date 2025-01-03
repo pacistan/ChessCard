@@ -14,7 +14,7 @@ UCCEffectManagerComponent::UCCEffectManagerComponent()
 }
 
 void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece,
-	TArray<ACCTile*> InEffectTiles, EEffectTriggerType InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction)
+	TArray<ACCTile*> InEffectTiles, EEffectTriggerType InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction, FPlayerActionData ActionData)
 {
 	FCardData CardData = *InRowHandle.GetRow<FCardData>(TEXT(""));
 	ACCGameState* GameState = GetOwner<ACCGameState>();
@@ -30,7 +30,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 				TargetPlayer->RPC_AddCardToDeck(GoldRowHandle);
 			}
 		}
-		else if(InTriggerType == EEffectTriggerType::OnMove)
+		else if(InTriggerType == EEffectTriggerType::OnKill)
 		{
 			auto PlayerPawns = GameMode->GetPlayerPawns();
 			for(auto Player : PlayerPawns)
@@ -57,10 +57,18 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		}
 		else if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
 		{
-			if(!IsValid(InEffectTiles[0]))
+			if(InEffectTiles.IsEmpty())
 			{
 				return;
 			}
+			auto Pieces = InEffectTiles[0]->GetPieces();
+			for(int k = Pieces.Num() - 1; k >= 0; k--)
+			{
+				TriggerResolveEffect(false, Pieces[k]->CardDataRowHandle, Pieces[k],TArray<ACCTile*>(),
+					EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+				Pieces[k]->MLC_DestroyPiece();
+			}
+			
 			const FRotator UnitRotation;
 			const FVector UnitPosition = InEffectTiles[0]->GetActorLocation() + FVector::UpVector * 20;
 			FActorSpawnParameters UnitSpawnParams;
@@ -72,12 +80,18 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		}
 		break;
 	case EEffectType::Minotaur:
-		for(auto Tile : InEffectTiles)
+		if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
 		{
-			for(auto Piece : Tile->GetPieces())
+			DEBUG_WARNING("MINOTAUR EFFECT");
+			for(auto Tile : InEffectTiles)
 			{
-				TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint());
-				Piece->MLC_DestroyPiece();
+				auto Pieces = Tile->GetPieces();
+				for(int i = Pieces.Num() - 1; i >= 0; i--)
+				{
+					TriggerResolveEffect(false, Pieces[i]->CardDataRowHandle, Pieces[i], TArray<ACCTile*>(),
+						EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+					Pieces[i]->MLC_DestroyPiece();
+				}
 			}
 		}
 		break;
@@ -108,14 +122,145 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		}
 		break;
 	case EEffectType::Meduse:
+		if(InTriggerType == EEffectTriggerType::OnMove)
+		{
+			for(auto Tile : InEffectTiles)
+			{
+				if(!Tile->GetPieces().IsEmpty())
+				{
+					for(auto Piece : Tile->GetPieces())
+					{
+						if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
+						{
+							Unit->IsStunned = true;						
+						}
+					}
+					break;
+				}
+			}
+			if(IsDivineAnger)
+			{
+				for(int i = -1; i <= 1; i++)
+				{
+					for(int j = -1; j <= 1; j++)
+					{
+						int X = InPiece->CurrentCoordinates.X + i;
+						int Y = InPiece->CurrentCoordinates.Y + j;
+						ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
+						if(IsValid(Tile))
+						{
+							for(auto Piece : Tile->GetPieces())
+							{
+								if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
+								{
+									Unit->IsStunned = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		break;
 	case EEffectType::Persee:
+		if(InTriggerType == EEffectTriggerType::OnKill && !ActionData.MovementData.IsEmpty())
+		{
+			auto Unit = Cast<ACCTileUnit>(InPiece);
+			FIntPoint NewDestination = Unit->CurrentCoordinates;
+			for(auto Mvt : ActionData.MovementData) NewDestination += Mvt.Direction;
+			if(GameState->GetGridManager()->GetTile(NewDestination))
+			{
+				for(auto PlayerState : GameState->PlayerArray)
+				{
+					auto CCPlayerState = Cast<ACCPlayerState>(PlayerState);
+					if(CCPlayerState->GetTeam()	== Unit->Team)
+					{
+						FPlayerActionData NewActionData =ActionData;
+						NewActionData.TargetCoord = NewDestination;
+						GameMode->PlayerActions[CCPlayerState].Insert(NewActionData, 0);
+					}
+					else
+					{
+						FPlayerActionData NewActionData = FPlayerActionData();
+						NewActionData.TargetCoord = FIntPoint(-1, -1);
+						GameMode->PlayerActions[CCPlayerState].Insert(NewActionData, 0);
+					}
+				}
+			}
+		}
 		break;
 	case EEffectType::Circe:
+		if(InTriggerType == EEffectTriggerType::OnKill)
+		{
+			
+		}
+		if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
+		{
+			for(auto Tile : InEffectTiles)
+			{
+				if(!Tile->GetPieces().IsEmpty())
+				{
+					GameState->GetGridManager()->GetTile(InPiece->CurrentCoordinates)->MLC_RemovePiece(InPiece);
+					ACCPieceBase* Piece = Tile->GetPieces()[0];
+					FInitilizationProperties InitProperties = Piece->InitilizationProperties;
+					InitProperties.Team = InPiece->Team;
+					InitProperties.InstanceID = InPiece->UnitGuid;
+					TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece,TArray<ACCTile*>(),
+							EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+					Piece->MLC_DestroyPiece();
+					InPiece->InitUnit(InitProperties);
+					break;
+				}
+			}
+		}
 		break;
 	case EEffectType::Heracles:
+		if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
+		{
+			for(int i = -1; i <= 1; i++)
+			{
+				for(int j = -1; j <= 1; j++)
+				{
+					int X = InPiece->CurrentCoordinates.X + i;
+					int Y = InPiece->CurrentCoordinates.Y + j;
+					ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
+					if(IsValid(Tile))
+					{
+						auto Pieces = Tile->GetPieces();
+						for(int k = Pieces.Num() - 1; k >= 0; k--)
+						{
+							TriggerResolveEffect(false, Pieces[k]->CardDataRowHandle, Pieces[k],TArray<ACCTile*>(),
+								EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+							Pieces[i]->MLC_DestroyPiece();
+						}
+					}
+				}
+			}
+		}
 		break;
 	case EEffectType::Embrasement:
+		if(InTriggerType == EEffectTriggerType::OnMove)
+		{
+			for(int i = -1; i <= 1; i++)
+			{
+				for(int j = -1; j <= 1; j++)
+				{
+					int X = InPiece->CurrentCoordinates.X + i;
+					int Y = InPiece->CurrentCoordinates.Y + j;
+					ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
+					if(IsValid(Tile))
+					{
+						auto Pieces = Tile->GetPieces();
+						for(int k = Pieces.Num() - 1; k >= 0; k--)
+						{
+							TriggerResolveEffect(false, Pieces[k]->CardDataRowHandle, Pieces[k],TArray<ACCTile*>(),
+								EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+							Pieces[i]->MLC_DestroyPiece();
+						}
+					}
+				}
+			}
+		}
 		break;
 	}
 }

@@ -5,6 +5,9 @@
 #include "Grid/CCTile.h"
 #include "CCEffectManagerComponent.generated.h"
 
+struct FPlayerActionData;
+class ACCPlayerPawn;
+
 UENUM()
 enum class EEffectTriggerType : uint8{OnKill, OnDeath, OnMove};
 
@@ -19,7 +22,8 @@ enum class EEffectType : uint8
 	Persee UMETA(DisplayName = "Persee"),
 	Circe UMETA(DisplayName = "Circe"),
 	Heracles UMETA(DisplayName = "Heracles"),
-	Embrasement UMETA(DisplayName = "Embrasement")
+	Embrasement UMETA(DisplayName = "Embrasement"),
+	Gold UMETA(DisplayName = "Gold")
 };
 
 class ACCPieceBase;
@@ -43,5 +47,5 @@ public:
 
 	UFUNCTION()
 	void TriggerResolveEffect(bool IsDivineAnger, FDataTableRowHandle InRowHandle, ACCPieceBase* InPiece, TArray<ACCTile*> InEffectTiles, EEffectTriggerType
-	                          InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction);
+	                          InTriggerType, TArray<ACCPieceBase*> RelevantUnits, FIntPoint Direction, FPlayerActionData ActionData);
 };

@@ -2,6 +2,7 @@
 
 #include "Card/CCCardMovementComponent.h"
 #include "Card/FCardData.h"
+#include "GameModes/CCEffectManagerComponent.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
@@ -47,68 +48,89 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 	{
 		case ECardType::Unit:
 		{
-			ETileType TargetTileType = ETileType::Player1;
-			switch(PlayerState->GetTeam())
 			{
-				case ETeam::One:
-					TargetTileType = ETileType::Player1;
-					break;
-				case ETeam::Two:
-					TargetTileType = ETileType::Player2;
-					break;
-				case ETeam::Three:
-					TargetTileType = ETileType::Player3;
-					break;
-				case ETeam::Four:
-					TargetTileType = ETileType::Player4;
-					break;
-				default:
-					//DEBUG_ERROR("Pawn has an invalid Player Index : %i", Pawn->GetPlayerIndex());
-					break;
-			}
-				
-			/*if(bIsSelected)
-			{
-				GetGridManager(	GetWorld())->UnhighlightTiles();
-			}*/
-				
-			FTileTypeDelegate TileTypeDelegate;
-			auto Lambda = [this, &bIsSelected](ACCTile* Tile)
-			{
-				if(!Tile->ContainPiece())
+				ETileType TargetTileType = ETileType::Player1;
+				switch(PlayerState->GetTeam())
 				{
-					FOnClickTileDelegate OnClickDelegate;
-					OnClickDelegate.BindDynamic(this, &ACCCard::SpawnLocalUnit);
-					Tile->SetHighlight(bIsSelected, OnClickDelegate);
+					case ETeam::One:
+						TargetTileType = ETileType::Player1;
+						break;
+					case ETeam::Two:
+						TargetTileType = ETileType::Player2;
+						break;
+					case ETeam::Three:
+						TargetTileType = ETileType::Player3;
+						break;
+					case ETeam::Four:
+						TargetTileType = ETileType::Player4;
+						break;
+					default:
+						//DEBUG_ERROR("Pawn has an invalid Player Index : %i", Pawn->GetPlayerIndex());
+						break;
 				}
-			};
-			TileTypeDelegate.BindLambda(Lambda);
-			GetGridManager(GetWorld())->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
+					
+				/*if(bIsSelected)
+				{
+					GetGridManager(	GetWorld())->UnhighlightTiles();
+				}*/
+					
+				FTileTypeDelegate TileTypeDelegate;
+				auto Lambda = [this, &bIsSelected](ACCTile* Tile)
+				{
+					if(!Tile->ContainPiece())
+					{
+						FOnClickTileDelegate OnClickDelegate;
+						OnClickDelegate.BindDynamic(this, &ACCCard::SpawnLocalUnit);
+						Tile->SetHighlight(bIsSelected, OnClickDelegate);
+					}
+				};
+				TileTypeDelegate.BindLambda(Lambda);
+				GetGridManager(GetWorld())->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
+				
+			}
 			break;
 		}
 		case ECardType::Movement:
 		{
-			FTileTypeDelegate TileTypeDelegate;
-			auto Lambda = [this, &bIsSelected](ACCTile* Tile)
 			{
-				for(auto& Piece : Tile->GetPieces())
+				FTileTypeDelegate TileTypeDelegate;
+				auto Lambda = [this, &bIsSelected](ACCTile* Tile)
 				{
-					auto Unit = Cast<ACCTileUnit>(Piece);
-					if(IsValid(Unit))
+					for(auto& Piece : Tile->GetPieces())
 					{
-						Unit->SetHighlight(bIsSelected, OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
+						auto Unit = Cast<ACCTileUnit>(Piece);
+						if(IsValid(Unit) && Unit->CardDataRowHandle.GetRow<FCardData>("")->CardType == ECardType::Unit)
+						{
+							Unit->SetHighlight(bIsSelected, OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
+						}
 					}
-				}
-			};
-			TileTypeDelegate.BindLambda(Lambda);
-			GetGridManager(GetWorld())->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+				};
+				TileTypeDelegate.BindLambda(Lambda);
+				GetGridManager(GetWorld())->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+			}
 			break;
 		}
 		case ECardType::SpecificUnit:
 			DEBUG_WARNING("Not Implemented Specific Unit Card Type");
 			break;
-		case ECardType::Custom:
-			DEBUG_WARNING("Not Implemented Custom Card Type");
+	case ECardType::Custom:
+			if(RowData->EffectType == EEffectType::Embrasement)
+			{
+				FTileTypeDelegate TileTypeDelegate;
+				auto Lambda = [this, &bIsSelected](ACCTile* Tile)
+				{
+					for(auto& Piece : Tile->GetPieces())
+					{
+						auto Unit = Cast<ACCTileUnit>(Piece);
+						if(IsValid(Unit) && Unit->CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+						{
+							Unit->SetHighlight(bIsSelected, OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam());
+						}
+					}
+				};
+				TileTypeDelegate.BindLambda(Lambda);
+				GetGridManager(GetWorld())->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+			}
 			break;
 	}
 }
@@ -161,8 +183,19 @@ void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, 
 {
 	GetGridManager(GetWorld())->UnhighlightTiles();
 
-	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData,
-		Unit->DivineAngerCounter >= Unit->CardDataRowHandle.GetRow<FCardData>("")->DivineAngerTriggerNumber);
+	FCardData UnitCardData = *Unit->CardDataRowHandle.GetRow<FCardData>("");
+	bool IsDivineAnger = Unit->DivineAngerCounter >= UnitCardData.DivineAngerTriggerNumber;
+	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData, IsDivineAnger
+		);
+	
+	OwningPawn->AddPlayerAction(PlayerActionData);
+	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
+}
+
+void ACCCard::TriggerEmbrasement(ACCTile* Tile, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit)
+{
+	FCardData UnitCardData = *Unit->CardDataRowHandle.GetRow<FCardData>("");
+	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, TArray<FPatternMapEndPoint>());
 	
 	OwningPawn->AddPlayerAction(PlayerActionData);
 	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
@@ -192,7 +225,6 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 
 void ACCCard::Select(ACCPlayerPawn* Pawn)
 {
-	//TODO: Check if In Planning Mode
 	if(!CardMovement->IsInterruptable)
 	{
 		return;

@@ -2,6 +2,7 @@
 
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
+#include "Macro/CCLogMacro.h"
 #include "Net/UnrealNetwork.h"
 
 ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -17,7 +18,7 @@ void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(ACCPieceBase, InitilizationProperties);
 	DOREPLIFETIME(ACCPieceBase, CurrentCoordinates);
-	DOREPLIFETIME(ACCPieceBase, IsInitialized);
+	DOREPLIFETIME(ACCPieceBase, PreviousCoordinates);
 }
 
 void ACCPieceBase::DestroyPiece()
@@ -50,7 +51,7 @@ void ACCPieceBase::InternalInit()
 }
 
 void ACCPieceBase::OnRep_InitProperties()
-{
+{	
 	if(!IsInitialized)
 	{
 		InternalInit();

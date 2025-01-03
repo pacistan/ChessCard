@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "GameplayTagContainer.h"
 #include "Card/FUnitMovementData.h"
 #include "FCardData.generated.h"

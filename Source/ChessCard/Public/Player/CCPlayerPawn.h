@@ -1,14 +1,13 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Card/FCardData.h"
+//#include "Card/FCardData.h"
 #include "Deck/CCDeckComponent.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
 
-
+struct FCardData;
 class UPlayerWidget;
 class ACCTileUnit;
 class ACCPieceBase;
@@ -61,7 +60,7 @@ struct FPlayerActionData
 	, CardID(InCardID)
 	, UnitID(InUnitGuid)
 	, MovementData(InMovementData)
-	, IsDivineAnger(IsDivineAnger)
+	, IsDivineAnger(InIsDivineAnger)
 	{
 	}
 };
@@ -99,6 +98,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCDeckComponent> MovementDeckComponent;
 
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<UCCDeckComponent> EmbrasementDeckComponent;
+	
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UCCDeckComponent> DiscardPileComponent;
 
@@ -194,7 +196,7 @@ public:
 
 	UFUNCTION()
 	void RemoveSelectedCardFromHand();
-	void RemoveLastDrawnCardFromHand();
+	void RemoveCardWithIndex(int TargetIndex);
 
 	/** Add the Player HUD to the player, need to be call on Start of the game */
 	UFUNCTION(Client, Unreliable)

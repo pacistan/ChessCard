@@ -40,6 +40,7 @@ private:
 
 	TArray<TArray<TObjectPtr<ACCTile>>> Grid;
 
+public:
 	TMap<ETileType, TArray<FIntPoint>> MappedGrid;
 	
 	/* ------------------------------------------ EDITOR -------------------------------------------*/

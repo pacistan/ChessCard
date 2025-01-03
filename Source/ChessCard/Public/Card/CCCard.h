@@ -73,6 +73,9 @@ public:
 
 	UPROPERTY()
 	bool IsCore = true;
+
+	UPROPERTY()
+	bool IsFleeting = false;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
@@ -108,8 +111,10 @@ protected:
 	
 public:
 	UFUNCTION()
-	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit
-	              * Unit);
+	void MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit);
+
+	UFUNCTION()
+	void TriggerEmbrasement(ACCTile* Tile, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit);
 
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
 

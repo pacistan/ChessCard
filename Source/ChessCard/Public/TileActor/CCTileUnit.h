@@ -59,10 +59,10 @@ public:
 	UPROPERTY()
 	bool IsSelected;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool IsMoved;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleInstanceOnly, Replicated)
 	bool IsStunned;
 	
 	UPROPERTY()
@@ -77,7 +77,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> DestinationPointActorClass;
 	
-
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> EffectPointActorClass;
+	
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 

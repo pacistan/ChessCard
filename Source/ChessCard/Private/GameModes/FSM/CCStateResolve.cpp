@@ -16,7 +16,21 @@ void UCCStateResolve::OnEnterState()
 {
 	Super::OnEnterState();
 	AreAllPlayerQueuesSent = false;
-	DEBUG_WARNING_CATEGORY(LogFSM, "Number of Action queues = %i",GameMode->PlayerActions.Num());
+
+	//UnStun Units
+	FTileTypeDelegate TileTypeDelegate;
+	auto Lambda = [](ACCTile* Tile)
+	{
+		for(const auto& Piece : Tile->GetPieces())
+		{
+			if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
+			{
+				Unit->IsStunned = false;
+			}
+		}	
+	};
+	TileTypeDelegate.BindLambda(Lambda);
+	GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
 }
 
 void UCCStateResolve::OnStateTick(float DeltaTime)
@@ -32,21 +46,6 @@ void UCCStateResolve::OnStateTick(float DeltaTime)
 void UCCStateResolve::OnExitState()
 {
 	Super::OnExitState();
-	
-	//Give Score to Players
-	{
-		FTileTypeDelegate TileTypeDelegate;
-		auto Lambda = [this](ACCTile* Tile)
-		{
-			for(const auto& Unit : Tile->GetPieces())
-			{
-				//TODO : Add Score to Team
-				//GameState->AddScore(Unit->GetTeam());
-			}	
-		};
-		TileTypeDelegate.BindLambda(Lambda);
-		GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::ScoreTile,TileTypeDelegate);
-	}
 
 	//Increment Divine Anger Counter
 	{
@@ -57,7 +56,13 @@ void UCCStateResolve::OnExitState()
 			{
 				if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 				{
+					DEBUG_LOG("Refresh Unit On Tile %i %i", Tile->GetRowNum(), Tile->GetColumnNum());
 					Unit->DivineAngerCounter++;
+					Unit->IsMoved = false;
+					if(Tile->GetTileType() == ETileType::ScoreTile)
+					{
+						//TODO : Add Score Here1
+					}
 				}
 			}	
 		};
@@ -87,6 +92,7 @@ void UCCStateResolve::StartNewAction()
 	}
 	KillerTiles.Empty();
 	SlaughterTiles.Empty();
+	LastActions.Empty();
 	
 	bool AreAllActionsResolved = true;
 	for(auto& Queue : GameMode->PlayerActions)
@@ -102,7 +108,7 @@ void UCCStateResolve::StartNewAction()
 		GameMode->GetFSM()->ChangeStateWithClass(UCCStateDrawingCards::StaticClass());
 		return;	
 	}
-
+	
 	
 	for(auto& Queue : GameMode->PlayerActions)
 	{
@@ -121,7 +127,7 @@ void UCCStateResolve::StartNewAction()
 			ACCTileUnit* Unit = Cast<ACCTileUnit>(TargetTile->GetPiece(Action.UnitID));
 
 			//Related Unit has been Destroyed in previous Action
-			if(!IsValid(Unit))
+			if(!IsValid(Unit) || Unit->IsStunned)
 			{
 				OnActionResolved(Queue.Key, Action, Unit);
 				return;
@@ -137,8 +143,9 @@ void UCCStateResolve::StartNewAction()
 				for(auto MvtData : Action.MovementData) EndMovementCoordinates += MvtData.Direction; 
 				ACCTile* EndMovementTile = GameState->GetGridManager()->GetTile(EndMovementCoordinates);
 				check(EndMovementTile);
+				Unit->PreviousCoordinates = Unit->CurrentCoordinates;
 				Unit->CurrentCoordinates = EndMovementCoordinates;
-				EndMovementTile->MLC_AddPiece(Unit);
+				//EndMovementTile->MLC_AddPiece(Unit);
 				EndMovementTile->IsAboutToReceivePiece = true;
 				if(KillerTiles.Contains(EndMovementTile))
 				{
@@ -149,16 +156,26 @@ void UCCStateResolve::StartNewAction()
 				{
 					KillerTiles.Add(EndMovementTile, TArray<ACCPieceBase*>{Unit});
 				}
+				LastActions.Add(Unit, Action);
 			}
 		}
+		//TriggerEmbrasement
+		else if(Action.CardData.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+		{
+			ACCTileUnit* Unit = Cast<ACCTileUnit>(TargetTile->GetPiece(Action.UnitID));
+			FTimerHandle TimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this, Queue, Action, Unit]{OnActionResolved(Queue.Key, Action, Unit);}, 2, false, -1);
+			LastActions.Add(Unit, Action);
+		}
 		//Spawn Action
-		else
+		else if(IsValid(TargetTile))
 		{
 			const FRotator UnitRotation;
 			const FVector UnitPosition = TargetTile->GetActorLocation() + FVector::UpVector * 20;
 			FActorSpawnParameters UnitSpawnParams;
 			UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			UnitSpawnParams.bNoFail = true;
+
 			
 			ACCTileUnit* Unit = GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
 			Unit->InitUnit(FInitilizationProperties(Action.TargetCoord, Queue.Key->GetTeam(), Action.UnitID, Action.CardData));
@@ -178,6 +195,7 @@ void UCCStateResolve::StartNewAction()
 			{
 				KillerTiles.Add(TargetTile, TArray<ACCPieceBase*>{Unit});
 			}
+			LastActions.Add(Unit, Action);
 		}
 	}
 }
@@ -186,7 +204,8 @@ void UCCStateResolve::OnActionResolved(ACCPlayerState* PlayerState, FPlayerActio
 {
 	if(IsValid(LastPiece))
 	{
-		ApplyActionEffects(PlayerState, LastAction, LastPiece, !LastAction.MovementData.IsEmpty());
+		bool IsMovementAction = !LastAction.MovementData.IsEmpty() || LastAction.CardData.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement;
+		ApplyActionEffects(PlayerState, LastAction, LastPiece, IsMovementAction);
 	}
 	NumberOfActionResolved++;
 	
@@ -216,7 +235,7 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 
 		//Movement Proc
 		ACCTileUnit* Unit = Cast<ACCTileUnit>(LastPiece);
-		FIntPoint Coordinate = Unit->CurrentCoordinates;
+		FIntPoint Coordinate = Unit->PreviousCoordinates;
 		TArray<ACCTile*> EffectTiles;
 		FIntPoint Direction = FIntPoint();
 		for(auto& Mvt : LastAction.MovementData)
@@ -236,78 +255,64 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 			}
 		}
 		GameState->GetEffectManager()->TriggerResolveEffect(LastAction.IsDivineAnger, LastPiece->CardDataRowHandle,
-			LastPiece, EffectTiles, EEffectTriggerType::OnMove, TArray<ACCPieceBase*>(), Direction);
+			LastPiece, EffectTiles, EEffectTriggerType::OnMove, TArray<ACCPieceBase*>(), Direction, LastAction);
 		Unit->DivineAngerCounter = 0;
 	}
 }
-
-DECLARE_MULTICAST_DELEGATE(FKillDeathDelegate);
 
 void UCCStateResolve::BloodSlaughterAndDeath()
 {
 	FKillDeathDelegate KillDelegate;
 	FKillDeathDelegate DeathDelegate;
-	for(auto TilePair : KillerTiles)
+	TArray<ACCPieceBase*> DyingPieces;
+	for (auto TilePair : KillerTiles)
 	{
-		if(SlaughterTiles.Contains(TilePair.Key))
+		for(auto Piece : TilePair.Value)
 		{
-			for(auto Piece : TilePair.Key->GetPieces())
-			{
-				//Kill And Death
-				if(TilePair.Value.Contains(Piece))
-				{
-					auto KillLambda = [this, TilePair, Piece]()
-					{
-						GameState->GetEffectManager()->TriggerResolveEffect(
-							false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnKill, TilePair.Value, FIntPoint());
-					};
-					KillDelegate.AddLambda(KillLambda);
-					auto DeathLambda = [this, TilePair, Piece]()
-					{
-						GameState->GetEffectManager()->TriggerResolveEffect(
-							false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TilePair.Value, FIntPoint());
-					};
-					DeathDelegate.AddLambda(DeathLambda);
-				}
-				//Death
-				else
-				{
-					auto DeathLambda = [this, TilePair, Piece]()
-					{
-						GameState->GetEffectManager()->TriggerResolveEffect(
-							false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TilePair.Value, FIntPoint());
-					};
-					DeathDelegate.AddLambda(DeathLambda);
-				}
-			}
+			TilePair.Key->MLC_AddPiece(Piece);
 		}
-		else
+		for (auto Piece : TilePair.Key->GetPieces())
 		{
-			for(auto Piece : TilePair.Key->GetPieces())
+			if (SlaughterTiles.Contains(TilePair.Key) && TilePair.Value.Contains(Piece))
 			{
-				//Kill
-				if(TilePair.Value.Contains(Piece))
-				{
-					auto KillLambda = [this, TilePair, Piece]()
-					{
-						GameState->GetEffectManager()->TriggerResolveEffect(
-							false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnKill, TilePair.Value, FIntPoint());
-					};
-				}
-				//Death
-				else
-				{
-					auto DeathLambda = [this, TilePair, Piece]()
-					{
-						GameState->GetEffectManager()->TriggerResolveEffect(
-							false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TilePair.Value, FIntPoint());
-					};
-					DeathDelegate.AddLambda(DeathLambda);
-				}
+				AddKillLambda(KillDelegate, TilePair.Key, Piece);
+				AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
+				DyingPieces.Add(Piece);
+			}
+			else if (TilePair.Value.Contains(Piece))
+			{
+				AddKillLambda(KillDelegate, TilePair.Key, Piece); 
+			}
+			else
+			{
+				AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
+				DyingPieces.Add(Piece);
 			}
 		}
 	}
 
 	DeathDelegate.Broadcast();
 	KillDelegate.Broadcast();
+	for(auto Piece : DyingPieces)
+	{
+		Piece->MLC_DestroyPiece();
+	}
+}
+
+void UCCStateResolve::AddKillLambda(FKillDeathDelegate& Delegate, ACCTile* Tile, ACCPieceBase* Piece)
+{
+	Delegate.AddLambda([this, Tile, Piece]()
+	{
+		GameState->GetEffectManager()->TriggerResolveEffect(
+			false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnKill, Tile->GetPieces(), FIntPoint(), LastActions[Piece]);
+	});
+}
+
+void UCCStateResolve::AddDeathLambda(FKillDeathDelegate& Delegate, ACCTile* Tile, ACCPieceBase* Piece)
+{
+	Delegate.AddLambda([this, Tile, Piece]()
+	{
+		GameState->GetEffectManager()->TriggerResolveEffect(
+			false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, Tile->GetPieces(), FIntPoint(), FPlayerActionData());
+	});
 }

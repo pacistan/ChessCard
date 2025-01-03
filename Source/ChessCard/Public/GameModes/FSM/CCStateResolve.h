@@ -6,6 +6,9 @@
 #include "Player/CCPlayerState.h"
 #include "CCStateResolve.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FKillDeathDelegate);
+
+
 UCLASS()
 class CHESSCARD_API UCCStateResolve : public UCCBaseState
 {
@@ -19,6 +22,8 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 
 	TMap<ACCTile*, TArray<ACCPieceBase*>> KillerTiles;
 
+	TMap<ACCPieceBase*, FPlayerActionData> LastActions;
+	
 	UPROPERTY()
 	TSet<ACCTile*> SlaughterTiles;
 	
@@ -30,7 +35,11 @@ class CHESSCARD_API UCCStateResolve : public UCCBaseState
 
 	UFUNCTION()
 	void ApplyActionEffects(ACCPlayerState* PlayerState, const FPlayerActionData& LastAction, ACCPieceBase* LastPiece, bool IsMovementAction);
+
+	UFUNCTION()
 	void BloodSlaughterAndDeath();
+	void AddKillLambda(FKillDeathDelegate& Delegate, ACCTile* Tile, ACCPieceBase* Piece);
+	void AddDeathLambda(FKillDeathDelegate& Delegate, ACCTile* Tile, ACCPieceBase* Piece);
 
 	UFUNCTION()
 	void StartNewAction();

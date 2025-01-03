@@ -61,7 +61,7 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_InitProperties)
 	FInitilizationProperties InitilizationProperties;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	bool IsInitialized;
 	
 	UPROPERTY()
@@ -70,6 +70,9 @@ public:
 	UPROPERTY(Replicated)
 	FIntPoint CurrentCoordinates;
 
+	UPROPERTY(Replicated)
+	FIntPoint PreviousCoordinates;
+	
 	UPROPERTY()
 	FDataTableRowHandle CardDataRowHandle;
 

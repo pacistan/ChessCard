@@ -170,6 +170,7 @@ void ACCTile::RemovePiece(ACCPieceBase* Piece)
 
 void ACCTile::MLC_RemovePiece_Implementation(ACCPieceBase* Piece)
 {
+	RemovePiece(Piece);
 }
 
 bool ACCTile::IsAccessibleForTeam(ETeam Team)

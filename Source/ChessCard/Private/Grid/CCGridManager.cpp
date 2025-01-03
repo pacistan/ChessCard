@@ -69,6 +69,7 @@ ACCTile* ACCGridManager::GetValidRandomAdjacentTile(ACCTile* OriginTile, bool Ac
 	{
 		for(int j = -1; j <= 1; j++)
 		{
+			if(i == 0 && j == 0) continue;
 			int X = OriginTile->GetRowNum() + i;
 			int Y = OriginTile->GetColumnNum() + j;
 			if(X >= 0 && X < Grid.Num() && Y >= 0 && Y < Grid[0].Num())
