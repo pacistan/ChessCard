@@ -3,6 +3,7 @@
 #include "MeshCardBuild.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
+#include "GameModes/CCEffectManagerComponent.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
@@ -53,7 +54,16 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 	   
 	GridManager->UnhighlightTiles();
 
-	for(auto& MvtData : PatternList)
+	FCardData CardData = *CardDataRowHandle.GetRow<FCardData>("");
+	if(CardData.EffectType == EEffectType::Minotaur && CardData.DivineAngerTriggerNumber <= DivineAngerCounter)
+	{
+		MinotaurHighlightDestinationTiles();
+		return;
+	}
+
+	auto TargetPatternList = CardData.DivineAngerTriggerNumber <= DivineAngerCounter ? DivineAngerPatternList : PatternList;
+	
+	for(auto& MvtData : TargetPatternList)
 	{
 		FIntPoint Coordinates = CurrentCoordinates;
 		FIntPoint Destination = Coordinates + GetTravelRelativeCoordinates(MvtData);
@@ -93,32 +103,80 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 	}
 }
 
+void ACCTileUnit::MinotaurHighlightDestinationTiles()
+{
+	ACCGridManager* GridManager = GetGridManager(GetWorld());
+	TArray<FIntPoint> Directions {FIntPoint(0, 1), FIntPoint(0, -1), FIntPoint(1, 0), FIntPoint(-1, 0)};
+	for(int i = 0; i < Directions.Num() ; i++)
+	{
+		FOnClickTileDelegate OnClickTileDelegate;
+		ACCTile* CurrentTile = GridManager->GetTile(CurrentCoordinates + Directions[i]);
+		ACCTile* NextTile = GridManager->GetTile(CurrentCoordinates + Directions[i] * 2);
+		if(!IsValid(CurrentTile) || !CurrentTile->IsAccessibleForTeam(Team))
+		{
+			continue;
+		}
+		else if(!IsValid(NextTile)  || !NextTile->IsAccessibleForTeam(Team))
+		{
+			OnClickTileDelegate.BindDynamic(this, &ACCTileUnit::OnDestinationTileClicked);
+			CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Normal);
+			continue;
+		}
+		int Counter = 1;
+
+		
+		while(IsValid(NextTile) && NextTile->IsAccessibleForTeam(Team) && Counter < 100)
+		{
+			CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Effect);
+
+			Counter++;
+			CurrentTile = NextTile;
+			NextTile = GridManager->GetTile(CurrentCoordinates + Directions[i] * (Counter + 1));
+		}
+		OnClickTileDelegate.BindDynamic(this, &ACCTileUnit::OnDestinationTileClicked);
+		CurrentTile->SetHighlight(true, OnClickTileDelegate, EHighlightMode::Normal);
+	}
+}
+
 void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 {
 	FIntPoint EndPoint = FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum());
 	FIntPoint Travel = EndPoint - CurrentCoordinates;
 	TArray<FPatternMapEndPoint> OutPatternMovement;
 	IsMoved = true;
-	for(auto PatternMovement : PatternList)
+	FCardData CardData = *CardDataRowHandle.GetRow<FCardData>("");
+	
+	if(CardData.EffectType == EEffectType::Minotaur && CardData.DivineAngerTriggerNumber <= DivineAngerCounter)
 	{
-		if(Travel == GetTravelRelativeCoordinates(PatternMovement))
+		int Magnitude = FMath::Abs(Travel.X) + FMath::Abs(Travel.Y);
+		OutPatternMovement.Init(FPatternMapEndPoint(EMovementType::ApplyEffect, Travel / Magnitude), Magnitude);
+		OutPatternMovement.Last().MovementType = EMovementType::Stoppable;
+	}
+	else
+	{
+		auto TargetPatternList = CardData.DivineAngerTriggerNumber <= DivineAngerCounter ? DivineAngerPatternList : PatternList;
+		for(auto PatternMovement : TargetPatternList)
 		{
-			OutPatternMovement = PatternMovement;
-			break;
+			if(Travel == GetTravelRelativeCoordinates(PatternMovement))
+			{
+				OutPatternMovement = PatternMovement;
+				break;
+			}
 		}
 	}
 	
 	TArray<AActor*> MovementVisualActors;
 	MovementVisualActors.Reserve(OutPatternMovement.Num());
-	if(IsValid(MovementPointActorClass) && IsValid(DestinationPointActorClass))
+	if(IsValid(MovementPointActorClass) && IsValid(DestinationPointActorClass) && IsValid(EffectPointActorClass))
 	{
 		FIntPoint ProgressPoint = CurrentCoordinates;
 		FActorSpawnParameters SpawnParameters;
 		for(int i = 0; i < OutPatternMovement.Num(); i++)
 		{
 			ProgressPoint += OutPatternMovement[i].Direction;
-			FVector PointPosition =  GetGridManager(GetWorld())->CoordinatesToPosition(ProgressPoint);
-			TSubclassOf<AActor> Subclass = i == OutPatternMovement.Num() - 1 ? DestinationPointActorClass : MovementPointActorClass;
+			FVector PointPosition =  GetGridManager(GetWorld())->CoordinatesToPosition(ProgressPoint) + FVector::UpVector * 20;
+			TSubclassOf<AActor> Subclass = OutPatternMovement[i].MovementType == EMovementType::Stoppable ? DestinationPointActorClass :
+				OutPatternMovement[i].MovementType == EMovementType::ApplyEffect ? EffectPointActorClass : MovementPointActorClass;
 			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
 			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters)); 
@@ -130,7 +188,7 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 void ACCTileUnit::SetHighlight(bool bToHighlight, ETeam InTeam, FOnClickUnitDelegate InOnClickDelegate,
 	FOnHoverUnitDelegate InOnHoverUnitDelegate)
 {
-	if(bToHighlight && (IsMoved || InTeam != Team)) return;
+	if(bToHighlight && (IsMoved || InTeam != Team || IsStunned)) return;
 	IsHighlighted = bToHighlight;
 	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
 	MeshComponent->SetMaterial(0, NewMaterial);
@@ -158,7 +216,32 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 	{
 		IsSelected = true;
 		MeshComponent->SetMaterial(0, SelectedMaterial);
-		Player->SetSelectedUnit(this);
+		TArray<AActor*> MovementVisualActors;
+		if(CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+		{
+			LinkedCard = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
+			FActorSpawnParameters SpawnParameters;
+			for(int i = -1; i <= 1; i++)
+			{
+				for(int j = -1; j <= 1; j++)
+				{
+					if(i == 0 && j == 0) continue;
+					int X = CurrentCoordinates.X + i;
+					int Y = CurrentCoordinates.Y + j;
+					ACCTile* Tile = GetGridManager(GetWorld())->GetTile(FIntPoint(X, Y));
+					if(IsValid(Tile) && Tile->GetTileType() == ETileType::Normal || Tile->GetTileType() == ETileType::BonusTile || Tile->GetTileType() == ETileType::ScoreTile)
+					{
+						FVector PointPosition =  Tile->GetActorLocation() + FVector::UpVector * 20;
+						MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(EffectPointActorClass, PointPosition, FRotator::ZeroRotator, SpawnParameters)); 
+					}
+				}
+			}
+			LinkedCard->TriggerEmbrasement(GetGridManager(GetWorld())->GetTile(CurrentCoordinates), MovementVisualActors,this);
+		}
+		else
+		{
+			Player->SetSelectedUnit(this);
+		}
 	}
 }
 
@@ -172,6 +255,8 @@ void ACCTileUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ACCTileUnit, IsStunned);
+	DOREPLIFETIME(ACCTileUnit, DivineAngerCounter);
+	DOREPLIFETIME(ACCTileUnit, IsMoved);
 }
 
 void ACCTileUnit::UnSelect()

@@ -5,6 +5,7 @@
 #include "Card/CCCardMovementComponent.h"
 #include "Card/FCardData.h"
 #include "Deck/CCDeckComponent.h"
+#include "GameModes/CCEffectManagerComponent.h"
 #include "GameModes/CCGameMode.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCTile.h"
@@ -24,12 +25,20 @@ ACCPlayerPawn::ACCPlayerPawn(const FObjectInitializer& ObjectInitializer): Super
 	SetRootComponent(RootComponent);
 	DeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Deck"));
 	MovementDeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Movement Deck"));
+	EmbrasementDeckComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Embrasement Deck"));
+	DiscardPileComponent = CreateDefaultSubobject<UCCDeckComponent>(TEXT("Discard Pile"));
 	HandComponent = CreateDefaultSubobject<UCCHandComponent>(TEXT("Hand"));
 }
 
 void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 {
-	NumberOfCardsToDrawThisRound = NumberOfCardsToDraw;
+	EmbrasementDeckComponent->CardPrefab = DeckComponent->CardPrefab;
+	NumberOfCardsToDrawThisRound = IsFirstRound ? NumberOfCardsToDrawFirstRound : NumberOfCardsToDraw;
+	if(IsFirstRound)
+	{
+		DeckComponent->Shuffle();
+	}
+	IsFirstRound = false;
 	NumberOfCardDrawnOnRoundStart = 0;
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this](){ DrawCard(); }), 1, false);
@@ -38,6 +47,13 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
 	SRV_SendQueueOfAction(QueueOfPlayerActions);
+	for(auto Card : HandComponent->Cards)
+	{
+		if(Card->IsFleeting)
+		{
+			RemoveCardWithIndex(Card->CardIndex);
+		}
+	}
 }
 
 void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation(const TArray<FPlayerActionData>& ActionData)
@@ -52,31 +68,62 @@ void ACCPlayerPawn::RPC_ClearActions_Implementation()
 {
 	QueueOfPlayerActions.Empty();
 	OnActionQueueClear.Broadcast();
-	TArray<AActor*> Units;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTileUnit::StaticClass(), Units);
-	for(auto Unit : Units) Cast<ACCTileUnit>(Unit)->IsMoved = false;
 }
 
 void ACCPlayerPawn::DrawCard()
 {
 	if(NumberOfCardsToDrawThisRound == NumberOfCardDrawnOnRoundStart || HandComponent->GetCardNum() == MaxNumberOfCardsInHand)
 	{
+		//Draw Embrasement Card
+		ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+		auto TileUnitCoordArray = GameState->GetGridManager()->MappedGrid[ETileType::Unit];
+		for(auto Coordinates : TileUnitCoordArray)
+		{
+			ACCTile* Tile = GameState->GetGridManager()->GetTile(Coordinates);
+			ACCPieceBase* Piece = Tile->GetPieces()[0];
+			if(Piece->Team == GetPlayerState<ACCPlayerState>()->GetTeam())
+			{
+				if(Piece->CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+				{
+					ACCCard* Card = EmbrasementDeckComponent->CreateCard(false);
+					Card->Initialize();
+					Card->SetOwningPawn(this);
+					Card->IsCore = false;
+					Card->IsFleeting = true;
+					HandComponent->DrawCard(Card, FOnCardMovementEnd());
+				}
+			}
+		}
 		SRV_OnAllCardDrawServer();
 		return;
 	}
 	
+	NumberOfCardDrawnOnRoundStart++;
 	FOnCardMovementEnd OnCardMovementEnd;
 	OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawCard);
 
+	//Refill Deck
+	if(DeckComponent->DeckCards.IsEmpty())
+	{
+		DeckComponent->GenerateDeck(DiscardPileComponent->DeckCards);
+	}
+	//DiscardPile Is Empty Stop Drawing
+	if(DeckComponent->DeckCards.IsEmpty())
+	{
+		OnCardMovementEnd.Broadcast();
+		DEBUG_ERROR("Deck and Discard Pile are empty but you are trying to draw");
+		return;
+	}
 	
 	ACCCard* Card = DeckComponent->CreateCard();
-	if(Card->CardRowHandle.GetRow<FCardData>(TEXT(""))->CardName == TEXT("Gold"))
-	{
-		OnCardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveLastDrawnCardFromHand);
-	}
+
 	Card->Initialize();
 	Card->SetOwningPawn(this);
-	NumberOfCardDrawnOnRoundStart++;
+	if(Card->CardRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Gold)
+	{
+		Card->IsCore = false;
+		Card->IsFleeting = true;
+	}
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
@@ -90,7 +137,7 @@ void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
 {
-	if(CurrentSelectedCardIndex == -1)
+	if(CurrentSelectedCardIndex == -1 || !HandComponent->Cards[CurrentSelectedCardIndex]->IsCore)
 	{
 		DEBUG_ERROR("No Selected Card");
 		return;
@@ -104,21 +151,23 @@ void ACCPlayerPawn::OnGetMovementCardTrigger()
 void ACCPlayerPawn::DrawMovementCard()
 {
 	FOnCardMovementEnd OnCardMovementEnd;
-	ACCCard* Card = MovementDeckComponent->CreateCard();
+	ACCCard* Card = MovementDeckComponent->CreateCard(false);
 	Card->Initialize();
 	Card->SetOwningPawn(this);
+	Card->IsCore = false;
 	HandComponent->DrawCard(Card, OnCardMovementEnd);
 }
 
 void ACCPlayerPawn::RemoveSelectedCardFromHand()
 {
-	HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
+	auto Handle = HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
 	SetCurrentSelectedCardIndex(-1);
+	DiscardPileComponent->AddCardToDeck(Handle);
 }
 
-void ACCPlayerPawn::RemoveLastDrawnCardFromHand()
+void ACCPlayerPawn::RemoveCardWithIndex(int TargetIndex)
 {
-	HandComponent->RemoveCardFromHand(HandComponent->Cards.Num() - 1);
+	HandComponent->RemoveCardFromHand(TargetIndex);
 }
 
 void ACCPlayerPawn::AddPlayerAction(FPlayerActionData Action)
@@ -156,13 +205,18 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 		else
 			RelatedActors[i]->Destroy();
 	}
-	HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+	auto Handle = HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+	if(QueueOfLocalActionElements[0].Card->IsCore)
+	{
+		DiscardPileComponent->AddCardToDeck(Handle);
+	}
 	QueueOfLocalActionElements.RemoveAt(0);
 }
 
 void ACCPlayerPawn::ForceEndTurn_Implementation()
 {
 	// TODO : Cancel Action if the player is in the middle of an action
+	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	if (ACCPlayerState* CCPlayerState =  GetPlayerState<ACCPlayerState>()) {
 		CCPlayerState->RPC_SetEndTurn(true);
 	}

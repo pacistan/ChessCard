@@ -16,4 +16,9 @@ public:
 
 	UPROPERTY()
 	FIntPoint Direction;
+
+	FPatternMapEndPoint(){}
+	
+	FPatternMapEndPoint(EMovementType InMovementType, FIntPoint InDirection):
+	MovementType(InMovementType), Direction(InDirection){}
 };

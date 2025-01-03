@@ -102,7 +102,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	bool IsHighlighted;
-	
+
+public:
+	UPROPERTY()
+	bool IsAboutToReceivePiece;	
 	/* ------------------------------------------ EDITOR -------------------------------------------*/
 	UFUNCTION(CallInEditor)
 	void BlueprintEditorTick(float DeltaTime);

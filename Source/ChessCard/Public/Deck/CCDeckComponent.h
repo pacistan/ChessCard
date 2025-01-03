@@ -29,10 +29,16 @@ public:
 	
 	/* -----------------------------------------FUNCTIONS -------------------------------------------*/
 	UFUNCTION()
-	ACCCard* CreateCard();
+	ACCCard* CreateCard(bool ConsumeCard = true);
 
 	UFUNCTION()
+	void GenerateDeck(TArray<FDataTableRowHandle>& NewCards);
+	
+	UFUNCTION()
 	void AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType = EAddCardType::Random);
+
+	UFUNCTION()
+	void Shuffle();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 protected:

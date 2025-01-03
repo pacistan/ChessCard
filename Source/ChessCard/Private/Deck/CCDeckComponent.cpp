@@ -10,12 +10,14 @@ UCCDeckComponent::UCCDeckComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-ACCCard* UCCDeckComponent::CreateCard()
+ACCCard* UCCDeckComponent::CreateCard(bool ConsumeCard)
 {
 	auto DeckCard = DeckCards[0];
-	DeckCards.RemoveAt(0);
-	DeckCards.Add(DeckCard);
-	const FCardData* CardData = DeckCard.DataTable ? DeckCards[0].GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
+	if(ConsumeCard)
+	{
+		DeckCards.RemoveAt(0);
+	}
+	const FCardData* CardData = DeckCard.DataTable ? DeckCard.GetRow<FCardData>(TEXT("Data of Card")) : nullptr;
 	check(CardData);
 	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	const FRotator CameraRotation = CameraManager->GetCameraRotation();
@@ -26,9 +28,19 @@ ACCCard* UCCDeckComponent::CreateCard()
 	SpawnParams.Owner = GetOwner();
 	auto Card =  GetWorld()->SpawnActor<ACCCard>(CardPrefab, TransformedDeckPosition, CameraRotation, SpawnParams);
 	Card->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepWorldTransform);
-	Card->SetDataTableRow(DeckCards[0]);
+	Card->SetDataTableRow(DeckCard);
 	
 	return Card;
+}
+
+void UCCDeckComponent::GenerateDeck(TArray<FDataTableRowHandle>& NewCards)
+{
+	while(!NewCards.IsEmpty())
+	{
+		int TransferIndex = FMath::RandRange(0, NewCards.Num() - 1);
+		DeckCards.Add(NewCards[TransferIndex]);
+		NewCards.RemoveAt(TransferIndex);
+	}
 }
 
 void UCCDeckComponent::AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCardType AddType)
@@ -51,4 +63,17 @@ void UCCDeckComponent::AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCard
 void UCCDeckComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UCCDeckComponent::Shuffle()
+{
+	const int32 LastIndex = DeckCards.Num() - 1;
+	for (int32 i = 0; i <= LastIndex; ++i)
+	{
+		const int32 Index = FMath::RandRange(i, LastIndex);
+		if (i != Index)
+		{
+			 DeckCards.Swap(i, Index);
+		}
+	}
 }

@@ -34,7 +34,7 @@ void UCCHandComponent::SendSelectedCardToMovementDeck(int CardIndex, FOnCardMove
 		SendCardToMovementDeckAnimDuration, false, true, DeckPosition);
 }
 
-void UCCHandComponent::RemoveCardFromHand(int InCardIndex)
+FDataTableRowHandle UCCHandComponent::RemoveCardFromHand(int InCardIndex)
 {
 	ACCCard* Card = Cards[InCardIndex];
 	auto PController = Cast<ACCPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -49,7 +49,9 @@ void UCCHandComponent::RemoveCardFromHand(int InCardIndex)
 		Cards[i]->SetCardIndex(i);
 		Cards[i]->CardMovement->StartMovement(i, GetCardNum());
 	}
+	FDataTableRowHandle RowHandle = Card->CardRowHandle;
 	Card->Destroy();
+	return RowHandle;
 }
 
 void UCCHandComponent::BeginPlay()

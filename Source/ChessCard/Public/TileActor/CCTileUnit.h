@@ -44,7 +44,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
 	TArray<FUnitMovementData> DivineAngerMovementDatas;
 	
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime", Replicated)
 	int DivineAngerCounter;
 	
 	//Map that contains all possible pattern movements. Key is relative end position
@@ -59,10 +59,10 @@ public:
 	UPROPERTY()
 	bool IsSelected;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool IsMoved;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleInstanceOnly, Replicated)
 	bool IsStunned;
 	
 	UPROPERTY()
@@ -77,7 +77,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> DestinationPointActorClass;
 	
-
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> EffectPointActorClass;
+	
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 
@@ -91,6 +93,7 @@ public:
 
 	UFUNCTION()
 	void HighlightDestinationTiles(ACCPlayerPawn* Pawn);
+	void MinotaurHighlightDestinationTiles();
 
 	UFUNCTION()
 	void OnDestinationTileClicked(ACCTile* Tile);
