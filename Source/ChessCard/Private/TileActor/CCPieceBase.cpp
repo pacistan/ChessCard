@@ -58,3 +58,12 @@ void ACCPieceBase::OnRep_InitProperties()
 		InternalInit();
 	}
 }
+
+void ACCPieceBase::UnSelect()
+{
+	if(IsSelected)
+	{
+		GetGridManager(GetWorld())->UnhighlightTiles();
+		IsSelected = false;
+	}
+}

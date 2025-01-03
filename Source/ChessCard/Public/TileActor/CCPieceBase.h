@@ -78,6 +78,9 @@ public:
 
 	UPROPERTY()
 	ETeam Team;
+
+	UPROPERTY()
+	bool IsSelected;
 	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
@@ -111,4 +114,7 @@ public:
 
 	UFUNCTION()
 	void SetTeam(ETeam InTeam) {Team = InTeam;}
+
+	UFUNCTION()
+	virtual void UnSelect();
 };

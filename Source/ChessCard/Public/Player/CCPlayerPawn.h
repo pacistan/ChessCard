@@ -121,7 +121,7 @@ private:
 	int32 CurrentSelectedCardIndex;
 
 	UPROPERTY()
-	TObjectPtr<ACCTileUnit> SelectedUnit;
+	TObjectPtr<ACCPieceBase> SelectedUnit;
 
 	// Queue of action The player Has Do during the turn
 	UPROPERTY(VisibleInstanceOnly)
@@ -248,5 +248,8 @@ public:
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
 
 	UFUNCTION()
-	void SetSelectedUnit(ACCTileUnit* Unit);
+	void SetSelectedUnit(ACCPieceBase* Unit);
+
+	UFUNCTION()
+	ACCPieceBase* GetSelectedUnit();
 };

@@ -213,6 +213,17 @@ void ACCTileUnit::SetHighlight(bool bToHighlight, ETeam InTeam, FOnClickUnitDele
 
 void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
 {
+	ACCTile* Tile = GetGridManager(GetWorld())->GetTile(CurrentCoordinates);
+	if(Tile->GetIsHighlighted())
+	{
+		Tile->StartHover(Player);
+		return;
+	}
+	else if(Player->GetSelectedUnit() != nullptr)
+	{
+		return;
+	}
+	
 	if(IsHighlighted)
 	{
 		HighlightDestinationTiles(Player);
@@ -221,6 +232,12 @@ void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
 
 void ACCTileUnit::StopHover(ACCPlayerPawn* Player)
 {
+	ACCTile* Tile = GetGridManager(GetWorld())->GetTile(CurrentCoordinates);
+	if(Tile->GetIsHighlighted() || Player->GetSelectedUnit() != nullptr)
+	{
+		return;
+	}
+	
 	if(!IsSelected && IsHighlighted)
 	{
 		GetGridManager(GetWorld())->UnhighlightTiles();
@@ -229,6 +246,12 @@ void ACCTileUnit::StopHover(ACCPlayerPawn* Player)
 
 void ACCTileUnit::Click(ACCPlayerPawn* Player)
 {
+	ACCTile* CurrentTile = GetGridManager(GetWorld())->GetTile(CurrentCoordinates);
+	if(CurrentTile->GetIsHighlighted())
+	{
+		CurrentTile->Click(Player);
+		return;
+	}
 	if(IsHighlighted)
 	{
 		IsSelected = true;
@@ -278,10 +301,11 @@ void ACCTileUnit::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 
 void ACCTileUnit::UnSelect()
 {
+	Super::UnSelect();
 	if(IsSelected)
 	{
-		GetGridManager(GetWorld())->UnhighlightTiles();
 		MeshComponent->SetMaterial(0, BaseMaterial);
-		IsSelected = false;
 	}
 }
+
+

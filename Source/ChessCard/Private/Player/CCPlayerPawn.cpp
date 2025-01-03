@@ -47,6 +47,14 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
 	SRV_SendQueueOfAction(QueueOfPlayerActions);
+
+	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
+	
+	if(CurrentSelectedCardIndex != -1)
+	{
+		HandComponent->Cards[CurrentSelectedCardIndex]->UnSelect(this);
+	}
+
 	for(auto Card : HandComponent->Cards)
 	{
 		if(Card->IsFleeting)
@@ -263,13 +271,18 @@ void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
 }
 
-void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)
+void ACCPlayerPawn::SetSelectedUnit(ACCPieceBase* Unit)
 {
 	if(IsValid(SelectedUnit))
 	{
 		SelectedUnit->UnSelect();
 	}
 	SelectedUnit = Unit;
+}
+
+ACCPieceBase* ACCPlayerPawn::GetSelectedUnit()
+{
+	return SelectedUnit;
 }
 
 void ACCPlayerPawn::SRV_OnAllCardDrawServer_Implementation()

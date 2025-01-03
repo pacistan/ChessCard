@@ -51,7 +51,14 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 	MovementData.EndScale = BaseScale * ExposedDataMap[State].ScaleCoefficient;
 	CurrentDuration = IsCustomDuration ? CustomDuration : ExposedDataMap[State].Duration;
 
-	if(InIsCustomEndPosition)
+	if(State == ECardState::Selected)
+	{
+		MovementData.EndPosition = FVector(CameraLocation
+			+ CameraRightVector * HardSelecPosition.X
+			+ CameraUpVector * HardSelecPosition.Y
+			+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
+	}
+	else if(InIsCustomEndPosition)
 	{
 		MovementData.EndPosition = CameraLocation + InEndPosition;
 	}

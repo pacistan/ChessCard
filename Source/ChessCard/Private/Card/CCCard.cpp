@@ -77,12 +77,12 @@ void ACCCard::OnSelectCardEffects(bool bIsSelected, ACCPlayerPawn* Pawn)
 				FTileTypeDelegate TileTypeDelegate;
 				auto Lambda = [this, &bIsSelected](ACCTile* Tile)
 				{
-					if(!Tile->ContainPiece())
-					{
+					/*if(!Tile->ContainPiece())
+					{*/
 						FOnClickTileDelegate OnClickDelegate;
 						OnClickDelegate.BindDynamic(this, &ACCCard::SpawnLocalUnit);
 						Tile->SetHighlight(bIsSelected, OnClickDelegate);
-					}
+					//}
 				};
 				TileTypeDelegate.BindLambda(Lambda);
 				GetGridManager(GetWorld())->ApplyLambdaToTileType(TargetTileType, TileTypeDelegate);
