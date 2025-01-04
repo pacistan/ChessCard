@@ -70,17 +70,31 @@ void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 	
 	for(auto& MvtData : TargetPatternList)
 	{
-		FIntPoint Coordinates = CurrentCoordinates;
-		FIntPoint Destination = Coordinates + GetTravelRelativeCoordinates(MvtData);
-		ACCTile* DestinationTile = GridManager->GetTile(Destination);
-		if(!IsValid(DestinationTile) ||!DestinationTile->IsAccessibleForTeam(Pawn->GetPlayerState<ACCPlayerState>()->GetTeam()))
+		FIntPoint ProgressCoordinates = CurrentCoordinates;
+		bool CanContinue = false;
+		for(int i = 0; i < MvtData.Num(); i++)
+		{
+			ProgressCoordinates += MvtData[i].Direction; 
+			if(MvtData[i].MovementType == EMovementType::Stoppable)
+			{
+				ACCTile* CoordinateTile =  GridManager->GetTile(ProgressCoordinates);
+				if(IsValid(CoordinateTile) && CoordinateTile->IsAccessibleForTeam(Pawn->GetPlayerState<ACCPlayerState>()->GetTeam()))
+				{
+					CanContinue = true;
+					break;
+				}
+			}
+		}
+		if(!CanContinue)
 		{
 			continue;
 		}
+
+		ProgressCoordinates = CurrentCoordinates;
 		for(auto& Coordinate : MvtData)
 		{
-			Coordinates += Coordinate.Direction;
-			ACCTile* Tile = GridManager->GetTile(Coordinates);
+			ProgressCoordinates += Coordinate.Direction;
+			ACCTile* Tile = GridManager->GetTile(ProgressCoordinates);
 			if(IsValid(Tile) && Tile->GetTileType() != ETileType::Disabled)
 			{
 				EHighlightMode HighlightMode;
@@ -160,23 +174,45 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 	else
 	{
 		auto TargetPatternList = CardData.DivineAngerTriggerNumber <= DivineAngerCounter ? DivineAngerPatternList : PatternList;
+		int StopIndex = 0;
+		bool IsPatternFound = false;
 		for(auto& PatternMovement : TargetPatternList)
 		{
 			FIntPoint Progress = CurrentCoordinates;
-			for(auto& Mvt : PatternMovement)
+			for(int i = 0; i < PatternMovement.Num(); i++)
 			{
-				DEBUG_LOG("%i %i EndPoint = %i %i" , Progress.X, Progress.Y, EndPoint.X, EndPoint.Y);
-				Progress += Mvt.Direction;
+				Progress += PatternMovement[i].Direction;
 				if(Progress == EndPoint)
 				{
-					if(Mvt.MovementType == EMovementType::Stoppable)
+					if(PatternMovement[i].MovementType == EMovementType::Stoppable)
 					{
 						OutPatternMovement = PatternMovement;
+						StopIndex = i;
+						IsPatternFound = true;
 					}
 					break;
 				}
 			}
-			if(!OutPatternMovement.IsEmpty()) break;
+			if(OutPatternMovement.IsEmpty())
+			{
+				continue;
+			}
+
+			for(int i = OutPatternMovement.Num() - 1; i >= 0; i--)
+			{
+				if(i > StopIndex && OutPatternMovement[i].MovementType != EMovementType::ApplyEffect)
+				{
+					OutPatternMovement.RemoveAt(i);
+				}
+				else if(i < StopIndex && OutPatternMovement[i].MovementType == EMovementType::Stoppable)
+				{
+					OutPatternMovement[i].MovementType = EMovementType::Normal;
+				}
+			}
+			if(IsPatternFound)
+			{
+				break;
+			}
 		}
 	}
 	
@@ -269,7 +305,7 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 					int X = CurrentCoordinates.X + i;
 					int Y = CurrentCoordinates.Y + j;
 					ACCTile* Tile = GetGridManager(GetWorld())->GetTile(FIntPoint(X, Y));
-					if(IsValid(Tile) && Tile->GetTileType() == ETileType::Normal || Tile->GetTileType() == ETileType::BonusTile || Tile->GetTileType() == ETileType::ScoreTile)
+					if(IsValid(Tile) && (Tile->GetTileType() == ETileType::Normal || Tile->GetTileType() == ETileType::BonusTile || Tile->GetTileType() == ETileType::ScoreTile))
 					{
 						FVector PointPosition =  Tile->GetActorLocation() + FVector::UpVector * 20;
 						MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(EffectPointActorClass, PointPosition, FRotator::ZeroRotator, SpawnParameters)); 

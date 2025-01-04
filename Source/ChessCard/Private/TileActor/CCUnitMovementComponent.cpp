@@ -44,19 +44,27 @@ void UCCUnitMovementComponent::StartMovement(FIntPoint InStartCoordinates, const
 	InterpolateValue = 0;
 	ActionData = InAction;
 	UnitMovementData.Empty();
-	UnitMovementData.SetNum(InAction.MovementData.Num());
-	UnitRotationData.SetNum(UnitMovementData.Num());
+	UnitMovementData.Reserve(InAction.MovementData.Num() + 1);
+	UnitRotationData.Reserve(InAction.MovementData.Num() + 1);
+	
 	ACCGridManager* GridManager	= GetWorld()->GetGameState<ACCGameState>()->GetGridManager();
 	PlayerState = InPlayerState;
 	IsMoving = true;
+
+	UnitMovementData.Add(GetOwner()->GetActorLocation());
+	UnitRotationData.Add(GetOwner()->GetActorRotation());
 	
 	FIntPoint ProgressCoordinates = InStartCoordinates;
 	for(int i = 0; i < InAction.MovementData.Num(); i++)
 	{
 		ProgressCoordinates += InAction.MovementData[i].Direction;
-		UnitMovementData[i] = GridManager->CoordinatesToPosition(ProgressCoordinates);
+		UnitMovementData.Add(GridManager->CoordinatesToPosition(ProgressCoordinates));
 		FVector DirectionalVector = FVector(InAction.MovementData[i].Direction.X, InAction.MovementData[i].Direction.Y, 0);
-		UnitRotationData[i] = UKismetMathLibrary::MakeRotFromXZ(DirectionalVector, FVector::UpVector);
+		UnitRotationData.Add(UKismetMathLibrary::MakeRotFromXZ(DirectionalVector, FVector::UpVector));
+		if(InAction.MovementData[i].MovementType == EMovementType::Stoppable)
+		{
+			break;
+		}
 	}
 	TileActorMovementDelegate = InTileActorMovementDelegate;
 }

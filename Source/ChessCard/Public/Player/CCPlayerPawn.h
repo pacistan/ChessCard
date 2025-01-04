@@ -207,6 +207,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddPlayerActionClientElement(TArray<AActor*>& Actors, ACCCard* Card);
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void RPC_AddPlayerActionClientElement(const TArray<AActor*>& Actors);
 	
 	// Pop the last action of the player in The Owing Client. Is it useful?
 	// We can Clear queue on planification Start

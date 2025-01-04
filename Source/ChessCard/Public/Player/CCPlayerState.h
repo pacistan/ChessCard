@@ -10,7 +10,7 @@ class UCCExperienceDefinition;
 class ACCPlayerController;
 class UCCPawnData;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerEndTurn, ACCPlayerState*, Player, bool, IsEndTurn);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnPlayerEndTurn, ACCPlayerState*, Player, bool, IsEndTurn);
 
 
 UCLASS()

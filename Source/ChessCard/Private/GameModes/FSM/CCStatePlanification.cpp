@@ -21,7 +21,7 @@ void UCCStatePlanification::OnEnterState()
 {
 	GameState->SetCurrentTimeOfPlanniningPhase(CurrentTime);
 	for(auto Player : GameState->PlayerArray) {
-		Cast<ACCPlayerState>(Player)->EndTurnDelegate.AddDynamic(this, &UCCStatePlanification::PlayerEndTurnCallback);
+		Cast<ACCPlayerState>(Player)->EndTurnDelegate.BindDynamic(this, &UCCStatePlanification::PlayerEndTurnCallback);
 	}
 }
 
