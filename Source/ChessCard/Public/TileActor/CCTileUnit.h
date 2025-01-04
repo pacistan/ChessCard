@@ -56,9 +56,6 @@ public:
 	UPROPERTY()
 	bool IsHighlighted;
 
-	UPROPERTY()
-	bool IsSelected;
-
 	UPROPERTY(Replicated)
 	bool IsMoved;
 
@@ -99,9 +96,6 @@ public:
 	void OnDestinationTileClicked(ACCTile* Tile);
 
 	UFUNCTION()
-	void UnSelect();
-
-	UFUNCTION()
 	void SetTargetMap();
 
 	UFUNCTION()
@@ -121,4 +115,6 @@ public:
 	virtual void Click(ACCPlayerPawn* Player) override;
 	virtual void InternalInit() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void UnSelect() override;
+
 };

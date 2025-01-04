@@ -140,7 +140,7 @@ void ACCGridManager::SimulateMovementOnGrid(TArray<TArray<FPatternMapEndPoint>>&
 	}
 	else if(IsPotentialEnd)
 	{
-		PatternList.Add(CurrentArray);
+		//PatternList.Add(CurrentArray);
 	}
 	
 	FPatternMapEndPoint LastDirectionData = CurrentArray.Last();

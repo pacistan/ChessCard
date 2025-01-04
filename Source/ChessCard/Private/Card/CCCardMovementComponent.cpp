@@ -53,7 +53,18 @@ bool UCCCardMovementComponent::StartMovement(int InCardIndex, int InHandNumber, 
 
 	if(InIsCustomEndPosition)
 	{
-		MovementData.EndPosition = CameraLocation + InEndPosition;
+		MovementData.EndPosition = InEndPosition;
+		/*MovementData.EndPosition = FVector(CameraLocation
+			+ CameraRightVector * InEndPosition.X
+			+ CameraUpVector * InEndPosition.Y
+			+ CameraForwardVector * InEndPosition);*/
+	}
+	else if(State == ECardState::Selected)
+	{
+		MovementData.EndPosition = FVector(CameraLocation
+			+ CameraRightVector * HardSelecPosition.X
+			+ CameraUpVector * HardSelecPosition.Y
+			+ CameraForwardVector * InCardIndex + HoveredLayerNumber);
 	}
 	else
 	{

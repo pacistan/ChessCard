@@ -119,7 +119,7 @@ public:
 	void SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate, EHighlightMode HighlightMode = EHighlightMode::Normal);
 	
 	/* ------------------------------------------ INTERFACE -------------------------------------------*/
-private:
+public:
 	virtual void Click(ACCPlayerPawn* Player) override;
 	virtual void StartHover(ACCPlayerPawn* Player) override;
 	virtual void StopHover(ACCPlayerPawn* Player) override;
@@ -128,10 +128,7 @@ private:
 	
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
 	virtual bool ShouldTickIfViewportsOnly() const override;
 
 	/* ------------------------------------------ GETTER/SETTER -------------------------------------------*/
@@ -174,4 +171,7 @@ public:
 
 	UFUNCTION()
 	ACCPieceBase* GetPiece(FGuid TargetID);
+
+	UFUNCTION()
+	bool GetIsHighlighted(){return IsHighlighted;}
 };

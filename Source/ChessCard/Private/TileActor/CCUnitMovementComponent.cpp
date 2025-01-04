@@ -4,6 +4,7 @@
 #include "TileActor/CCUnitMovementComponent.h"
 
 #include "GameModes/CCGameState.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "TileActor/CCTileUnit.h"
 
 
@@ -43,16 +44,27 @@ void UCCUnitMovementComponent::StartMovement(FIntPoint InStartCoordinates, const
 	InterpolateValue = 0;
 	ActionData = InAction;
 	UnitMovementData.Empty();
-	UnitMovementData.SetNum(InAction.MovementData.Num());
+	UnitMovementData.Reserve(InAction.MovementData.Num() + 1);
+	UnitRotationData.Reserve(InAction.MovementData.Num() + 1);
+	
 	ACCGridManager* GridManager	= GetWorld()->GetGameState<ACCGameState>()->GetGridManager();
 	PlayerState = InPlayerState;
 	IsMoving = true;
+
+	UnitMovementData.Add(GetOwner()->GetActorLocation());
+	UnitRotationData.Add(GetOwner()->GetActorRotation());
 	
 	FIntPoint ProgressCoordinates = InStartCoordinates;
 	for(int i = 0; i < InAction.MovementData.Num(); i++)
 	{
 		ProgressCoordinates += InAction.MovementData[i].Direction;
-		UnitMovementData[i] = GridManager->CoordinatesToPosition(ProgressCoordinates);
+		UnitMovementData.Add(GridManager->CoordinatesToPosition(ProgressCoordinates));
+		FVector DirectionalVector = FVector(InAction.MovementData[i].Direction.X, InAction.MovementData[i].Direction.Y, 0);
+		UnitRotationData.Add(UKismetMathLibrary::MakeRotFromXZ(DirectionalVector, FVector::UpVector));
+		if(InAction.MovementData[i].MovementType == EMovementType::Stoppable)
+		{
+			break;
+		}
 	}
 	TileActorMovementDelegate = InTileActorMovementDelegate;
 }
@@ -63,17 +75,26 @@ void UCCUnitMovementComponent::MovementTick(float DeltaTime)
 	float InterpolateTileValue = 1 / (UnitMovementData.Num() + .00001f);
 	int MvtDataIndex = FMath::FloorToInt(InterpolateValue / InterpolateTileValue);
 	float EvaluatedValue = FMath::Modulo(InterpolateValue, InterpolateTileValue) / InterpolateTileValue;
-
+	
+	
+	
 	FVector Position = FMath::Lerp(
 			UnitMovementData[FMath::Min(MvtDataIndex, UnitMovementData.Num() - 1)],
 			UnitMovementData[FMath::Min(MvtDataIndex + 1, UnitMovementData.Num() - 1)],
 			MovementAnimCurve->FloatCurve.Eval(EvaluatedValue));
 
+	FRotator Rotation = FQuat::Slerp(
+			UnitRotationData[FMath::Min(MvtDataIndex, UnitMovementData.Num() - 1)].Quaternion(),
+			UnitRotationData[FMath::Min(MvtDataIndex + 1, UnitMovementData.Num() - 1)].Quaternion(),
+			MovementAnimCurve->FloatCurve.Eval(EvaluatedValue)).Rotator();
+	
 	GetOwner()->SetActorLocation(Position);
-
+	GetOwner()->SetActorRotation(Rotation);
+	
 	if(InterpolateValue >= 1)
 	{
 		GetOwner()->SetActorLocation(UnitMovementData.Last());
+		GetOwner()->SetActorRotation(UnitRotationData.Last());
 		TileActorMovementDelegate.ExecuteIfBound(PlayerState, ActionData, OwnerUnit);
 		IsMoving = false;
 	}

@@ -78,6 +78,9 @@ public:
 
 	UPROPERTY()
 	ETeam Team;
+
+	UPROPERTY()
+	bool IsSelected;
 	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
@@ -98,6 +101,9 @@ public:
 
 	UFUNCTION()
 	void OnRep_InitProperties();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ConstructTile(FCardData Card);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -108,4 +114,7 @@ public:
 
 	UFUNCTION()
 	void SetTeam(ETeam InTeam) {Team = InTeam;}
+
+	UFUNCTION()
+	virtual void UnSelect();
 };

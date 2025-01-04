@@ -47,9 +47,17 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
 	SRV_SendQueueOfAction(QueueOfPlayerActions);
+
+	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
+	
+	if(CurrentSelectedCardIndex != -1)
+	{
+		HandComponent->Cards[CurrentSelectedCardIndex]->UnSelect(this);
+	}
+
 	for(auto Card : HandComponent->Cards)
 	{
-		if(Card->IsFleeting)
+		if(Card->IsFleeting && Card->CurrentCardState != ECardState::Played)
 		{
 			RemoveCardWithIndex(Card->CardIndex);
 		}
@@ -76,22 +84,29 @@ void ACCPlayerPawn::DrawCard()
 	{
 		//Draw Embrasement Card
 		ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
-		auto TileUnitCoordArray = GameState->GetGridManager()->MappedGrid[ETileType::Unit];
+		auto& TileUnitCoordArray = GameState->GetGridManager()->MappedGrid[ETileType::Unit];
 		for(auto Coordinates : TileUnitCoordArray)
 		{
 			ACCTile* Tile = GameState->GetGridManager()->GetTile(Coordinates);
 			ACCPieceBase* Piece = Tile->GetPieces()[0];
-			if(Piece->Team == GetPlayerState<ACCPlayerState>()->GetTeam())
+			if(IsValid(Piece))
 			{
-				if(Piece->CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+				if(Piece->Team == GetPlayerState<ACCPlayerState>()->GetTeam())
 				{
-					ACCCard* Card = EmbrasementDeckComponent->CreateCard(false);
-					Card->Initialize();
-					Card->SetOwningPawn(this);
-					Card->IsCore = false;
-					Card->IsFleeting = true;
-					HandComponent->DrawCard(Card, FOnCardMovementEnd());
+					if(Piece->CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
+					{
+						ACCCard* Card = EmbrasementDeckComponent->CreateCard(false);
+						Card->Initialize();
+						Card->SetOwningPawn(this);
+						Card->IsCore = false;
+						Card->IsFleeting = true;
+						HandComponent->DrawCard(Card, FOnCardMovementEnd());
+					}
 				}
+			}
+			else
+			{
+				DEBUG_LOG("");
 			}
 		}
 		SRV_OnAllCardDrawServer();
@@ -139,9 +154,9 @@ void ACCPlayerPawn::OnGetMovementCardTrigger()
 {
 	if(CurrentSelectedCardIndex == -1 || !HandComponent->Cards[CurrentSelectedCardIndex]->IsCore)
 	{
-		DEBUG_ERROR("No Selected Card");
 		return;
 	}
+	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	FOnCardMovementEnd CardMovementEnd;
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawMovementCard);
@@ -184,6 +199,13 @@ void ACCPlayerPawn::AddPlayerActionClientElement(TArray<AActor*>& Actors, ACCCar
 	QueueOfLocalActionElements.Add(ActionLocalElements);
 }
 
+void ACCPlayerPawn::RPC_AddPlayerActionClientElement_Implementation(const TArray<AActor*>& Actors)
+{
+	FActionLocalElements ActionLocalElements;
+	ActionLocalElements.RelatedActors = Actors;
+	QueueOfLocalActionElements.Add(ActionLocalElements);
+}
+ 
 void ACCPlayerPawn::RemoveLastPlayerAction()
 {
 	QueueOfPlayerActions.Pop();
@@ -200,15 +222,19 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 	TArray<TObjectPtr<AActor>> RelatedActors = QueueOfLocalActionElements[0].RelatedActors;
 	for(int i = RelatedActors.Num() - 1; i >= 0; i--)
 	{
-		if(ACCTileUnit* Unit = Cast<ACCTileUnit>(RelatedActors[i]))
+		if(ACCPieceBase* Unit = Cast<ACCPieceBase>(RelatedActors[i]))
 			Unit->DestroyPiece();
 		else
 			RelatedActors[i]->Destroy();
 	}
-	auto Handle = HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
-	if(QueueOfLocalActionElements[0].Card->IsCore)
+
+	if(IsValid(QueueOfLocalActionElements[0].Card))
 	{
-		DiscardPileComponent->AddCardToDeck(Handle);
+		auto Handle = HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+		if(QueueOfLocalActionElements[0].Card->IsCore)
+		{
+			DiscardPileComponent->AddCardToDeck(Handle);
+		}
 	}
 	QueueOfLocalActionElements.RemoveAt(0);
 }
@@ -263,13 +289,18 @@ void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
 }
 
-void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)
+void ACCPlayerPawn::SetSelectedUnit(ACCPieceBase* Unit)
 {
 	if(IsValid(SelectedUnit))
 	{
 		SelectedUnit->UnSelect();
 	}
 	SelectedUnit = Unit;
+}
+
+ACCPieceBase* ACCPlayerPawn::GetSelectedUnit()
+{
+	return SelectedUnit;
 }
 
 void ACCPlayerPawn::SRV_OnAllCardDrawServer_Implementation()

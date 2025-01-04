@@ -54,7 +54,7 @@ void UCCDeckComponent::AddCardToDeck(FDataTableRowHandle CardRowHandle, EAddCard
 		InsertIndex = DeckCards.Num();
 		break;
 	case EAddCardType::Random:
-		InsertIndex = FMath::RandRange(0, DeckCards.Num());
+		InsertIndex = FMath::RandRange(0, DeckCards.Num() - 1);
 		break;
 	}
 	DeckCards.Insert(CardRowHandle, InsertIndex);

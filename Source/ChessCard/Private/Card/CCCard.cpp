@@ -199,6 +199,7 @@ void ACCCard::TriggerEmbrasement(ACCTile* Tile, TArray<AActor*>& MovementVisualA
 	
 	OwningPawn->AddPlayerAction(PlayerActionData);
 	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
+	GetOwner<ACCPlayerPawn>()->PlaySelectedCard(nullptr);
 }
 
 void ACCCard::StartHover(ACCPlayerPawn* Pawn)
@@ -225,7 +226,7 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 
 void ACCCard::Select(ACCPlayerPawn* Pawn)
 {
-	if(!CardMovement->IsInterruptable)
+	if(!CardMovement->IsInterruptable || CurrentCardState == ECardState::Played)
 	{
 		return;
 	}

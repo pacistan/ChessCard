@@ -121,7 +121,7 @@ private:
 	int32 CurrentSelectedCardIndex;
 
 	UPROPERTY()
-	TObjectPtr<ACCTileUnit> SelectedUnit;
+	TObjectPtr<ACCPieceBase> SelectedUnit;
 
 	// Queue of action The player Has Do during the turn
 	UPROPERTY(VisibleInstanceOnly)
@@ -207,6 +207,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddPlayerActionClientElement(TArray<AActor*>& Actors, ACCCard* Card);
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void RPC_AddPlayerActionClientElement(const TArray<AActor*>& Actors);
 	
 	// Pop the last action of the player in The Owing Client. Is it useful?
 	// We can Clear queue on planification Start
@@ -248,5 +251,8 @@ public:
 	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
 
 	UFUNCTION()
-	void SetSelectedUnit(ACCTileUnit* Unit);
+	void SetSelectedUnit(ACCPieceBase* Unit);
+
+	UFUNCTION()
+	ACCPieceBase* GetSelectedUnit();
 };

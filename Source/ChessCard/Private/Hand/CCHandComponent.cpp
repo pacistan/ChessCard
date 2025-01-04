@@ -18,7 +18,7 @@ void UCCHandComponent::DrawCard(ACCCard* Card, FOnCardMovementEnd OnCardMovement
 	Card->CardIndex = GetCardNum() - 1;
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this, OnCardMovementEnd]()
 	{
-		Cards[GetCardNum() - 1]->CardMovement->StartMovement( GetCardNum() - 1,  GetCardNum(), OnCardMovementEnd, true, DrawFromDeckAnimDuration, false);
+		Cards.Last()->CardMovement->StartMovement( GetCardNum() - 1,  GetCardNum(), OnCardMovementEnd, true, DrawFromDeckAnimDuration, false);
 		if(GetCardNum() == 1) return;
 		for(int i = 0; i < GetCardNum() - 1; i++)
 		{
@@ -31,7 +31,7 @@ void UCCHandComponent::SendSelectedCardToMovementDeck(int CardIndex, FOnCardMove
 {
 	Cards[CardIndex]->CardMovement->StartMovement(
 		CardIndex, GetCardNum(), OnCardMovementEnd, true,
-		SendCardToMovementDeckAnimDuration, false, true, DeckPosition);
+		SendCardToMovementDeckAnimDuration, false, true, Cards[CardIndex]->GetActorLocation() + Cards[CardIndex]->GetActorUpVector() * 300);
 }
 
 FDataTableRowHandle UCCHandComponent::RemoveCardFromHand(int InCardIndex)
