@@ -260,7 +260,7 @@ void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
 		SelectedUnit = nullptr;
 	}
 	CurrentSelectedCardIndex = InSelectedCardIndex;
-	//OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
+	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
 }
 
 void ACCPlayerPawn::SetSelectedUnit(ACCTileUnit* Unit)
