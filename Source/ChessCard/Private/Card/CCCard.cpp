@@ -221,6 +221,16 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 	UpdateMaterials();
 }
 
+void ACCCard::Unplay(ACCPlayerPawn* Pawn)
+{
+	if(CurrentCardState != ECardState::Played)
+		return;
+	
+	CurrentCardState = ECardState::Inactive;
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
+	UpdateMaterials();
+}
+
 void ACCCard::Select(ACCPlayerPawn* Pawn)
 {
 	if(!CardMovement->IsInterruptable || CurrentCardState == ECardState::Played)

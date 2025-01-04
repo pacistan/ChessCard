@@ -122,7 +122,8 @@ public:
 	virtual void StartHover(ACCPlayerPawn* Pawn) override;
 	
 	virtual void StopHover(ACCPlayerPawn* Pawn) override;
-	
+	void Unplay(ACCPlayerPawn* Pawn);
+
 	virtual void Select(ACCPlayerPawn* Pawn) override;
 	
 	virtual void UnSelect(ACCPlayerPawn* Pawn) override;

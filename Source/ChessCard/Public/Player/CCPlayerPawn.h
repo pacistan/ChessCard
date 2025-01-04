@@ -255,4 +255,7 @@ public:
 
 	UFUNCTION()
 	ACCPieceBase* GetSelectedUnit();
+
+	UFUNCTION(BlueprintCallable)
+	void UndoAction();
 };

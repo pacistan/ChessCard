@@ -316,3 +316,37 @@ void ACCPlayerPawn::SRV_OnAllCardDrawServer_Implementation()
 {
 	EndDrawDelegate.ExecuteIfBound(this);
 }
+
+void ACCPlayerPawn::UndoAction()
+{
+	if(!PlayedCardsIndex.IsEmpty() && GetWorld()->GetGameState<ACCGameState>()->GetCurrentState() == EGameState::Plannification)
+	{
+		ACCCard* Card = HandComponent->Cards[PlayedCardsIndex.Last()];
+		Card->Unplay(this);
+		Card->CardMovement->StartMovement(Card->CardIndex, HandComponent->GetCardNum());
+		if(!QueueOfPlayerActions.Last().MovementData.IsEmpty())
+		{
+			ACCTileUnit* Unit = Cast<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->GetTile(QueueOfPlayerActions.Last().TargetCoord)->GetPieces().Last());
+			Unit->MovementData = FUnitMovementData();
+			Unit->IsMoved = false;
+			Unit->LinkedCard = nullptr;
+			Unit->MovementDatas.Empty();
+		}
+
+		for(AActor* VisualActor : QueueOfLocalActionElements.Last().RelatedActors)
+		{
+			if(ACCPieceBase* Piece = Cast<ACCPieceBase>(VisualActor))
+			{
+				Piece->DestroyPiece();
+			}
+			else
+			{
+				VisualActor->Destroy();
+			}
+		}
+			
+		PlayedCardsIndex.Pop();
+		RemoveLastPlayerAction();
+		QueueOfLocalActionElements.Pop();
+	}
+}
