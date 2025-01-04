@@ -142,7 +142,7 @@ void UCCStateResolve::StartNewAction()
 				FTileActorMovementDelegate TileActorMovementDelegate;
 				TileActorMovementDelegate.BindDynamic(this, &UCCStateResolve::OnActionResolved);
 				Unit->MovementComponent->StartMovement(Action.TargetCoord, Action, TileActorMovementDelegate, Queue.Key);
-				
+
 				TargetTile->MLC_RemovePiece(Unit);
 				FIntPoint EndMovementCoordinates = Unit->CurrentCoordinates;
 				for(auto MvtData : Action.MovementData)
@@ -188,26 +188,30 @@ void UCCStateResolve::StartNewAction()
 			UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			UnitSpawnParams.bNoFail = true;
 
+			ACCPieceBase* KilledUnit = nullptr;
+			if(!TargetTile->GetPieces().IsEmpty())
+			{
+				KilledUnit = TargetTile->GetPieces()[0];
+			}
 			
 			ACCTileUnit* Unit = GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
 			Unit->InitUnit(FInitilizationProperties(Action.TargetCoord, Queue.Key->GetTeam(), Action.UnitID, Action.CardData));
 			
 			//Delete Preview
 			Queue.Key->GetPawn<ACCPlayerPawn>()->RPC_RemoveFirstActionClientElements();
- 
+
+
+			if(IsValid(KilledUnit))
+			{
+				GameState->GetEffectManager()->TriggerResolveEffect(
+			false, Unit->CardDataRowHandle, Unit, TArray<ACCTile*>(), EEffectTriggerType::OnKill, TArray<ACCPieceBase*>{KilledUnit}, FIntPoint(), Action);
+				GameState->GetEffectManager()->TriggerResolveEffect(
+			false, KilledUnit->CardDataRowHandle, KilledUnit, TArray<ACCTile*>(), EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{Unit}, FIntPoint(), FPlayerActionData());
+				TargetTile->GetPieces()[0]->MLC_DestroyPiece();	
+			}
+			
 			FTimerHandle TimerHandle;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this, Queue, Action, Unit]{OnActionResolved(Queue.Key, Action, Unit);}, 2, false, -1);
-			TargetTile->IsAboutToReceivePiece = true;
-			//if(KillerTiles.Contains(TargetTile))
-			//{
-			//	KillerTiles[TargetTile].Add(Unit);
-			//	SlaughterTiles.FindOrAdd(TargetTile);
-			//}
-			//else
-			//{
-			//	KillerTiles.Add(TargetTile, TArray<ACCPieceBase*>{Unit});
-			//}
-			//LastActions.Add(Unit, Action);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this, Queue, Action, Unit]{OnActionResolved(Queue.Key, Action, Unit);}, GameMode->UnitSpawnActionDuration, false, -1);
 		}
 	}
 }

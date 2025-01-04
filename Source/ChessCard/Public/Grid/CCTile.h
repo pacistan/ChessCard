@@ -153,13 +153,13 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MLC_AddPiece(ACCPieceBase* Piece);
-	
-	UFUNCTION()
-	void RemovePiece(ACCPieceBase* Piece);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MLC_RemovePiece(ACCPieceBase* Piece);
 	
+	UFUNCTION()
+	void RemovePiece(ACCPieceBase* Piece);
+
 	UFUNCTION()
 	bool IsAccessibleForTeam(ETeam Team);
 

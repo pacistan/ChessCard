@@ -32,8 +32,11 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		{
 			for(auto Unit : RelevantUnits)
 			{
-				ACCPlayerPawn* TargetPlayer = GameState->GetPlayerStateOfTeam(Unit->GetTeam())->GetPawn<ACCPlayerPawn>();
-				TargetPlayer->RPC_AddCardToDeck(GoldRowHandle);
+				if(Unit != InPiece)
+				{
+					ACCPlayerPawn* TargetPlayer = GameState->GetPlayerStateOfTeam(Unit->GetTeam())->GetPawn<ACCPlayerPawn>();
+					TargetPlayer->RPC_AddCardToDeck(GoldRowHandle);
+				}
 			}
 		}
 		else if(InTriggerType == EEffectTriggerType::OnKill)
@@ -184,8 +187,8 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 					FVector PointPosition =  GameState->GetGridManager()->CoordinatesToPosition(NewDestination) + FVector::UpVector * 20;
 					TSubclassOf<AActor> Subclass = ActionData.MovementData[i].MovementType == EMovementType::Stoppable ? Unit->DestinationPointActorClass :
 						ActionData.MovementData[i].MovementType == EMovementType::ApplyEffect ? Unit->EffectPointActorClass : Unit->MovementPointActorClass;
-					FVector Direction = FVector(ActionData.MovementData[i].Direction.X, ActionData.MovementData[i].Direction.Y, 0);
-					FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
+					FVector Dir = FVector(ActionData.MovementData[i].Direction.X, ActionData.MovementData[i].Direction.Y, 0);
+					FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Dir, FVector::UpVector);
 					MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters)); 
 				}
 			}
@@ -216,7 +219,19 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 	case EEffectType::Circe:
 		if(InTriggerType == EEffectTriggerType::OnKill)
 		{
-			
+			ACCTile* Tile = GameState->GetGridManager()->GetTile(InPiece->CurrentCoordinates);
+			if(!Tile->GetPieces().IsEmpty())
+			{
+				ACCPieceBase* Piece = Tile->GetPieces()[0];
+				FInitilizationProperties InitProperties = Piece->InitilizationProperties;
+				InitProperties.Team = InPiece->Team;
+				InitProperties.InstanceID = InPiece->UnitGuid;
+				TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece,TArray<ACCTile*>(),
+						EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+				Piece->MLC_DestroyPiece();
+				InPiece->InitUnit(InitProperties);
+				break;
+			}
 		}
 		if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
 		{
@@ -224,7 +239,6 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 			{
 				if(!Tile->GetPieces().IsEmpty())
 				{
-					GameState->GetGridManager()->GetTile(InPiece->CurrentCoordinates)->MLC_RemovePiece(InPiece);
 					ACCPieceBase* Piece = Tile->GetPieces()[0];
 					FInitilizationProperties InitProperties = Piece->InitilizationProperties;
 					InitProperties.Team = InPiece->Team;
@@ -233,6 +247,8 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 							EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
 					Piece->MLC_DestroyPiece();
 					InPiece->InitUnit(InitProperties);
+					InPiece->SetActorLocation(Piece->GetActorLocation());
+					InPiece->SetActorRotation(Piece->GetActorRotation());
 					break;
 				}
 			}

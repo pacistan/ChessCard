@@ -128,7 +128,14 @@ bool ACCTile::ShouldTickIfViewportsOnly() const
 
 void ACCTile::AddPiece(ACCPieceBase* Piece)
 {
-	if(Pieces.Num() == 0)
+	if(HasAuthority())
+	{
+		DEBUG_LOG("Server Add Piece of Team  %s", *UEnum::GetValueAsName(Piece->Team).ToString());
+	}else
+	{
+		DEBUG_LOG("Client Add Piece of Team  %s", *UEnum::GetValueAsName(Piece->Team).ToString());
+	}
+	if(Pieces.IsEmpty())
 	{
 		GetGridManager(GetWorld())->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
 	}
@@ -142,27 +149,26 @@ void ACCTile::AddPiece(ACCPieceBase* Piece)
 
 void ACCTile::MLC_AddPiece_Implementation(ACCPieceBase* Piece)
 {
-	if(Pieces.Num() == 0)
-	{
-		GetGridManager(GetWorld())->RegisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
-	}
-	if(Pieces.Contains(Piece))
-	{
-		DEBUG_ERROR("Piece %s already in Tile %s", *Piece->GetName(), *GetName());
-		return;
-	}
-	Pieces.Add(Piece);
+	AddPiece(Piece); 
 }
 
 void ACCTile::RemovePiece(ACCPieceBase* Piece)
 {
+	if(HasAuthority())
+	{
+		DEBUG_LOG("Server Remove Piece of Team  %s", *UEnum::GetValueAsName(Piece->Team).ToString());
+	}else
+	{
+		DEBUG_LOG("Client Remove Piece of Team  %s", *UEnum::GetValueAsName(Piece->Team).ToString());
+	}
+	
 	if(!Pieces.Contains(Piece))
 	{
 		DEBUG_ERROR("Piece %s already in Tile %s", *Piece->GetName(), *GetName());
 		return;
 	}
 	Pieces.Remove(Piece);
-	if(Pieces.Num() == 0)
+	if(Pieces.IsEmpty())
 	{
 		GetGridManager(GetWorld())->UnregisterTileAsType(FIntPoint(GetRowNum(), GetColumnNum()), ETileType::Unit);
 	}

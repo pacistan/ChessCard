@@ -12,6 +12,7 @@
 #include "Hand/CCHandComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
+#include "Player/CCPlayerController.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCPieceBase.h"
 #include "TileActor/CCTileUnit.h"
@@ -42,6 +43,8 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 	NumberOfCardDrawnOnRoundStart = 0;
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this](){ DrawCard(); }), 1, false);
+	GetController<ACCPlayerController>()->CurrentSelectedElement.SetObject(nullptr);
+	GetController<ACCPlayerController>()->CurrentSelectedElement.SetInterface(nullptr);
 }
 
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
@@ -60,6 +63,16 @@ void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 		if(Card->IsFleeting && Card->CurrentCardState != ECardState::Played)
 		{
 			RemoveCardWithIndex(Card->CardIndex);
+		}
+	}
+	for(auto LocalAction : QueueOfLocalActionElements)
+	{
+		for(auto Visual : LocalAction.RelatedActors)
+		{
+			if(ACCPieceBase* Piece = Cast<ACCPieceBase>(Visual))
+			{
+				Piece->DestroyPiece();
+			}
 		}
 	}
 }
@@ -103,10 +116,6 @@ void ACCPlayerPawn::DrawCard()
 						HandComponent->DrawCard(Card, FOnCardMovementEnd());
 					}
 				}
-			}
-			else
-			{
-				DEBUG_LOG("");
 			}
 		}
 		SRV_OnAllCardDrawServer();

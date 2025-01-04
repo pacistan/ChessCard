@@ -50,6 +50,9 @@ public:
 
 	UPROPERTY()
 	TMap<ACCTile*, ETeam> BonusTileMap;
+
+	UPROPERTY(EditAnywhere)
+	float UnitSpawnActionDuration = 1;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
