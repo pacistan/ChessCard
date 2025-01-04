@@ -48,6 +48,7 @@ void ACCPieceBase::InternalInit()
 	UnitGuid = InitilizationProperties.InstanceID;
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
 	IsInitialized = true;
+	ConstructTile(*CardDataRowHandle.GetRow<FCardData>(""));
 }
 
 void ACCPieceBase::OnRep_InitProperties()
@@ -55,5 +56,14 @@ void ACCPieceBase::OnRep_InitProperties()
 	if(!IsInitialized)
 	{
 		InternalInit();
+	}
+}
+
+void ACCPieceBase::UnSelect()
+{
+	if(IsSelected)
+	{
+		GetGridManager(GetWorld())->UnhighlightTiles();
+		IsSelected = false;
 	}
 }

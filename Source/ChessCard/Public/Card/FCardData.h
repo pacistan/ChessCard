@@ -45,6 +45,9 @@ struct FCardData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	TSoftObjectPtr<UStaticMesh> UnitStaticMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	FVector Rotation;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	EEffectType EffectType;
 	
@@ -68,4 +71,5 @@ struct FCardData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	TSoftObjectPtr<UTexture2D> PatternTexture;
+
 };

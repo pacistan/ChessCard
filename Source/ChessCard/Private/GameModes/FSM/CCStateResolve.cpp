@@ -56,7 +56,6 @@ void UCCStateResolve::OnExitState()
 			{
 				if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 				{
-					DEBUG_LOG("Refresh Unit On Tile %i %i", Tile->GetRowNum(), Tile->GetColumnNum());
 					Unit->DivineAngerCounter++;
 					Unit->IsMoved = false;
 					if(Tile->GetTileType() == ETileType::ScoreTile)
@@ -120,7 +119,13 @@ void UCCStateResolve::StartNewAction()
 		FPlayerActionData Action = Queue.Value[0];
 		Queue.Value.RemoveAt(0);
 		ACCTile* TargetTile = GameState->GetGridManager()->GetTile(Action.TargetCoord);
-			
+
+		if(Action.TargetCoord == FIntPoint(-1, -1))
+		{
+			OnActionResolved(Queue.Key, Action, nullptr);
+			continue;
+		}
+		
 		//Movement Action
 		if(!Action.MovementData.IsEmpty())
 		{
@@ -130,7 +135,7 @@ void UCCStateResolve::StartNewAction()
 			if(!IsValid(Unit) || Unit->IsStunned)
 			{
 				OnActionResolved(Queue.Key, Action, Unit);
-				return;
+				continue;
 			}
 			else
 			{
@@ -140,7 +145,14 @@ void UCCStateResolve::StartNewAction()
 				
 				TargetTile->MLC_RemovePiece(Unit);
 				FIntPoint EndMovementCoordinates = Unit->CurrentCoordinates;
-				for(auto MvtData : Action.MovementData) EndMovementCoordinates += MvtData.Direction; 
+				for(auto MvtData : Action.MovementData)
+				{
+					EndMovementCoordinates += MvtData.Direction; 
+					if(MvtData.MovementType == EMovementType::Stoppable)
+					{
+						break;	
+					}
+				}
 				ACCTile* EndMovementTile = GameState->GetGridManager()->GetTile(EndMovementCoordinates);
 				check(EndMovementTile);
 				Unit->PreviousCoordinates = Unit->CurrentCoordinates;
@@ -186,16 +198,16 @@ void UCCStateResolve::StartNewAction()
 			FTimerHandle TimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this, Queue, Action, Unit]{OnActionResolved(Queue.Key, Action, Unit);}, 2, false, -1);
 			TargetTile->IsAboutToReceivePiece = true;
-			if(KillerTiles.Contains(TargetTile))
-			{
-				KillerTiles[TargetTile].Add(Unit);
-				SlaughterTiles.FindOrAdd(TargetTile);
-			}
-			else
-			{
-				KillerTiles.Add(TargetTile, TArray<ACCPieceBase*>{Unit});
-			}
-			LastActions.Add(Unit, Action);
+			//if(KillerTiles.Contains(TargetTile))
+			//{
+			//	KillerTiles[TargetTile].Add(Unit);
+			//	SlaughterTiles.FindOrAdd(TargetTile);
+			//}
+			//else
+			//{
+			//	KillerTiles.Add(TargetTile, TArray<ACCPieceBase*>{Unit});
+			//}
+			//LastActions.Add(Unit, Action);
 		}
 	}
 }
@@ -262,8 +274,8 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 
 void UCCStateResolve::BloodSlaughterAndDeath()
 {
-	FKillDeathDelegate KillDelegate;
-	FKillDeathDelegate DeathDelegate;
+	FKillDeathDelegate KillDelegate = FKillDeathDelegate();
+	FKillDeathDelegate DeathDelegate = FKillDeathDelegate();
 	TArray<ACCPieceBase*> DyingPieces;
 	for (auto TilePair : KillerTiles)
 	{
@@ -271,24 +283,28 @@ void UCCStateResolve::BloodSlaughterAndDeath()
 		{
 			TilePair.Key->MLC_AddPiece(Piece);
 		}
-		for (auto Piece : TilePair.Key->GetPieces())
+		if(TilePair.Key->GetPieces().Num() > 1)
 		{
-			if (SlaughterTiles.Contains(TilePair.Key) && TilePair.Value.Contains(Piece))
+			for (auto Piece : TilePair.Key->GetPieces())
 			{
-				AddKillLambda(KillDelegate, TilePair.Key, Piece);
-				AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
-				DyingPieces.Add(Piece);
-			}
-			else if (TilePair.Value.Contains(Piece))
-			{
-				AddKillLambda(KillDelegate, TilePair.Key, Piece); 
-			}
-			else
-			{
-				AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
-				DyingPieces.Add(Piece);
+				if (SlaughterTiles.Contains(TilePair.Key) && TilePair.Value.Contains(Piece))
+				{
+					AddKillLambda(KillDelegate, TilePair.Key, Piece);
+					AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
+					DyingPieces.Add(Piece);
+				}
+				else if (TilePair.Value.Contains(Piece))
+				{
+					AddKillLambda(KillDelegate, TilePair.Key, Piece); 
+				}
+				else
+				{
+					AddDeathLambda(DeathDelegate, TilePair.Key, Piece);
+					DyingPieces.Add(Piece);
+				}
 			}
 		}
+			
 	}
 
 	DeathDelegate.Broadcast();

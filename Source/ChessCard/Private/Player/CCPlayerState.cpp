@@ -27,14 +27,14 @@ void ACCPlayerState::SetEndTurn(bool bEndTurn)
 	}
 	else
 	{
-		EndTurnDelegate.Broadcast(this, bEndTurn);
+		EndTurnDelegate.ExecuteIfBound(this, bEndTurn);
 	}
 }
 
 void ACCPlayerState::SRV_SetEndTurn_Implementation(bool bInEndTurn)
 {
 	bHasEndedTurn = bInEndTurn;
-	EndTurnDelegate.Broadcast(this, bInEndTurn);
+	EndTurnDelegate.ExecuteIfBound(this, bInEndTurn);
 }
 
 void ACCPlayerState::RPC_SetEndTurn_Implementation(bool bInEndTurn)

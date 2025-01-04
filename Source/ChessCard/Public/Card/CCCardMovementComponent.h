@@ -115,6 +115,9 @@ public:
 
 	UPROPERTY()
 	bool IsInterruptable = true;
+
+	UPROPERTY(EditAnywhere)
+	FVector2D HardSelecPosition;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
