@@ -6,10 +6,12 @@
 #include "GameFramework/PlayerStart.h"
 #include "CCPlayerStart.generated.h"
 
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStartClaimed, AController*, ClaimingController);
+
 UENUM()
 enum class ETeam : uint8
 {
-	None   UMETA(DisplayName = "None"),
+	None   UMETA(DisplayName = "None"), 
 	One    UMETA(DisplayName = "Player1"),
 	Two    UMETA(DisplayName = "Player2"),
 	Three  UMETA(DisplayName = "Player3"),
@@ -29,6 +31,11 @@ protected:
 	/** The Team Who will be Assignated to the Controller that Claimed this PlayerStart */
 	UPROPERTY(EditAnywhere)
 	ETeam Team = ETeam::None;
+
+public:
+	/** Event that is broadcasted when this PlayerStart is claimed */
+	//UPROPERTY(BlueprintAssignable)
+	//FOnPlayerStartClaimed OnPlayerStartClaimed;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -37,6 +44,9 @@ public:
 	
 	/** If this PlayerStart was not claimed, claim it for ClaimingController */
 	bool TryClaim(AController* OccupyingController);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPlayerStartClaimed(AController* InController);
 
 	/** Get the controller that claimed this PlayerStart */
 	AController* GetClaimingController() const { return ClaimingController; }
