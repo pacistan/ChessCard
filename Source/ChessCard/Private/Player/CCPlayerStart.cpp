@@ -11,15 +11,16 @@ bool ACCPlayerStart::IsClaimed() const
 	return ClaimingController != nullptr;
 }
 
-bool ACCPlayerStart::TryClaim(AController* OccupyingController)
+bool ACCPlayerStart::TryClaim(AController* InController)
 {
-	if (OccupyingController != nullptr && !IsClaimed()) {
-		ClaimingController = OccupyingController;
+	if (InController != nullptr && !IsClaimed()) {
+		ClaimingController = InController;
 		if (ACCPlayerState* ClaimingPlayerState = ClaimingController->GetPlayerState<ACCPlayerState>()) {
 			if (Team != ETeam::None) {
 				ClaimingPlayerState->SetTeam(Team);
 			}
 		}
+		OnPlayerStartClaimed(ClaimingController);
 		return true;
 	}
 	return false;

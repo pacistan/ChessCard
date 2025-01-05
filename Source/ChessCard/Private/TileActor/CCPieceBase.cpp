@@ -1,5 +1,6 @@
 ﻿#include "TileActor/CCPieceBase.h"
 
+#include "Components/WidgetComponent.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Macro/CCLogMacro.h"
@@ -9,6 +10,9 @@ ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(
 {
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = MeshComponent;
+
+	EffectContainerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("EffectContainerWidget"));
+	EffectContainerWidget->SetupAttachment(RootComponent);
 
 }
 
