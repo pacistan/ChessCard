@@ -48,6 +48,7 @@ void ACCTile::Click(ACCPlayerPawn* Player)
 	{
 		OnClickEvent.ExecuteIfBound(this);
 		Player->PlaySelectedCard(this);
+		BPE_OnClickTile();
 	}
 }
 

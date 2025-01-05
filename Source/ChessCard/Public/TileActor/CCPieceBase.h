@@ -109,7 +109,7 @@ public:
 	void OnRep_InitProperties();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void ConstructTile(FCardData Card);
+	void BPE_ConstructTile(FCardData Card, UMaterialInterface* SocleMaterial);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -124,4 +124,9 @@ public:
 	UFUNCTION()
 	virtual void UnSelect();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnClickUnit();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnUnitDestroy();
 };

@@ -30,12 +30,14 @@ void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void ACCPieceBase::DestroyPiece()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
+	BPE_OnUnitDestroy();
 	Destroy();
 }
 
 void ACCPieceBase::MLC_DestroyPiece_Implementation()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
+	BPE_OnUnitDestroy();
 	Destroy();
 }
 
@@ -54,7 +56,27 @@ void ACCPieceBase::InternalInit()
 	UnitGuid = InitilizationProperties.InstanceID;
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
 	IsInitialized = true;
-	ConstructTile(*CardDataRowHandle.GetRow<FCardData>(""));
+
+	ETileType TileType = ETileType::Player1;
+	switch(Team)
+	{
+	case ETeam::None:
+		break;
+	case ETeam::One:
+		break;
+	case ETeam::Two:
+		TileType = ETileType::Player2;
+		break;
+	case ETeam::Three:
+		TileType = ETileType::Player3;
+		break;
+	case ETeam::Four:
+		TileType = ETileType::Player4;
+		break;
+	}
+	
+	BPE_ConstructTile(*CardDataRowHandle.GetRow<FCardData>(""), GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->GetMaterialFromMap(TileType));
+	SetActorRotation(FRotator());
 
 	//SetActorScale3D(FVector::One());
 }

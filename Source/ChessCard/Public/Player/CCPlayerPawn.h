@@ -148,6 +148,10 @@ public:
 
 	UPROPERTY()
 	bool IsFirstRound = true;
+
+	UPROPERTY()
+	int DiscardCardIndex;
+
 	
 public:
 	UPROPERTY()
@@ -263,4 +267,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnTimerEnd();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnUndoAction();
 };

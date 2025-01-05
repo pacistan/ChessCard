@@ -167,9 +167,11 @@ void ACCPlayerPawn::OnGetMovementCardTrigger()
 	}
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	FOnCardMovementEnd CardMovementEnd;
+	DiscardCardIndex = GetCurrentSelectedCardIndex();
+	SetCurrentSelectedCardIndex(-1);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawMovementCard);
-	HandComponent->DiscardCard(CurrentSelectedCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
+	HandComponent->DiscardCard(DiscardCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
 }
 
 void ACCPlayerPawn::DrawMovementCard()
@@ -184,8 +186,8 @@ void ACCPlayerPawn::DrawMovementCard()
 
 void ACCPlayerPawn::RemoveSelectedCardFromHand()
 {
-	auto Handle = HandComponent->RemoveCardFromHand(CurrentSelectedCardIndex);
-	SetCurrentSelectedCardIndex(-1);
+	auto Handle = HandComponent->RemoveCardFromHand(DiscardCardIndex);
+	//SetCurrentSelectedCardIndex(-1);
 	DiscardPileComponent->AddCardToDeck(Handle);
 }
 
@@ -242,7 +244,7 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 		auto Handle = QueueOfLocalActionElements[0].Card->GetDataTableRow();
 		FOnCardMovementEnd CardMovementEnd;
 		CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
-		CurrentSelectedCardIndex = QueueOfLocalActionElements[0].Card->CardIndex;
+		DiscardCardIndex = QueueOfLocalActionElements[0].Card->CardIndex;
 		HandComponent->DiscardCard(QueueOfLocalActionElements[0].Card->CardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
 		if(QueueOfLocalActionElements[0].Card->IsCore)
 		{
@@ -326,7 +328,9 @@ void ACCPlayerPawn::UndoAction()
 {
 	if(!PlayedCardsIndex.IsEmpty() && GetWorld()->GetGameState<ACCGameState>()->GetCurrentState() == EGameState::Plannification)
 	{
+		BPE_OnUndoAction();
 		ACCCard* Card = HandComponent->Cards[PlayedCardsIndex.Last()];
+		ECardType CardType = Card->CardRowHandle.GetRow<FCardData>("")->CardType;
 		Card->Unplay(this);
 		Card->CardMovement->StartMovement(Card->CardIndex, HandComponent->GetCardNum());
 		if(!QueueOfPlayerActions.Last().MovementData.IsEmpty())
@@ -336,6 +340,14 @@ void ACCPlayerPawn::UndoAction()
 			Unit->IsMoved = false;
 			Unit->LinkedCard = nullptr;
 			Unit->MovementDatas.Empty();
+		}
+		else if(CardType == ECardType::Unit)
+		{
+			ACCTile* Tile = GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->GetTile(QueueOfPlayerActions.Last().TargetCoord);
+			if(Tile->GetPieces().Num() > 1)
+			{
+				Tile->GetPieces()[Tile->GetPieces().Num() - 2]->SetActorHiddenInGame(false);
+			}
 		}
 
 		for(AActor* VisualActor : QueueOfLocalActionElements.Last().RelatedActors)

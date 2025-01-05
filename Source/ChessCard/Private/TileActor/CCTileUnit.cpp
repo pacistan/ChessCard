@@ -311,6 +311,7 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 	if(IsHighlighted)
 	{
 		IsSelected = true;
+		BPE_OnClickUnit();
 		//MeshComponent->SetMaterial(0, SelectedMaterial);
 		BPE_UpdateMaterial(SelectedMaterial);
 		TArray<AActor*> MovementVisualActors;
