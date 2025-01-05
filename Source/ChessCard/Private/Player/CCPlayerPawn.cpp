@@ -169,7 +169,7 @@ void ACCPlayerPawn::OnGetMovementCardTrigger()
 	FOnCardMovementEnd CardMovementEnd;
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawMovementCard);
-	HandComponent->SendSelectedCardToMovementDeck(CurrentSelectedCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
+	HandComponent->DiscardCard(CurrentSelectedCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
 }
 
 void ACCPlayerPawn::DrawMovementCard()
@@ -239,7 +239,11 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 
 	if(IsValid(QueueOfLocalActionElements[0].Card))
 	{
-		auto Handle = HandComponent->RemoveCardFromHand(QueueOfLocalActionElements[0].Card->CardIndex);
+		auto Handle = QueueOfLocalActionElements[0].Card->GetDataTableRow();
+		FOnCardMovementEnd CardMovementEnd;
+		CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
+		CurrentSelectedCardIndex = QueueOfLocalActionElements[0].Card->CardIndex;
+		HandComponent->DiscardCard(QueueOfLocalActionElements[0].Card->CardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
 		if(QueueOfLocalActionElements[0].Card->IsCore)
 		{
 			DiscardPileComponent->AddCardToDeck(Handle);
@@ -252,6 +256,7 @@ void ACCPlayerPawn::ForceEndTurn_Implementation()
 {
 	// TODO : Cancel Action if the player is in the middle of an action
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
+	BPE_OnTimerEnd();
 	if (ACCPlayerState* CCPlayerState =  GetPlayerState<ACCPlayerState>()) {
 		CCPlayerState->RPC_SetEndTurn(true);
 	}

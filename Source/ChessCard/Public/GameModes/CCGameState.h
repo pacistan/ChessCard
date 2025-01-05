@@ -118,4 +118,13 @@ public:
 
 	UFUNCTION()
 	UCCEffectManagerComponent* GetEffectManager() {return EffectManager;};
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_StartGame();
+
+	UFUNCTION(BlueprintCallable)
+	void BPC_RegisterAudioComponent(UAudioComponent* AudioComp);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnPieceEndMove(EEffectType EffectType, bool IsDivineAnger);
 };

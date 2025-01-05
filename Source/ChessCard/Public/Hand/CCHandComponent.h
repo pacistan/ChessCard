@@ -39,7 +39,7 @@ public:
 	void DrawCard(ACCCard* Card, FOnCardMovementEnd OnCardMovementEnd);
 
 	UFUNCTION()
-	void SendSelectedCardToMovementDeck(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition);
+	void DiscardCard(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition);
 
 	UFUNCTION()
 	FDataTableRowHandle RemoveCardFromHand(int InCardIndex);

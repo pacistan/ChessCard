@@ -7,6 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "CCPlayerPawn.generated.h"
 
+enum class EEffectType : uint8;
 struct FCardData;
 class UPlayerWidget;
 class ACCTileUnit;
@@ -258,4 +259,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UndoAction();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnTimerEnd();
+
 };

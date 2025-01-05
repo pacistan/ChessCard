@@ -142,6 +142,7 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 {
 	CurrentCardState = ECardState::Played;
 	UpdateMaterials();
+	BPE_OnPlay(CardRowHandle.GetRow<FCardData>("")->CardType == ECardType::Movement);
 	if(!CardMovement->IsInterruptable)
 	{
 		return;
