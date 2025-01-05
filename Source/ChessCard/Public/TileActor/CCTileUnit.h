@@ -131,6 +131,9 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnStunned(bool IsServerCall);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_UpdateMaterial(UMaterialInterface* Material, bool ToOverlay = true);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

@@ -50,13 +50,13 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Runtime")
 	FString RawName;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Components")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "CC|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CC|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CC|Components")
 	TObjectPtr<UWidgetComponent> EffectContainerWidget;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CC|Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CC|Components")
 	TObjectPtr<UWidgetComponent> DeathIndicatorWidget;
 
 public:

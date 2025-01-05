@@ -53,7 +53,11 @@ void ACCGridManager::UpdateTilesMaterials()
 	for(auto Actor : Actors)
 	{
 		ACCTile* Tile = Cast<ACCTile>(Actor);
+		int i = Tile->GetRowNum();
+		int j = Tile->GetColumnNum();
 		Tile->UpdateMaterial();
+		FVector SpawnLocation = FVector( i * 100 * TileWidth + i * 100 * TileSpacingWidth, j * 100 * TileWidth + j * 100 * TileSpacingWidth, 0);
+		Tile->SetActorLocation(SpawnLocation);
 	}
 }
 

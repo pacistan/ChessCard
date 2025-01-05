@@ -48,7 +48,7 @@ public:
 	//UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	//TObjectPtr<UStaticMeshComponent> CardMesh;
 
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite , Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<USceneComponent> CCRootComponent;
 	
 	FGuid CardUniqueID;
