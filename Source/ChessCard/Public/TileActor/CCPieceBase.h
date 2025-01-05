@@ -7,6 +7,7 @@
 #include "Interfaces/CCGridManagerInterface.h"
 #include "CCPieceBase.generated.h"
 
+class UWidgetComponent;
 enum class ETeam : uint8;
 class ACCPlayerState;
 class ACCPlayerController;
@@ -52,6 +53,11 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "CC|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CC|Components")
+	TObjectPtr<UWidgetComponent> EffectContainerWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CC|Components")
+	TObjectPtr<UWidgetComponent> DeathIndicatorWidget;
 
 public:
 	FOnTileEffectTriggered OnDeathEffect;

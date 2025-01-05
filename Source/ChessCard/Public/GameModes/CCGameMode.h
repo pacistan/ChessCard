@@ -14,6 +14,7 @@ class UCCFSM;
 enum class ETeam : uint8;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUserLogin, AController*, NewPlayer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCCGameModePlayerInitialized, AController*, NewPLayer);
 
 UCLASS()
 class CHESSCARD_API ACCGameMode : public AGameModeBase
@@ -57,6 +58,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnUserLogin OnUserLogout;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCCGameModePlayerInitialized OnPlayerInitialized;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -83,6 +87,7 @@ private:
 	
 	// Choose the good playerStart for the player, claim it and take the team associated with it
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation) override;
 	
 	virtual void PreInitializeComponents() override;
 
