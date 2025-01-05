@@ -11,8 +11,10 @@ ACCTile::ACCTile()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+	CCRootComponent = CreateDefaultSubobject<USceneComponent>("Root");
+	RootComponent = CCRootComponent;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Tile Mesh");
-	RootComponent = MeshComponent;
+	MeshComponent->SetupAttachment(CCRootComponent);
 }
 
 void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate, EHighlightMode HighlightMode)
@@ -23,8 +25,8 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 	}
 	IsHighlighted = bIsHighlight;
 
-	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : MaterialMap[TileType];
-	MeshComponent->SetMaterial(0, Material); 
+	UMaterialInterface* Material = bIsHighlight ? (IsHovered ?  HoveredMaterial : HighlightMaterial[HighlightMode]) : /*MaterialMap[TileType]*/nullptr;
+	MeshComponent->SetOverlayMaterial(/*0, */Material); 
 	CurrentHighlightMode = HighlightMode;
 	OnClickEvent = OnClickDelegate;
 	  
@@ -54,7 +56,7 @@ void ACCTile::StartHover(ACCPlayerPawn* Player)
 	IsHovered = true;
 	if(IsHighlighted && CurrentHighlightMode == EHighlightMode::Normal)
 	{
-		MeshComponent->SetMaterial(0, HoveredMaterial);
+		MeshComponent->SetOverlayMaterial(/*0, */HoveredMaterial);
 	}
 }
 
@@ -62,8 +64,8 @@ void ACCTile::StopHover(ACCPlayerPawn* Player)
 {
 	IsHovered = false;
 
-	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial[CurrentHighlightMode] : MaterialMap[TileType];
-	MeshComponent->SetMaterial(0, Material);
+	UMaterialInterface* Material = IsHighlighted ? HighlightMaterial[CurrentHighlightMode] :/* MaterialMap[TileType]*/nullptr;
+	MeshComponent->SetOverlayMaterial(/*0, */Material);
 }
 
 void ACCTile::BeginPlay()

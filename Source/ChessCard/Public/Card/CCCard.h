@@ -48,7 +48,7 @@ public:
 	//UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	//TObjectPtr<UStaticMeshComponent> CardMesh;
 
-	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite , Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<USceneComponent> CCRootComponent;
 	
 	FGuid CardUniqueID;
@@ -153,4 +153,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnPlay(bool IsMovement);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_Hover(bool ToHover);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_Select(bool ToSelect);
 };

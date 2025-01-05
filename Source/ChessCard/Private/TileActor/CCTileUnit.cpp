@@ -226,9 +226,10 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 		FIntPoint ProgressPoint = CurrentCoordinates;
 		FActorSpawnParameters SpawnParameters;
 		
-		//TArray<USplineMeshComponent*> SplineMeshComponents;
-		//MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(VisualMovementSplineSubclass, FVector(), FRotator(), SpawnParameters));
-		//ASplineMeshActor* SplineMeshActor = Cast<ASplineMeshActor>(MovementVisualActors.Last());
+		/*TArray<USplineMeshComponent*> SplineMeshComponents;
+		MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(VisualMovementSplineSubclass, FVector(), FRotator(), SpawnParameters));
+		ASplineMeshActor* SplineMeshActor = Cast<ASplineMeshActor>(MovementVisualActors.Last());*/
+
 
 		FVector PreviousPosition = GetGridManager(GetWorld())->CoordinatesToPosition(CurrentCoordinates) + FVector::UpVector * 20;
 		for(int i = 0; i < OutPatternMovement.Num(); i++)
@@ -241,9 +242,9 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 				OutPatternMovement[i].MovementType == EMovementType::ApplyEffect ? EffectPointActorClass : MovementPointActorClass;
 			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
-			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters)); 
-
+			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters));
 			
+
 			//SplineMeshComponents.Add(NewObject<USplineMeshComponent>(SplineMeshActor, NAME_None, RF_Transactional));
 			//SplineMeshComponents[i]->SetForwardAxis(ESplineMeshAxis::X, false);
 			//SplineMeshComponents[i]->SetStaticMesh(SplineStaticMesh);
@@ -261,8 +262,9 @@ void ACCTileUnit::SetHighlight(bool bToHighlight, ETeam InTeam, FOnClickUnitDele
 {
 	if(bToHighlight && (IsMoved || InTeam != Team || IsStunned)) return;
 	IsHighlighted = bToHighlight;
-	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : BaseMaterial;
-	MeshComponent->SetMaterial(0, NewMaterial);
+	UMaterialInterface* NewMaterial = IsHighlighted ? HighlightMat : nullptr;
+	BPE_UpdateMaterial(NewMaterial);
+	//MeshComponent->SetMaterial(0, NewMaterial);
 }
 
 void ACCTileUnit::StartHover(ACCPlayerPawn* Player)
@@ -309,7 +311,8 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 	if(IsHighlighted)
 	{
 		IsSelected = true;
-		MeshComponent->SetMaterial(0, SelectedMaterial);
+		//MeshComponent->SetMaterial(0, SelectedMaterial);
+		BPE_UpdateMaterial(SelectedMaterial);
 		TArray<AActor*> MovementVisualActors;
 		if(CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
 		{
@@ -358,8 +361,10 @@ void ACCTileUnit::UnSelect()
 	Super::UnSelect();
 	if(IsSelected)
 	{
-		MeshComponent->SetMaterial(0, BaseMaterial);
+		BPE_UpdateMaterial(nullptr);
+		//MeshComponent->SetMaterial(0, BaseMaterial);
 	}
 }
+
 
 

@@ -1,10 +1,12 @@
 ﻿#include "TileActor/CCPieceBase.h"
 
 #include "Components/WidgetComponent.h"
+#include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
 #include "Macro/CCLogMacro.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/CCPlayerState.h"
 
 ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -53,6 +55,8 @@ void ACCPieceBase::InternalInit()
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
 	IsInitialized = true;
 	ConstructTile(*CardDataRowHandle.GetRow<FCardData>(""));
+
+	//SetActorScale3D(FVector::One());
 }
 
 void ACCPieceBase::OnRep_InitProperties()

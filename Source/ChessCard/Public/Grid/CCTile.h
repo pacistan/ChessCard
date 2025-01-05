@@ -56,6 +56,9 @@ public:
 	
 private:
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<USceneComponent> CCRootComponent;
+	
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 	
 	UPROPERTY(VisibleAnywhere)
