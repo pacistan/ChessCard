@@ -230,6 +230,7 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 		MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(VisualMovementSplineSubclass, FVector(), FRotator(), SpawnParameters));
 		ASplineMeshActor* SplineMeshActor = Cast<ASplineMeshActor>(MovementVisualActors.Last());*/
 
+
 		FVector PreviousPosition = GetGridManager(GetWorld())->CoordinatesToPosition(CurrentCoordinates) + FVector::UpVector * 20;
 		for(int i = 0; i < OutPatternMovement.Num(); i++)
 		{
@@ -243,14 +244,14 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
 			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters));
 			
-			/*SplineMeshComponents.Add(NewObject<USplineMeshComponent>(SplineMeshActor, NAME_None, RF_Transactional));
-			SplineMeshComponents[i]->SetForwardAxis(ESplineMeshAxis::X, false);
-			SplineMeshComponents[i]->SetStaticMesh(SplineStaticMesh);
-			SplineMeshComponents[i]->SetStartAndEnd(PreviousPosition, FVector(),
-				PointPosition, FVector(), false);
-			SplineMeshComponents[i]->RegisterComponent();
-			
-			SplineMeshComponents[i]->SetMaterial(0, SplineMaterial);*/
+
+			//SplineMeshComponents.Add(NewObject<USplineMeshComponent>(SplineMeshActor, NAME_None, RF_Transactional));
+			//SplineMeshComponents[i]->SetForwardAxis(ESplineMeshAxis::X, false);
+			//SplineMeshComponents[i]->SetStaticMesh(SplineStaticMesh);
+			//SplineMeshComponents[i]->SetStartAndEnd(PreviousPosition, FVector(),
+			//	PointPosition, FVector(), false);
+			//SplineMeshComponents[i]->RegisterComponent();
+			//SplineMeshComponents[i]->SetMaterial(0, SplineMaterial);
 		}
 	}
 	LinkedCard->MoveUnit(Tile, OutPatternMovement, MovementVisualActors, this);
