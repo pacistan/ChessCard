@@ -59,9 +59,6 @@ public:
 	UPROPERTY(Replicated)
 	bool IsMoved;
 
-	UPROPERTY(VisibleInstanceOnly, Replicated)
-	bool IsStunned;
-	
 	UPROPERTY()
 	TObjectPtr<ACCCard> LinkedCard;
 
@@ -80,6 +77,18 @@ public:
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TObjectPtr<UStaticMesh> SplineStaticMesh;
+
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TObjectPtr<UMaterialInterface> SplineMaterial;
+
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TSubclassOf<AActor> VisualMovementSplineSubclass;
+	
+private:
+	UPROPERTY(VisibleInstanceOnly, Replicated)
+	bool IsStunned;
 
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
@@ -106,6 +115,22 @@ public:
 
 	UFUNCTION()
 	FIntPoint GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>& PatternMovement);
+
+	UFUNCTION()
+	bool GetIsStunned(){return IsStunned;}
+
+	UFUNCTION()
+	void SetIsStunned(bool InIsStunned, bool IsServerCall = true)
+	{
+		if(InIsStunned)
+		{
+			BPE_OnStunned(IsServerCall);
+		}
+		IsStunned = InIsStunned;
+	}
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnStunned(bool IsServerCall);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 

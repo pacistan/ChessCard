@@ -25,7 +25,7 @@ void UCCStateResolve::OnEnterState()
 		{
 			if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 			{
-				Unit->IsStunned = false;
+				Unit->SetIsStunned(false);
 			}
 		}	
 	};
@@ -132,7 +132,7 @@ void UCCStateResolve::StartNewAction()
 			ACCTileUnit* Unit = Cast<ACCTileUnit>(TargetTile->GetPiece(Action.UnitID));
 
 			//Related Unit has been Destroyed in previous Action
-			if(!IsValid(Unit) || Unit->IsStunned)
+			if(!IsValid(Unit) || Unit->GetIsStunned())
 			{
 				OnActionResolved(Queue.Key, Action, Unit);
 				continue;

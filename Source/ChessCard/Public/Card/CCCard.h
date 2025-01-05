@@ -65,7 +65,7 @@ public:
 	UPROPERTY()
 	bool IsHovered;
 
-	UPROPERTY()
+	UPROPERTY(Blueprintable, BlueprintReadOnly)
 	FDataTableRowHandle CardRowHandle;
 
 	UPROPERTY()
@@ -144,4 +144,13 @@ public:
 
 	UFUNCTION()
 	void SetOwningPawn(ACCPlayerPawn* InOwningPawn){OwningPawn = InOwningPawn;}
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnDiscardCard();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnDrawCard();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnPlay(bool IsMovement);
 };

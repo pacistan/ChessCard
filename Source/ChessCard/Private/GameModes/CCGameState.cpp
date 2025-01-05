@@ -1,5 +1,6 @@
 ﻿#include "GameModes/CCGameState.h"
 #include "EngineUtils.h"
+#include "Components/AudioComponent.h"
 #include "Engine/PlayerStartPIE.h"
 #include "GameModes/CCEffectManagerComponent.h"
 #include "Macro/CCLogMacro.h"
@@ -25,6 +26,7 @@ void ACCGameState::BeginPlay()
 {
 	Super::BeginPlay();
 	GridManager = Cast<ACCGridManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACCGridManager::StaticClass()));
+	BPE_StartGame();
 }
 
 bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
@@ -111,4 +113,9 @@ void ACCGameState::SetCurrentState(EGameState InCurrentState)
 {
 	CurrentState = InCurrentState;
 	OnGameStateChange.Broadcast(CurrentState);
+}
+
+void ACCGameState::BPC_RegisterAudioComponent(UAudioComponent* AudioComp)
+{
+	AudioComp->bAutoDestroy = false;
 }

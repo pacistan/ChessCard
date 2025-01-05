@@ -20,6 +20,12 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 	FCardData CardData = *InRowHandle.GetRow<FCardData>(TEXT(""));
 	ACCGameState* GameState = GetOwner<ACCGameState>();
 	ACCGameMode* GameMode = GetWorld()->GetAuthGameMode<ACCGameMode>();
+
+	if(InTriggerType == EEffectTriggerType::OnMove)
+	{
+		GameState->BPE_OnPieceEndMove(CardData.EffectType, IsDivineAnger);
+	}
+	
 	if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger && Cast<ACCTileUnit>(InPiece))
 	{
 		ACCTileUnit* Unit = Cast<ACCTileUnit>(InPiece);
@@ -140,7 +146,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 					{
 						if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 						{
-							Unit->IsStunned = true;						
+							Unit->SetIsStunned(true);						
 						}
 					}
 					break;
@@ -161,7 +167,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 							{
 								if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 								{
-									Unit->IsStunned = true;
+									Unit->SetIsStunned(true);
 								}
 							}
 						}

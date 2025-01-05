@@ -3,6 +3,9 @@
 #include "MeshCardBuild.h"
 #include "TileActor/PatternMapEndPoint.h"
 #include "Card/CCCard.h"
+#include "Components/SplineComponent.h"
+#include "Components/SplineMeshComponent.h"
+#include "Engine/SplineMeshActor.h"
 #include "GameModes/CCEffectManagerComponent.h"
 #include "GameModes/CCGameState.h"
 #include "Grid/CCGridManager.h"
@@ -222,6 +225,12 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 	{
 		FIntPoint ProgressPoint = CurrentCoordinates;
 		FActorSpawnParameters SpawnParameters;
+		
+		TArray<USplineMeshComponent*> SplineMeshComponents;
+		MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(VisualMovementSplineSubclass, FVector(), FRotator(), SpawnParameters));
+		ASplineMeshActor* SplineMeshActor = Cast<ASplineMeshActor>(MovementVisualActors.Last());
+
+		FVector PreviousPosition = GetGridManager(GetWorld())->CoordinatesToPosition(CurrentCoordinates) + FVector::UpVector * 20;
 		for(int i = 0; i < OutPatternMovement.Num(); i++)
 		{
 			ProgressPoint += OutPatternMovement[i].Direction;
@@ -233,6 +242,15 @@ void ACCTileUnit::OnDestinationTileClicked(ACCTile* Tile)
 			FVector Direction = FVector(OutPatternMovement[i].Direction.X, OutPatternMovement[i].Direction.Y, 0);
 			FRotator Rotator = UKismetMathLibrary::MakeRotFromXZ(Direction, FVector::UpVector);
 			MovementVisualActors.Add(GetWorld()->SpawnActor<AActor>(Subclass, PointPosition, Rotator, SpawnParameters)); 
+
+			
+			SplineMeshComponents.Add(NewObject<USplineMeshComponent>(SplineMeshActor, NAME_None, RF_Transactional));
+			SplineMeshComponents[i]->SetForwardAxis(ESplineMeshAxis::X, false);
+			SplineMeshComponents[i]->SetStaticMesh(SplineStaticMesh);
+			SplineMeshComponents[i]->SetStartAndEnd(PreviousPosition, FVector(),
+				PointPosition, FVector(), false);
+			SplineMeshComponents[i]->RegisterComponent();
+			SplineMeshComponents[i]->SetMaterial(0, SplineMaterial);
 		}
 	}
 	LinkedCard->MoveUnit(Tile, OutPatternMovement, MovementVisualActors, this);

@@ -8,10 +8,10 @@
 struct FPlayerActionData;
 class ACCPlayerPawn;
 
-UENUM()
+UENUM(BlueprintType)
 enum class EEffectTriggerType : uint8{OnKill, OnDeath, OnMove};
 
-UENUM()
+UENUM(BlueprintType)
 enum class EEffectType : uint8
 {
 	Midas UMETA(DisplayName = "Midas"),

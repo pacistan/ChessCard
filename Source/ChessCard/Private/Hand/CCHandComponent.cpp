@@ -25,13 +25,15 @@ void UCCHandComponent::DrawCard(ACCCard* Card, FOnCardMovementEnd OnCardMovement
 			Cards[i]->CardMovement->StartMovement(i, GetCardNum());
 		}
 	});
+	Card->BPE_OnDrawCard();
 }
 
-void UCCHandComponent::SendSelectedCardToMovementDeck(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition)
+void UCCHandComponent::DiscardCard(int CardIndex, FOnCardMovementEnd OnCardMovementEnd, FVector DeckPosition)
 {
 	Cards[CardIndex]->CardMovement->StartMovement(
 		CardIndex, GetCardNum(), OnCardMovementEnd, true,
 		SendCardToMovementDeckAnimDuration, false, true, Cards[CardIndex]->GetActorLocation() + Cards[CardIndex]->GetActorUpVector() * 300);
+	Cards[CardIndex]->BPE_OnDiscardCard();
 }
 
 FDataTableRowHandle UCCHandComponent::RemoveCardFromHand(int InCardIndex)
@@ -50,8 +52,10 @@ FDataTableRowHandle UCCHandComponent::RemoveCardFromHand(int InCardIndex)
 		Cards[i]->CardMovement->StartMovement(i, GetCardNum());
 	}
 	FDataTableRowHandle RowHandle = Card->CardRowHandle;
+
 	Card->Destroy();
 	return RowHandle;
+	Card->BPE_OnDiscardCard();
 }
 
 void UCCHandComponent::BeginPlay()
