@@ -57,13 +57,14 @@ void ACCGridManager::UpdateTilesMaterials()
 		int j = Tile->GetColumnNum();
 		Tile->UpdateMaterial();
 		FVector SpawnLocation = FVector( i * 100 * TileWidth + i * 100 * TileSpacingWidth, j * 100 * TileWidth + j * 100 * TileSpacingWidth, 0);
+		Tile->SetActorScale3D(FVector(TileWidth, TileWidth, TileWidth));
 		Tile->SetActorLocation(SpawnLocation);
 	}
 }
 
 FVector ACCGridManager::CoordinatesToPosition(FIntPoint Coordinates)
 {
-	return FVector(Coordinates.X * ((TileWidth + TileSpacingWidth) * 100), Coordinates.Y * ((TileWidth + TileSpacingWidth) * 100), 0);
+	return FVector(Coordinates.X * ((TileWidth + TileSpacingWidth) * 100), Coordinates.Y * ((TileWidth + TileSpacingWidth) * 100), 0) + OffsetPosition;
 }
 
 ACCTile* ACCGridManager::GetValidRandomAdjacentTile(ACCTile* OriginTile, bool AcceptOccupiedTiles)
@@ -443,5 +444,6 @@ void ACCGridManager::BeginPlay()
 		Grid[Tile->GetRowNum()][Tile->GetColumnNum()] = Tile;
 		MappedGrid[Tile->GetTileType()].Add(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()));
 	}
+	OffsetPosition = Grid[0][0]->GetActorLocation();
 
 }

@@ -40,6 +40,10 @@ private:
 
 	TArray<TArray<TObjectPtr<ACCTile>>> Grid;
 
+	UPROPERTY()
+	FVector OffsetPosition;
+
+	
 public:
 	TMap<ETileType, TArray<FIntPoint>> MappedGrid;
 	
