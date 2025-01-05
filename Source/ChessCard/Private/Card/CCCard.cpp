@@ -205,7 +205,7 @@ void ACCCard::StartHover(ACCPlayerPawn* Pawn)
 	if(CurrentCardState == ECardState::Played || CurrentCardState == ECardState::Selected || !CardMovement->IsInterruptable)
 		return;
 	CurrentCardState = ECardState::Hovered;
-	
+	BPE_Hover(true);
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }
@@ -218,6 +218,7 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 	}
 	
 	CurrentCardState = ECardState::Inactive;
+	BPE_Hover(false);
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 }
@@ -252,14 +253,16 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 	}
 	if(CurrentCardState == ECardState::Selected)
 	{
-		CurrentCardState = ECardState::Hovered;
+		/*CurrentCardState = ECardState::Hovered;
 		Pawn->SetCurrentSelectedCardIndex(-1);
-		bToSelected = false;
+		bToSelected = false;*/
+		UnSelect(Pawn);
 	}
 	else
 	{
 		CurrentCardState = ECardState::Selected;
 		Pawn->SetCurrentSelectedCardIndex(CardIndex);
+		BPE_Select(true);
 	}
 	
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
@@ -278,5 +281,6 @@ void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
 	OnSelectCardEffects(false, Pawn);
+	BPE_Select(false);
 }
 

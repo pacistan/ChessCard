@@ -153,4 +153,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnPlay(bool IsMovement);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_Hover(bool ToHover);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_Select(bool ToSelect);
 };
