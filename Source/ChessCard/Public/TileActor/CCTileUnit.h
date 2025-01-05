@@ -59,7 +59,6 @@ public:
 	UPROPERTY(Replicated)
 	bool IsMoved;
 
-	
 	UPROPERTY()
 	TObjectPtr<ACCCard> LinkedCard;
 
@@ -78,6 +77,15 @@ public:
 	FOnClickUnitDelegate OnClickUnitEvent;
 	FOnHoverUnitDelegate OnHoverUnitEvent;
 
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TObjectPtr<UStaticMesh> SplineStaticMesh;
+
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TObjectPtr<UMaterialInterface> SplineMaterial;
+
+	UPROPERTY(EditAnywhere, Category="SplineMesh")
+	TSubclassOf<AActor> VisualMovementSplineSubclass;
+	
 private:
 	UPROPERTY(VisibleInstanceOnly, Replicated)
 	bool IsStunned;
