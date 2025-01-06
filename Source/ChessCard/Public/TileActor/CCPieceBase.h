@@ -87,6 +87,21 @@ public:
 
 	UPROPERTY()
 	bool IsSelected;
+
+	UPROPERTY()
+	TArray<TObjectPtr<USplineMeshComponent>> SplineMeshComponents;
+
+	UPROPERTY(EditAnywhere, Category= "SPLINE")
+	TSubclassOf<ASplineMeshActor> SplineClass;
+
+	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
+	TObjectPtr<USplineComponent> PathSpline;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SPLINE")
+	UStaticMesh* SplineMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SPLINE")
+	UMaterialInterface* SplineMaterial;
 	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
 public:
@@ -105,6 +120,12 @@ public:
 	UFUNCTION()
 	virtual void InternalInit();
 
+	UFUNCTION()
+    void CreateSpline(TArray<FVector> Positions);
+	
+	UFUNCTION()
+	void SetSplinePoints();
+	
 	UFUNCTION()
 	void OnRep_InitProperties();
 
