@@ -33,7 +33,7 @@ protected:
 	int NumOfPlayersNeeded = 4;
 	
 	UPROPERTY(EditAnywhere)
-	float TimeOfPlanniningPhase = 60.f;
+	float TimeOfPlanniningPhase = 120.f;
 
 	// Cached player starts
 	UPROPERTY(Transient)
@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float UnitSpawnActionDuration = 1;
+
+	UPROPERTY(EditAnywhere)
+	float TimerBetweenActions = 1.5f;
 	
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -71,10 +74,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void StartPlaySequence();
-	
+
+	UFUNCTION()
 	void AddPlayerAction(ACCPlayerState* PlayerState, TArray<FPlayerActionData> Actions);
 
-	
 private:
 	void OnLevelAdded(ULevel* InLevel, UWorld* InWorld);
 	void HandleOnActorSpawned(AActor* SpawnedActor);

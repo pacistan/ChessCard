@@ -34,7 +34,7 @@ struct FCardData : public FTableRowBase
 	FString CardName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
-	FString CardDescription;
+	FText CardDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	TSoftObjectPtr<UMaterialInterface> CardMaterial;
@@ -47,6 +47,12 @@ struct FCardData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	FVector Rotation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	FVector PositionOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	FVector ScaleOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	EEffectType EffectType;
