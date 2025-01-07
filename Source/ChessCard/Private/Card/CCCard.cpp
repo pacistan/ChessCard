@@ -163,11 +163,18 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 	FActorSpawnParameters UnitSpawnParams;
 	UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	UnitSpawnParams.bNoFail = true;
+
+	if(!Tile->GetPieces().IsEmpty())
+	{
+		Tile->GetPieces().Last()->SetActorHiddenInGame(true);
+	}
 	
 	ACCTileUnit* Unit =  GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
 	Unit->InitUnit(FInitilizationProperties(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()) ,
 				   OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), FGuid::NewGuid(), CardRowHandle));
 
+	
+		
 	Unit->SetReplicates(false);
 	GetGridManager(GetWorld())->UnhighlightTiles();
 	TArray<AActor*> LocalVisualActors {Unit};

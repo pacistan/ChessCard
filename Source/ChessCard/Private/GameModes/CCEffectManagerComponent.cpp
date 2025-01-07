@@ -34,6 +34,21 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 	switch(CardData.EffectType)
 	{
 	case EEffectType::Midas:
+		if(InTriggerType == EEffectTriggerType::OnMove)
+		{
+			if(IsValid(InEffectTiles[0]))
+			{
+				if(!InEffectTiles[0]->GetPieces().IsEmpty())
+				{
+					auto Piece = InEffectTiles[0]->GetPieces()[0];
+					TriggerResolveEffect(false, InPiece->CardDataRowHandle, InPiece, TArray<ACCTile*>(),
+						EEffectTriggerType::OnKill, TArray<ACCPieceBase*>{Piece}, FIntPoint(), ActionData);
+					TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece, TArray<ACCTile*>(),
+						EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
+					Piece->MLC_DestroyPiece();
+				}
+			}
+		}
 		if(InTriggerType == EEffectTriggerType::OnDeath)
 		{
 			for(auto Unit : RelevantUnits)

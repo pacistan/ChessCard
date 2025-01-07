@@ -136,6 +136,10 @@ protected:
 
 	/* ------------------------------------------ GETTER/SETTER -------------------------------------------*/
 public:
+
+	UFUNCTION()
+	UMaterialInterface* GetMaterialFromMap(ETileType InTileType){return MaterialMap[InTileType];}
+	
 	UFUNCTION(BlueprintGetter)
 	int GetRowNum()const {return RowNum;}
 	
@@ -177,4 +181,7 @@ public:
 
 	UFUNCTION()
 	bool GetIsHighlighted(){return IsHighlighted;}
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnClickTile();
 };
