@@ -72,12 +72,6 @@ void UCCStateResolve::OnExitState()
 
 void UCCStateResolve::OnAllPlayerQueuesSent()
 {
-	for(auto Action : GameMode->PlayerActions)
-	{
-		for(auto Act : Action.Value)
-		{
-		}
-	}
 	StartNewAction();
 }
 
@@ -230,7 +224,7 @@ void UCCStateResolve::OnActionResolved(ACCPlayerState* PlayerState, FPlayerActio
 		BloodSlaughterAndDeath();
 		
 		FTimerHandle NewActionTimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(NewActionTimerHandle, this, &UCCStateResolve::StartNewAction, 1, false, -1);
+		GetWorld()->GetTimerManager().SetTimer(NewActionTimerHandle, this, &UCCStateResolve::StartNewAction, GameMode->TimerBetweenActions, false, -1);
 	}
 }
 
