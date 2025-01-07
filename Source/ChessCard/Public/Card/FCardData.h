@@ -54,6 +54,9 @@ struct FCardData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	FVector ScaleOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	TSoftObjectPtr<UTexture2D> InfosCardTexture;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	EEffectType EffectType;
 	

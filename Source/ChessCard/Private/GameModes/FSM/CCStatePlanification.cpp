@@ -44,6 +44,7 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 
 void UCCStatePlanification::OnExitState()
 {
+	GameState->SetCurrentTimeOfPlanniningPhase(GameMode->GetTimeOfPlanniningPhase());
 	// Ask all players to send their queue of actions to the server
 	TArray<ACCPlayerPawn*> Players = GameMode->GetPlayerPawns();
 	for(auto Player : Players) {
