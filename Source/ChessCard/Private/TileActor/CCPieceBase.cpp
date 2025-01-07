@@ -9,6 +9,7 @@
 #include "Macro/CCLogMacro.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/CCPlayerState.h"
+#include "TileActor/CCSplineMeshActor.h"
 
 
 ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -84,57 +85,57 @@ void ACCPieceBase::InternalInit()
 	//SetActorScale3D(FVector::One());
 }
 
-void ACCPieceBase::CreateSpline(TArray<FVector> Positions)
+void ACCPieceBase::CreateSpline(TArray<FVector> Positions, TArray<AActor*>& ActionVisuals)
 {
-	PathSpline->ClearSplinePoints();
-	for(int i = SplineMeshComponents.Num() - 1; i >= 0; i--)
-	{
-		SplineMeshComponents[i]->DestroyComponent();
-	}
-	SplineMeshComponents.Empty(true);
+	ClearSpline();
+	FActorSpawnParameters SpawnParams;
+	FVector Location = GetActorLocation() / 2; 
 	
-	bool bIsFirstPosition = true;
+	ACCSplineMeshActor* Spline = GetWorld()->SpawnActor<ACCSplineMeshActor>(SplineClass, Location, FRotator(), SpawnParams);
+	SplineComponent = Spline->SplineComponent;
+	ActionVisuals.Add(Spline);
+	
+	SplineComponent->AddSplinePoint(GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
 	for (const auto& Position : Positions)
 	{
-		if(bIsFirstPosition)
-		{
-			bIsFirstPosition = false;
-			PathSpline->AddSplinePoint(Position, ESplineCoordinateSpace::World, true);
-			continue;
-		}
-		/*if(Position != GetCurrentTile())
-		{
-			FVector location = FVector(Position->GetActorLocation() + FVector::UpVector * 40);
-			PathSpline->AddSplinePoint(location, ESplineCoordinateSpace::World, true);
-		}*/
+		SplineComponent->AddSplinePoint(Position - GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
 	}
-	PathSpline->AddSplinePoint( SplineStartPoint->GetComponentLocation() ,ESplineCoordinateSpace::World, true);
 	SetSplinePoints();
 }
 
 void ACCPieceBase::SetSplinePoints()
 {
 	// Create a spline mesh component for each segment of the spline
-	for (int32 i = 0; i < PathSpline->GetNumberOfSplinePoints() - 1; ++i)
+	for (int32 i = 0; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
 	{
-		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(this);
+		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(SplineComponent);
 		SplineMeshComponent->RegisterComponent();
 		SplineMeshComponent->SetMobility(EComponentMobility::Movable);
-		SplineMeshComponent->AttachToComponent(PathSpline, FAttachmentTransformRules::KeepRelativeTransform);
+		SplineMeshComponent->AttachToComponent(SplineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		SplineMeshComponent->SetStaticMesh(SplineMesh);
 		SplineMeshComponent->SetMaterial(0, SplineMaterial);
 		SplineMeshComponent->SetStartScale(.03f * FVector2D::One());
 		SplineMeshComponent->SetEndScale(.03f * FVector2D::One());
 		// Set the spline points for this segment
-		FVector Start = PathSpline->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
-		FVector StartTangent = PathSpline->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::World);
-		FVector End = PathSpline->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
-		FVector EndTangent = PathSpline->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
+		FVector Start = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
+		FVector StartTangent = SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::World);
+		FVector End = SplineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
+		FVector EndTangent = SplineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
 
 		SplineMeshComponent->SetStartAndEnd(Start, StartTangent, End, EndTangent);
 		SplineMeshComponents.Add(SplineMeshComponent);
 		// Other settings for the spline mesh (material, etc.) can be configured here
 	}
+}
+
+void ACCPieceBase::ClearSpline()
+{
+	SplineComponent->ClearSplinePoints();
+	for(int i = SplineMeshComponents.Num() - 1; i >= 0; i--)
+	{
+		SplineMeshComponents[i]->DestroyComponent();
+	}
+	SplineMeshComponents.Empty(true);
 }
 
 void ACCPieceBase::OnRep_InitProperties()

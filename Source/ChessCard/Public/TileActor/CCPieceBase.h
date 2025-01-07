@@ -7,10 +7,14 @@
 #include "Interfaces/CCGridManagerInterface.h"
 #include "CCPieceBase.generated.h"
 
+class ACCSplineMeshActor;
 class UWidgetComponent;
 enum class ETeam : uint8;
 class ACCPlayerState;
 class ACCPlayerController;
+class USplineMeshComponent;
+class USplineComponent;
+class ACCSplineMeshActor;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTileEffectTriggered, ACCPieceBase* , Owner);
 
@@ -91,16 +95,16 @@ public:
 	UPROPERTY()
 	TArray<TObjectPtr<USplineMeshComponent>> SplineMeshComponents;
 
-	UPROPERTY(EditAnywhere, Category= "SPLINE")
-	TSubclassOf<ASplineMeshActor> SplineClass;
-
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
-	TObjectPtr<USplineComponent> PathSpline;
+	TObjectPtr<USplineComponent> SplineComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "SPLINE")
+	UPROPERTY(EditDefaultsOnly, Category = "CC|SPLINE")
+	TSubclassOf<ACCSplineMeshActor> SplineClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CC|SPLINE")
 	UStaticMesh* SplineMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = "SPLINE")
+	UPROPERTY(EditDefaultsOnly, Category = "CC|SPLINE")
 	UMaterialInterface* SplineMaterial;
 	
 	/* ----------------------------------------- FUNCTIONS -------------------------------------------*/
@@ -121,10 +125,13 @@ public:
 	virtual void InternalInit();
 
 	UFUNCTION()
-    void CreateSpline(TArray<FVector> Positions);
+    void CreateSpline(TArray<FVector> Positions, TArray<AActor*>& ActionVisuals);
 	
 	UFUNCTION()
 	void SetSplinePoints();
+
+	UFUNCTION()
+	void ClearSpline();
 	
 	UFUNCTION()
 	void OnRep_InitProperties();
