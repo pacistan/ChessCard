@@ -12,6 +12,9 @@ class ACCPlayerPawn;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartGame);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClick);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShowCardInfo, FDataTableRowHandle, CardRowHandle);
+
 
 // TODO : Event Show Info Ui Card (CardInfo)
 
@@ -37,17 +40,32 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerPawn|Input", meta=(DisplayName = "Left Click Press Action"))
 	UInputAction* IA_SelectCard;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerPawn|Input", meta=(DisplayName = "Right Click Press Action"))
+	UInputAction* IA_ShowCardInfo;
+
 	TScriptInterface<IHoverable> CurrentHoveredElement;
 	
 	TScriptInterface<ISelectable> CurrentSelectedElement;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnStartGame OnStartGame;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnShowCardInfo OnShowCardInfoEvent;
+
+	UPROPERTY(Blueprintable)
+	FOnClick OnClickEvent;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 private:
 	UFUNCTION()
 	void OnSelectCard();
+	
+	UFUNCTION()
+	void OnShowCardInfo();
+
+	UFUNCTION()
+	void OnClick();
 
 	UFUNCTION()
 	ACCPlayerPawn* GetCCPlayerPawn();

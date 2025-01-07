@@ -107,6 +107,38 @@ void ACCPlayerController::OnSelectCard()
 	}
 }
 
+void ACCPlayerController::OnShowCardInfo()
+{
+	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+	check(GameState);
+	if(!GetCCPlayerPawn()|| GameState->GetCurrentState() == EGameState::None || GameState->GetCurrentState() == EGameState::EndGame){
+		return;
+	}
+	
+	FVector2D MousePosition;
+	GetMousePosition(MousePosition.X, MousePosition.Y);
+	
+	FHitResult HitResult;
+	FVector WorldLocation, WorldDirection;
+	DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection);
+
+	// Do a line trace based on the deprojected location and direction
+	FVector TraceEnd = WorldLocation + (WorldDirection * 1000000);
+	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility);
+	IHoverable* HoverableActor = Cast<IHoverable>(HitResult.GetActor());
+
+	if (HoverableActor != nullptr) {
+		
+	}
+
+	// TODO Finish 
+}
+
+void ACCPlayerController::OnClick()
+{
+	OnClickEvent.Broadcast();
+}
+
 ACCPlayerPawn* ACCPlayerController::GetCCPlayerPawn()
 {
 	return Cast<ACCPlayerPawn>(GetPawn());
@@ -139,6 +171,7 @@ void ACCPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(IA_SelectCard, ETriggerEvent::Triggered, this, &ACCPlayerController::OnSelectCard);
+		EnhancedInputComponent->BindAction(IA_ShowCardInfo, ETriggerEvent::Triggered, this, &ACCPlayerController::OnShowCardInfo);
 	}
 }
 

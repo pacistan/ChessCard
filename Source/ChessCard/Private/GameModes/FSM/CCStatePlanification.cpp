@@ -1,5 +1,6 @@
 #include "GameModes/FSM/CCStatePlanification.h"
 
+#include "Components/SplineComponent.h"
 #include "GameModes/CCGameMode.h"
 #include "GameModes/CCGameState.h"
 #include "GameModes/FSM/CCFSM.h"
