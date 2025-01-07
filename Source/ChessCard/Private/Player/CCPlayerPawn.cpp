@@ -331,6 +331,7 @@ void ACCPlayerPawn::UndoAction()
 		BPE_OnUndoAction();
 		ACCCard* Card = HandComponent->Cards[PlayedCardsIndex.Last()];
 		ECardType CardType = Card->CardRowHandle.GetRow<FCardData>("")->CardType;
+		CurrentSelectedCardIndex = -1;
 		Card->Unplay(this);
 		Card->CardMovement->StartMovement(Card->CardIndex, HandComponent->GetCardNum());
 		if(!QueueOfPlayerActions.Last().MovementData.IsEmpty())

@@ -105,8 +105,17 @@ void ACCPieceBase::CreateSpline(TArray<FVector> Positions, TArray<AActor*>& Acti
 
 void ACCPieceBase::SetSplinePoints()
 {
+	FVector InitialTangent = FVector();
+	if (SplineComponent->GetNumberOfSplinePoints() >= 2)
+	{
+		FVector FirstPoint = SplineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::World);
+		FVector SecondPoint = SplineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::World);
+		InitialTangent = (SecondPoint - FirstPoint).GetSafeNormal() * 100.0f;
+		SplineComponent->SetTangentAtSplinePoint(0, InitialTangent, ESplineCoordinateSpace::World, true);
+	}
+	
 	// Create a spline mesh component for each segment of the spline
-	for (int32 i = 0; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
+	for (int32 i = 2; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
 	{
 		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(SplineComponent);
 		SplineMeshComponent->RegisterComponent();
@@ -118,7 +127,15 @@ void ACCPieceBase::SetSplinePoints()
 		SplineMeshComponent->SetEndScale(.03f * FVector2D::One());
 		// Set the spline points for this segment
 		FVector Start = SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World);
-		FVector StartTangent = SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::World);
+		FVector StartTangent;
+		if(i == 0)
+		{
+			StartTangent = InitialTangent;
+		}
+		else
+		{
+			StartTangent = SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::World);
+		}
 		FVector End = SplineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
 		FVector EndTangent = SplineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::World);
 
