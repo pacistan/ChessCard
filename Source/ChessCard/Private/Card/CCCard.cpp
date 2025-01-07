@@ -158,12 +158,12 @@ void ACCCard::Initialize()
 
 void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 {
+	OwningPawn->SetCurrentSelectedCardIndex(-1);
 	const FRotator UnitRotation;
 	const FVector UnitPosition = Tile->GetActorLocation() + FVector::UpVector * 20;
 	FActorSpawnParameters UnitSpawnParams;
 	UnitSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	UnitSpawnParams.bNoFail = true;
-
 	if(!Tile->GetPieces().IsEmpty())
 	{
 		Tile->GetPieces().Last()->SetActorHiddenInGame(true);
@@ -187,7 +187,7 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit)
 {
 	GetGridManager(GetWorld())->UnhighlightTiles();
-
+	OwningPawn->SetCurrentSelectedCardIndex(-1);
 	FCardData UnitCardData = *Unit->CardDataRowHandle.GetRow<FCardData>("");
 	bool IsDivineAnger = Unit->DivineAngerCounter >= UnitCardData.DivineAngerTriggerNumber;
 	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData, IsDivineAnger

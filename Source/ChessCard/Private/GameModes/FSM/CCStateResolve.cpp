@@ -50,7 +50,7 @@ void UCCStateResolve::OnExitState()
 	//Increment Divine Anger Counter
 	{
 		FTileTypeDelegate TileTypeDelegate;
-		auto Lambda = [](ACCTile* Tile)
+		auto Lambda = [this](ACCTile* Tile)
 		{
 			for(const auto& Piece : Tile->GetPieces())
 			{
@@ -60,7 +60,7 @@ void UCCStateResolve::OnExitState()
 					Unit->IsMoved = false;
 					if(Tile->GetTileType() == ETileType::ScoreTile)
 					{
-						//TODO : Add Score Here1
+						GameState->AddPointToPlayer(GameState->GetPlayerStateOfTeam(Unit->Team));
 					}
 				}
 			}	
