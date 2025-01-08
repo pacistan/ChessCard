@@ -9,23 +9,14 @@
   <component name="ChangeListManager">
     <list default="true" id="9fefaa15-863b-4baa-8ce3-67fda2368319" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Grid/BP_Tile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Grid/BP_Tile.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Player/BP_CCPlayerPawn.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/DataTables/Cards/DT_Cards.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/DataTables/Cards/DT_Cards.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LTestAndre.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Ennemie3.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Joueur.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/Cases/Cases_Joueur.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/LE_MATERIAL.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/VINCENT_FBX/LE_MATERIAL.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/VFX/Explosion/NS_Explosion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/VFX/Explosion/NS_Explosion.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Card/CCCard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCEffectManagerComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCEffectManagerComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCGridManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Card/FCardData.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/Player/CCPlayerPawn.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCPieceBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCPieceBase.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerPawn.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCPieceBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCPieceBase.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +48,9 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Apps/Epic Games/UnrealEngine/UE_5.4/Engine/Source/Developer/Android/AndroidPlatformEditor/AndroidPlatformEditor.Build.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../Apps/Epic Games/UnrealEngine/UE_5.4/Engine/Source/ThirdParty/Eigen/unsupported/Eigen/src/IterativeSolvers/ConstrainedConjGrad.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -167,7 +161,7 @@
       <workItem from="1735991551808" duration="17197000" />
       <workItem from="1736081570974" duration="17227000" />
       <workItem from="1736181066421" duration="14279000" />
-      <workItem from="1736241146792" duration="11728000" />
+      <workItem from="1736241146792" duration="17810000" />
     </task>
     <servers />
   </component>

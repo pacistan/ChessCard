@@ -114,8 +114,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	int NumberOfCardsToDrawThisRound;
 
-	UPROPERTY()
-	TArray<int32> PlayedCardsIndex;
 
 	// -1 = No card Selected
 	UPROPERTY()
@@ -132,6 +130,9 @@ private:
 	TArray<FActionLocalElements> QueueOfLocalActionElements;
 	
 public:
+	UPROPERTY()
+	TArray<TObjectPtr<ACCCard>> PlayedCards;
+	
 	// The player hud class to add to the player when the game start
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PLayerHudClass;
@@ -253,9 +254,6 @@ public:
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}
-
-	UFUNCTION(BlueprintGetter)
-	TArray<int32> GetPlayedCardIndex()const {return PlayedCardsIndex;}
 
 	UFUNCTION()
 	void SetSelectedUnit(ACCPieceBase* Unit);

@@ -166,11 +166,12 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 	if(!Tile->GetPieces().IsEmpty())
 	{
 		Tile->GetPieces().Last()->SetActorHiddenInGame(true);
+		Tile->GetPieces().Last()->SetActorEnableCollision(false);
 	}
 	
 	ACCTileUnit* Unit =  GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);
 	Unit->InitUnit(FInitilizationProperties(FIntPoint(Tile->GetRowNum(), Tile->GetColumnNum()) ,
-				   OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), FGuid::NewGuid(), CardRowHandle));
+				   OwningPawn->GetPlayerState<ACCPlayerState>()->GetTeam(), FGuid::NewGuid(), CardRowHandle, true));
 
 	
 		
@@ -246,23 +247,8 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 	{
 		return;
 	}
-	
-	bool bToSelected = true;
-	if(CurrentCardState == ECardState::Played)
+	else if(CurrentCardState == ECardState::Selected)
 	{
-		CurrentCardState = ECardState::Hovered;
-		Pawn->GetPlayedCardIndex().Remove(CardIndex);
-
-		CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
-		UpdateMaterials();
-		//TODO: Unplay movements AND/OR Spawns
-		return;
-	}
-	if(CurrentCardState == ECardState::Selected)
-	{
-		/*CurrentCardState = ECardState::Hovered;
-		Pawn->SetCurrentSelectedCardIndex(-1);
-		bToSelected = false;*/
 		UnSelect(Pawn);
 	}
 	else
@@ -274,7 +260,7 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 	
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
 	UpdateMaterials();
-	OnSelectCardEffects(bToSelected, Pawn);
+	OnSelectCardEffects(true, Pawn);
 }
 
 void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
@@ -285,7 +271,7 @@ void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 	}
 	CurrentCardState = CurrentCardState ==  ECardState::Played ? ECardState::Played : ECardState::Inactive;
 	Pawn->SetCurrentSelectedCardIndex(-1);
-	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
+	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), FOnCardMovementEnd(), false, 0, false);
 	UpdateMaterials();
 	OnSelectCardEffects(false, Pawn);
 	BPE_Select(false);
