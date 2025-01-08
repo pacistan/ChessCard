@@ -125,6 +125,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartHover(ACCPlayerPawn* Player) override;
 	virtual void StopHover(ACCPlayerPawn* Player) override;
+	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle) override;
 	virtual void Click(ACCPlayerPawn* Player) override;
 	virtual void InternalInit() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

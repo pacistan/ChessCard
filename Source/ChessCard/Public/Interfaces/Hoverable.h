@@ -20,4 +20,5 @@ class CHESSCARD_API IHoverable
 public:
 	virtual void StartHover(ACCPlayerPawn* Player) = 0;
 	virtual void StopHover(ACCPlayerPawn* Player) = 0;
+	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle) { return false; }
 };

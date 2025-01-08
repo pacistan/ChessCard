@@ -53,7 +53,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnShowCardInfo OnShowCardInfoEvent;
 
-	UPROPERTY(Blueprintable)
+	UPROPERTY(BlueprintAssignable)
 	FOnClick OnClickEvent;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
@@ -71,8 +71,6 @@ private:
 	ACCPlayerPawn* GetCCPlayerPawn();
 
 public:
-	UFUNCTION(Client, Reliable)
-	void RPC_CreateHudForPlayer();
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void BeginPlay() override;

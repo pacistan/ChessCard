@@ -231,6 +231,12 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 	UpdateMaterials();
 }
 
+bool ACCCard::GetCardData(FDataTableRowHandle& OutRowHandle)
+{
+	OutRowHandle = CardRowHandle;
+	return true;
+}
+
 void ACCCard::Unplay(ACCPlayerPawn* Pawn)
 {
 	if(CurrentCardState != ECardState::Played)

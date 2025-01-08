@@ -16,7 +16,6 @@ enum class ECardType : uint8
 	Custom // Custom card type for special cards if needed /* not implemented Yet */
 };
 
-
 USTRUCT(BlueprintType)
 struct FCardData : public FTableRowBase
 {
@@ -56,6 +55,9 @@ struct FCardData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	TSoftObjectPtr<UTexture2D> InfosCardTexture;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
+	TArray<TSoftObjectPtr<UTexture2D>> AllEffectInfosForCardTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
 	EEffectType EffectType;
