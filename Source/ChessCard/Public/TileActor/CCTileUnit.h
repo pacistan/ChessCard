@@ -111,17 +111,11 @@ public:
 	bool GetIsStunned(){return IsStunned;}
 
 	UFUNCTION()
-	void SetIsStunned(bool InIsStunned, bool IsServerCall = true)
-	{
-		if(InIsStunned)
-		{
-			BPE_OnStunned(IsServerCall);
-		}
-		IsStunned = InIsStunned;
-	}
+	void SetIsStunned(bool InIsStunned, bool IsServerCall = true);
+
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPE_OnStunned(bool IsServerCall);
+	void BPE_OnStunned(bool IsServerCall, bool IsToStun, FCardData& CardData);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_UpdateMaterial(UMaterialInterface* Material, bool ToOverlay = true);

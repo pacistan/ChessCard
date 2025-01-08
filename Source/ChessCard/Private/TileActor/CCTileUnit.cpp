@@ -38,6 +38,13 @@ FIntPoint ACCTileUnit::GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>&
 	return OutPoint;
 }
 
+void ACCTileUnit::SetIsStunned(bool InIsStunned, bool IsServerCall)
+{
+	TArray<TSoftObjectPtr<UMaterialInterface>> Materials;
+	BPE_OnStunned(IsServerCall, InIsStunned, *CardDataRowHandle.GetRow<FCardData>(""));
+	IsStunned = InIsStunned;
+}
+
 void ACCTileUnit::BeginPlay()
 {
 	Super::BeginPlay();

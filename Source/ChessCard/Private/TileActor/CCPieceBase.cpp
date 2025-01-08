@@ -119,7 +119,7 @@ void ACCPieceBase::SetSplinePoints()
 	}
 	
 	// Create a spline mesh component for each segment of the spline
-	for (int32 i = 2; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
+	for (int32 i = 0; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
 	{
 		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(SplineComponent);
 		SplineMeshComponent->RegisterComponent();
