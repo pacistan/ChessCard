@@ -36,10 +36,12 @@ public:
 	UPROPERTY()
 	FDataTableRowHandle CardDataRowHandle;
 
+	bool IsPreview = false;
+	
 	FInitilizationProperties(){}
 	
-	FInitilizationProperties(FIntPoint InCoordinates, ETeam InTeam, FGuid InInstanceID, FDataTableRowHandle InCardDataRowHandle):
-	Coordinates(InCoordinates), Team(InTeam), InstanceID(InInstanceID), CardDataRowHandle(InCardDataRowHandle){}
+	FInitilizationProperties(FIntPoint InCoordinates, ETeam InTeam, FGuid InInstanceID, FDataTableRowHandle InCardDataRowHandle, bool InIsPreview = false):
+	Coordinates(InCoordinates), Team(InTeam), InstanceID(InInstanceID), CardDataRowHandle(InCardDataRowHandle), IsPreview(InIsPreview){}
 };
 
 /**
@@ -156,5 +158,5 @@ public:
 	void BPE_OnClickUnit();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPE_OnUnitDestroy();
+	void BPE_OnUnitDestroy(bool ActivateEffects);
 };

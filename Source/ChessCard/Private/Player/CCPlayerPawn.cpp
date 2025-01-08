@@ -153,10 +153,15 @@ void ACCPlayerPawn::DrawCard()
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 {
+	if(CurrentSelectedCardIndex == -1)
+	{
+		DEBUG_ERROR("TRY TO PLAY WHILE NO CARD SELECTED");
+		return;
+	}
 	auto& Card = HandComponent->Cards[CurrentSelectedCardIndex];
 	Card->UnSelect(this);
 	Card->Play(this);
-	PlayedCardsIndex.Add(Card->CardIndex);
+	PlayedCards.Add(Card);
 }
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
@@ -326,12 +331,12 @@ void ACCPlayerPawn::SRV_OnAllCardDrawServer_Implementation()
 
 void ACCPlayerPawn::UndoAction()
 {
-	if(!PlayedCardsIndex.IsEmpty() && GetWorld()->GetGameState<ACCGameState>()->GetCurrentState() == EGameState::Plannification)
+	if(!PlayedCards.IsEmpty() && GetWorld()->GetGameState<ACCGameState>()->GetCurrentState() == EGameState::Plannification)
 	{
 		BPE_OnUndoAction();
-		ACCCard* Card = HandComponent->Cards[PlayedCardsIndex.Last()];
+		ACCCard* Card = PlayedCards.Last();
 		ECardType CardType = Card->CardRowHandle.GetRow<FCardData>("")->CardType;
-		CurrentSelectedCardIndex = -1;
+		//CurrentSelectedCardIndex = -1;
 		Card->Unplay(this);
 		Card->CardMovement->StartMovement(Card->CardIndex, HandComponent->GetCardNum());
 		if(!QueueOfPlayerActions.Last().MovementData.IsEmpty())
@@ -348,6 +353,7 @@ void ACCPlayerPawn::UndoAction()
 			if(Tile->GetPieces().Num() > 1)
 			{
 				Tile->GetPieces()[Tile->GetPieces().Num() - 2]->SetActorHiddenInGame(false);
+				Tile->GetPieces()[Tile->GetPieces().Num() - 2]->SetActorEnableCollision(true);
 			}
 		}
 
@@ -363,7 +369,7 @@ void ACCPlayerPawn::UndoAction()
 			}
 		}
 			
-		PlayedCardsIndex.Pop();
+		PlayedCards.Pop();
 		RemoveLastPlayerAction();
 		QueueOfLocalActionElements.Pop();
 	}

@@ -34,14 +34,14 @@ void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void ACCPieceBase::DestroyPiece()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
-	BPE_OnUnitDestroy();
+	BPE_OnUnitDestroy(InitilizationProperties.IsPreview);
 	Destroy();
 }
 
 void ACCPieceBase::MLC_DestroyPiece_Implementation()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
-	BPE_OnUnitDestroy();
+	BPE_OnUnitDestroy(InitilizationProperties.IsPreview);
 	Destroy();
 }
 
@@ -95,11 +95,11 @@ void ACCPieceBase::CreateSpline(TArray<FVector> Positions, TArray<AActor*>& Acti
 	ActionVisuals.Add(Spline);
 	ClearSpline();
 	
-	SplineComponent->AddSplinePoint(GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
+	SplineComponent->AddSplinePoint(GetActorLocation() / 2, ESplineCoordinateSpace::World);
 	SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	for (const auto& Position : Positions)
 	{
-		SplineComponent->AddSplinePoint(Position - GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
+		SplineComponent->AddSplinePoint(Position - GetActorLocation() / 2, ESplineCoordinateSpace::World);
 		SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	}
 
