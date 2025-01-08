@@ -73,6 +73,7 @@ void ACCTile::BeginPlay()
 {
 	Super::BeginPlay();
 	BaseMaterial = MeshComponent->GetMaterial(0);
+	PrimaryActorTick.SetTickFunctionEnable(false);
 }
 
 void ACCTile::Tick(float DeltaTime)
