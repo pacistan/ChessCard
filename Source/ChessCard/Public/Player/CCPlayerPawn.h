@@ -201,6 +201,8 @@ public:
 
 	UFUNCTION()
 	void RemoveSelectedCardFromHand();
+
+	UFUNCTION()
 	void RemoveCardWithIndex(int TargetIndex);
 
 	/** Add the Player HUD to the player, need to be call on Start of the game */
