@@ -158,7 +158,6 @@ void ACCCard::Initialize()
 
 void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 {
-	OwningPawn->SetCurrentSelectedCardIndex(-1);
 	const FRotator UnitRotation;
 	const FVector UnitPosition = Tile->GetActorLocation() + FVector::UpVector * 20;
 	FActorSpawnParameters UnitSpawnParams;
@@ -182,12 +181,12 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 	FPlayerActionData PlayerActionData(CardRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid);
 	OwningPawn->AddPlayerAction(PlayerActionData);
 	OwningPawn->AddPlayerActionClientElement(LocalVisualActors, this);
+	//OwningPawn->SetCurrentSelectedCardIndex(-1);
 }
 
 void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit)
 {
 	GetGridManager(GetWorld())->UnhighlightTiles();
-	OwningPawn->SetCurrentSelectedCardIndex(-1);
 	FCardData UnitCardData = *Unit->CardDataRowHandle.GetRow<FCardData>("");
 	bool IsDivineAnger = Unit->DivineAngerCounter >= UnitCardData.DivineAngerTriggerNumber;
 	FPlayerActionData PlayerActionData(Unit->CardDataRowHandle, Unit->CurrentCoordinates, CardUniqueID, Unit->UnitGuid, MovementData, IsDivineAnger
@@ -195,6 +194,7 @@ void ACCCard::MoveUnit(ACCTile* Tile, TArray<FPatternMapEndPoint> MovementData, 
 	
 	OwningPawn->AddPlayerAction(PlayerActionData);
 	OwningPawn->AddPlayerActionClientElement(MovementVisualActors, this);
+	//OwningPawn->SetCurrentSelectedCardIndex(-1);
 }
 
 void ACCCard::TriggerEmbrasement(ACCTile* Tile, TArray<AActor*>& MovementVisualActors, ACCTileUnit* Unit)

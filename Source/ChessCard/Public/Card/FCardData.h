@@ -37,7 +37,7 @@ struct FCardData : public FTableRowBase
 	FText CardDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
-	TSoftObjectPtr<UMaterialInterface> CardMaterial;
+	TArray<TSoftObjectPtr<UMaterialInterface>> CardMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UIData")
 	TSoftObjectPtr<UStaticMesh> CardUnitStaticMesh;

@@ -32,7 +32,7 @@ void ACCGridManager::GenerateGrid()
 	{
 		for (size_t j = 0; j < GridSize; j++)
 		{
-			FVector SpawnLocation = FVector( i * 100 * TileWidth + i * 100 * TileSpacingWidth, j * 100 * TileWidth + j * 100 * TileSpacingWidth, 0);
+			FVector SpawnLocation = FVector( i * 100 * TileWidth + i * 100 * TileSpacingWidth, j * 100 * TileWidth + j * 100 * TileSpacingWidth, 0) + GetActorLocation();
 			ACCTile* SpawnedTile = GetWorld()->SpawnActor<ACCTile>(TilePrefab, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 #if WITH_EDITOR
 			SpawnedTile->SetActorLabel(FString::Printf(TEXT("Tile_%d_%d"), static_cast<int>(i), static_cast<int>(j)));
@@ -53,13 +53,14 @@ void ACCGridManager::UpdateTilesMaterials()
 	for(auto Actor : Actors)
 	{
 		ACCTile* Tile = Cast<ACCTile>(Actor);
-		int i = Tile->GetRowNum();
-		int j = Tile->GetColumnNum();
 		Tile->UpdateMaterial();
+	}
+		/*int i = Tile->GetRowNum();
+		int j = Tile->GetColumnNum();
 		FVector SpawnLocation = FVector( i * 100 * TileWidth + i * 100 * TileSpacingWidth, j * 100 * TileWidth + j * 100 * TileSpacingWidth, 0);
 		Tile->SetActorScale3D(FVector(TileWidth, TileWidth, TileWidth));
 		Tile->SetActorLocation(SpawnLocation);
-	}
+	}*/
 }
 
 FVector ACCGridManager::CoordinatesToPosition(FIntPoint Coordinates)
@@ -400,9 +401,12 @@ ACCTile* ACCGridManager::GetTile(FIntPoint Coordinates)
 
 void ACCGridManager::InitializeBonusTileMap()
 {
-	for(auto Tile : MappedGrid[ETileType::BonusTile])
+	if(IsValid(this) && IsValid(GetWorld()) && MappedGrid.Contains(ETileType::BonusTile))
 	{
-		GetWorld()->GetAuthGameMode<ACCGameMode>()->BonusTileMap.Add(GetTile(Tile), ETeam::None);
+		for(auto Tile : MappedGrid[ETileType::BonusTile])
+		{
+			GetWorld()->GetAuthGameMode<ACCGameMode>()->BonusTileMap.Add(GetTile(Tile), ETeam::None);
+		}
 	}
 }
 

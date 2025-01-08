@@ -87,19 +87,23 @@ void ACCPieceBase::InternalInit()
 
 void ACCPieceBase::CreateSpline(TArray<FVector> Positions, TArray<AActor*>& ActionVisuals)
 {
-	ClearSpline();
 	FActorSpawnParameters SpawnParams;
 	FVector Location = GetActorLocation() / 2; 
 	
 	ACCSplineMeshActor* Spline = GetWorld()->SpawnActor<ACCSplineMeshActor>(SplineClass, Location, FRotator(), SpawnParams);
 	SplineComponent = Spline->SplineComponent;
 	ActionVisuals.Add(Spline);
+	ClearSpline();
 	
 	SplineComponent->AddSplinePoint(GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
+	SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	for (const auto& Position : Positions)
 	{
 		SplineComponent->AddSplinePoint(Position - GetActorLocation() / 2, ESplineCoordinateSpace::World, true);
+		SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	}
+
+	SplineComponent->UpdateSpline();
 	SetSplinePoints();
 }
 
