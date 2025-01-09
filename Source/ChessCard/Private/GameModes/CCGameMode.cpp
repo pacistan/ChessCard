@@ -121,7 +121,7 @@ AActor* ACCGameMode::ChoosePlayerStart_Implementation(AController* Player)
 void ACCGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation)
 {
 	Super::FinishRestartPlayer(NewPlayer, StartRotation);
-	OnPlayerInitialized.Broadcast(NewPlayer);
+	// OnPlayerInitialized.Broadcast(NewPlayer);
 }
 
 void ACCGameMode::StartPlaySequence()
@@ -131,14 +131,13 @@ void ACCGameMode::StartPlaySequence()
 	
 	// Add Player HUD to each player (Maybe move in a Init State ?)
 	TArray<ACCPlayerPawn*> Players = GetPlayerPawns();
-	for (auto Player : Players)
-	{
+	for (auto Player : Players) {
 		Player->AddPlayerHud();
 	}
 
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->InitializeBonusTileMap();
 
-	// Init the Size of the Array for teh Score of the game 
+	// Init the Size of the Array for the Score of the game 
 	if (ACCGameState* CCGameState = Cast<ACCGameState>(GameState)) {
 		CCGameState->InitScoreArray();
 	}
