@@ -27,6 +27,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool bHasEndedTurn = false;
 
+	UPROPERTY(VisibleAnywhere, Replicated)
+	TSoftObjectPtr<UTexture2D> PlayerAvatar;
+
+	
+
+
 public:
 	FOnPlayerEndTurn EndTurnDelegate;
 
@@ -63,4 +69,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetEndTurn(bool bEndTurn);
+
+	UFUNCTION(BlueprintCallable)
+	TSoftObjectPtr<UTexture2D> GetPlayerAvatar() const { return PlayerAvatar; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerAvatar(TSoftObjectPtr<UTexture2D> InPlayerAvatar) { PlayerAvatar = InPlayerAvatar; }
 };
