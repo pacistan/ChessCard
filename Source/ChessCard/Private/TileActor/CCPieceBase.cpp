@@ -19,7 +19,7 @@ ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(
 
 	EffectContainerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("EffectContainerWidget"));
 	EffectContainerWidget->SetupAttachment(RootComponent);
-
+	
 }
 
 void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

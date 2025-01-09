@@ -305,6 +305,12 @@ void ACCTileUnit::StopHover(ACCPlayerPawn* Player)
 	}
 }
 
+bool ACCTileUnit::GetCardData(FDataTableRowHandle& OutRowHandle)
+{
+	OutRowHandle = CardDataRowHandle;
+	return true;
+}
+
 void ACCTileUnit::Click(ACCPlayerPawn* Player)
 {
 	ACCTile* CurrentTile = GetGridManager(GetWorld())->GetTile(CurrentCoordinates);

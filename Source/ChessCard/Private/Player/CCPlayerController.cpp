@@ -107,21 +107,45 @@ void ACCPlayerController::OnSelectCard()
 	}
 }
 
+void ACCPlayerController::OnShowCardInfo()
+{
+	ACCGameState* GameState = GetWorld()->GetGameState<ACCGameState>();
+	check(GameState);
+	if(!GetCCPlayerPawn()|| GameState->GetCurrentState() == EGameState::None || GameState->GetCurrentState() == EGameState::EndGame){
+		return;
+	}
+	
+	FVector2D MousePosition;
+	GetMousePosition(MousePosition.X, MousePosition.Y);
+	
+	FHitResult HitResult;
+	FVector WorldLocation, WorldDirection;
+	DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection);
+
+	// Do a line trace based on the deprojected location and direction
+	FVector TraceEnd = WorldLocation + (WorldDirection * 1000000);
+	GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, TraceEnd, ECC_Visibility);
+	IHoverable* HoverableActor = Cast<IHoverable>(HitResult.GetActor());
+
+	// If Find Actor brodcast the event with the card data
+	if (HoverableActor != nullptr) {
+		FDataTableRowHandle CardRowHandle;
+		if (HoverableActor->GetCardData(CardRowHandle)) {
+			OnShowCardInfoEvent.Broadcast(CardRowHandle);
+			// TODO Activate the event for Hide the card info
+		}
+    } 
+	
+}
+
+void ACCPlayerController::OnClick()
+{
+	OnClickEvent.Broadcast();
+}
+
 ACCPlayerPawn* ACCPlayerController::GetCCPlayerPawn()
 {
 	return Cast<ACCPlayerPawn>(GetPawn());
-}
-
-void ACCPlayerController::RPC_CreateHudForPlayer_Implementation()
-{
-	//if (IsLocalController()) {
-		if (InGameUiClass) {
-			InGameHud = CreateWidget<UUserWidget>(this, InGameUiClass);
-			if (InGameHud) {
-				InGameHud->AddToViewport();
-			}
-		}
-	//}
 }
 
 void ACCPlayerController::BeginPlay()
@@ -136,9 +160,11 @@ void ACCPlayerController::BeginPlay()
 void ACCPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent)) {
 		EnhancedInputComponent->BindAction(IA_SelectCard, ETriggerEvent::Triggered, this, &ACCPlayerController::OnSelectCard);
+		EnhancedInputComponent->BindAction(IA_ShowCardInfo, ETriggerEvent::Triggered, this, &ACCPlayerController::OnShowCardInfo);
+		EnhancedInputComponent->BindAction(IA_ShowCardInfo, ETriggerEvent::Triggered, this, &ACCPlayerController::OnClick);
+		EnhancedInputComponent->BindAction(IA_SelectCard, ETriggerEvent::Triggered, this, &ACCPlayerController::OnClick);
 	}
 }
 
