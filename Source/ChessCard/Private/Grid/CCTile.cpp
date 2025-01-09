@@ -44,7 +44,7 @@ void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelega
 
 void ACCTile::Click(ACCPlayerPawn* Player)
 {
-	if(IsHighlighted)
+	if(IsHighlighted && CurrentHighlightMode == EHighlightMode::Normal)
 	{
 		OnClickEvent.ExecuteIfBound(this);
 		Player->PlaySelectedCard(this);
