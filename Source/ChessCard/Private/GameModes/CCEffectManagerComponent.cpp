@@ -252,9 +252,6 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 				FInitilizationProperties InitProperties = Piece->InitilizationProperties;
 				InitProperties.Team = InPiece->Team;
 				InitProperties.InstanceID = InPiece->UnitGuid;
-				TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece,TArray<ACCTile*>(),
-						EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
-				Piece->MLC_DestroyPiece();
 				InPiece->InitUnit(InitProperties);
 				break;
 			}

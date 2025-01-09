@@ -261,12 +261,18 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 	}
 
 	TArray<TObjectPtr<AActor>> RelatedActors = QueueOfLocalActionElements[0].RelatedActors;
-	for(int i = RelatedActors.Num() - 1; i >= 0; i--)
+	if(!RelatedActors.IsEmpty())
 	{
-		if(ACCPieceBase* Unit = Cast<ACCPieceBase>(RelatedActors[i]))
-			Unit->DestroyPiece();
-		else
-			RelatedActors[i]->Destroy();
+		for(int i = RelatedActors.Num() - 1; i >= 0; i--)
+		{
+			if(IsValid(RelatedActors[i]))
+			{
+				if(ACCPieceBase* Unit = Cast<ACCPieceBase>(RelatedActors[i]))
+					Unit->DestroyPiece();
+				else
+					RelatedActors[i]->Destroy();
+			}
+		}
 	}
 
 	if(IsValid(QueueOfLocalActionElements[0].Card))
@@ -280,6 +286,7 @@ void ACCPlayerPawn::RPC_RemoveFirstActionClientElements_Implementation()
 		{
 			DiscardPileComponent->AddCardToDeck(Handle);
 		}
+		PlayedCards.RemoveAt(0);
 	}
 	QueueOfLocalActionElements.RemoveAt(0);
 }
@@ -375,8 +382,8 @@ void ACCPlayerPawn::UndoAction()
 			ACCTile* Tile = GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->GetTile(QueueOfPlayerActions.Last().TargetCoord);
 			if(Tile->GetPieces().Num() > 1)
 			{
-				Tile->GetPieces()[Tile->GetPieces().Num() - 2]->SetActorHiddenInGame(false);
-				Tile->GetPieces()[Tile->GetPieces().Num() - 2]->SetActorEnableCollision(true);
+				Tile->GetPieces()[FMath::Min(Tile->GetPieces().Num() - 2, 0)]->SetActorHiddenInGame(false);
+				Tile->GetPieces()[FMath::Min(Tile->GetPieces().Num() - 2, 0)]->SetActorEnableCollision(true);
 			}
 		}
 

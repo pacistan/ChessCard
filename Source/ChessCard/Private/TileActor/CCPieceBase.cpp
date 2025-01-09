@@ -52,7 +52,6 @@ void ACCPieceBase::InitUnit(const FInitilizationProperties& InInitilizationPrope
 	InitilizationProperties = InInitilizationProperties;
 	IsInitialized = true;
 	InternalInit();
-	
 }
 
 void ACCPieceBase::InternalInit()
