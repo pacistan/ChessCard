@@ -29,7 +29,7 @@ protected:
 	TObjectPtr<AController> ClaimingController = nullptr;
 
 	/** The Team Who will be Assignated to the Controller that Claimed this PlayerStart */
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ETeam Team = ETeam::None;
 
 public:
