@@ -113,9 +113,8 @@ public:
 	UFUNCTION()
 	void SetIsStunned(bool InIsStunned, bool IsServerCall = true);
 
-	
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPE_OnStunned(bool IsServerCall, bool IsToStun, FCardData& CardData);
+	void BPE_OnStunned(bool IsServerCall, bool IsToStun, FDataTableRowHandle RowHandle);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_UpdateMaterial(UMaterialInterface* Material, bool ToOverlay = true);

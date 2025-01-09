@@ -45,17 +45,22 @@ void ACCPlayerPawn::RPC_DrawCards_Implementation(int NumberOfCardsToDraw)
 	GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this](){ DrawCard(); }), 1, false);
 	GetController<ACCPlayerController>()->CurrentSelectedElement.SetObject(nullptr);
 	GetController<ACCPlayerController>()->CurrentSelectedElement.SetInterface(nullptr);
+	//QueueOfLocalActionElements.Empty();
 }
 
 void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 {
+	if(HasAuthority())
+	{
+		DEBUG_ERROR("");
+	}
 	SRV_SendQueueOfAction(QueueOfPlayerActions);
 
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	
-	if(CurrentSelectedCardIndex != -1)
+	if(IsValid(CurrentSelectedCardIndex))
 	{
-		HandComponent->Cards[CurrentSelectedCardIndex]->UnSelect(this);
+		CurrentSelectedCardIndex->UnSelect(this);
 	}
 
 	for(auto Card : HandComponent->Cards)
@@ -65,13 +70,23 @@ void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 			RemoveCardWithIndex(Card->CardIndex);
 		}
 	}
-	for(auto LocalAction : QueueOfLocalActionElements)
+	for(auto& LocalAction : QueueOfLocalActionElements)
 	{
-		for(auto Visual : LocalAction.RelatedActors)
+		for(int i = LocalAction.RelatedActors.Num() - 1; i >= 0; i--)
 		{
-			if(ACCPieceBase* Piece = Cast<ACCPieceBase>(Visual))
+			if(ACCPieceBase* Piece = Cast<ACCPieceBase>(LocalAction.RelatedActors[i]))
 			{
-				Piece->DestroyPiece();
+				if(Piece->InitilizationProperties.IsPreview)
+				{
+					Piece->DestroyPiece();
+					LocalAction.RelatedActors.RemoveAt(i);
+				}
+				else
+				{
+					Piece->SetActorHiddenInGame(false);
+					Piece->SetActorEnableCollision(true);
+					DEBUG_ERROR("TRYING TO DESTROY NON PREVIEW ELEMENT");
+				}
 			}
 		}
 	}
@@ -153,12 +168,12 @@ void ACCPlayerPawn::DrawCard()
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 {
-	if(CurrentSelectedCardIndex == -1)
+	if(!IsValid(CurrentSelectedCardIndex))
 	{
 		DEBUG_ERROR("TRY TO PLAY WHILE NO CARD SELECTED");
 		return;
 	}
-	auto& Card = HandComponent->Cards[CurrentSelectedCardIndex];
+	auto Card = CurrentSelectedCardIndex;
 	Card->UnSelect(this);
 	Card->Play(this);
 	PlayedCards.Add(Card);
@@ -166,14 +181,14 @@ void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
 {
-	if(CurrentSelectedCardIndex == -1 || !HandComponent->Cards[CurrentSelectedCardIndex]->IsCore)
+	if(!IsValid(CurrentSelectedCardIndex) || !CurrentSelectedCardIndex->IsCore)
 	{
 		return;
 	}
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	FOnCardMovementEnd CardMovementEnd;
-	DiscardCardIndex = GetCurrentSelectedCardIndex();
-	SetCurrentSelectedCardIndex(-1);
+	DiscardCardIndex = GetCurrentSelectedCardIndex()->CardIndex;
+	SetCurrentSelectedCardIndex(nullptr);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::RemoveSelectedCardFromHand);
 	CardMovementEnd.AddDynamic(this, &ACCPlayerPawn::DrawMovementCard);
 	HandComponent->DiscardCard(DiscardCardIndex, CardMovementEnd, MovementDeckComponent->DeckPosition);
@@ -299,15 +314,16 @@ void ACCPlayerPawn::UnPossessed()
 	}
 }
 
-void ACCPlayerPawn::SetCurrentSelectedCardIndex(int32 InSelectedCardIndex)
+void ACCPlayerPawn::SetCurrentSelectedCardIndex(ACCCard* InSelectedCard)
 {
-	if(CurrentSelectedCardIndex != InSelectedCardIndex && IsValid(SelectedUnit))
+	if(CurrentSelectedCardIndex != InSelectedCard && IsValid(SelectedUnit))
 	{
 		SelectedUnit->UnSelect();
 		SelectedUnit = nullptr;
 	}
-	CurrentSelectedCardIndex = InSelectedCardIndex;
-	OnSelectedCardChange.Broadcast(CurrentSelectedCardIndex);
+	CurrentSelectedCardIndex = InSelectedCard;
+	int CardIndexTarget = IsValid(CurrentSelectedCardIndex) ? CurrentSelectedCardIndex->CardIndex : -1;
+	OnSelectedCardChange.Broadcast(CardIndexTarget);
 }
 
 void ACCPlayerPawn::SetSelectedUnit(ACCPieceBase* Unit)
@@ -336,9 +352,7 @@ void ACCPlayerPawn::UndoAction()
 		BPE_OnUndoAction();
 		ACCCard* Card = PlayedCards.Last();
 		ECardType CardType = Card->CardRowHandle.GetRow<FCardData>("")->CardType;
-		//CurrentSelectedCardIndex = -1;
 		Card->Unplay(this);
-		Card->CardMovement->StartMovement(Card->CardIndex, HandComponent->GetCardNum());
 		if(!QueueOfPlayerActions.Last().MovementData.IsEmpty())
 		{
 			ACCTileUnit* Unit = Cast<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->GetTile(QueueOfPlayerActions.Last().TargetCoord)->GetPieces().Last());
@@ -371,6 +385,11 @@ void ACCPlayerPawn::UndoAction()
 			
 		PlayedCards.Pop();
 		RemoveLastPlayerAction();
+		if(Card == CurrentSelectedCardIndex)
+		{
+			CurrentSelectedCardIndex = nullptr;
+			GetController<ACCPlayerController>()->CurrentSelectedElement = nullptr;
+		}
 		QueueOfLocalActionElements.Pop();
 	}
 }

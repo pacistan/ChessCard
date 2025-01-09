@@ -153,7 +153,7 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 
 void ACCCard::Initialize()
 {
-	ConstructCard(*CardRowHandle.GetRow<FCardData>( GetNameSafe(this)));
+	BPE_ConstructCard(CardRowHandle);
 }
 
 void ACCCard::SpawnLocalUnit(ACCTile* Tile)
@@ -260,7 +260,7 @@ void ACCCard::Select(ACCPlayerPawn* Pawn)
 	else
 	{
 		CurrentCardState = ECardState::Selected;
-		Pawn->SetCurrentSelectedCardIndex(CardIndex);
+		Pawn->SetCurrentSelectedCardIndex(this);
 		BPE_Select(true);
 	}
 	
@@ -276,7 +276,7 @@ void ACCCard::UnSelect(ACCPlayerPawn* Pawn)
 		return;
 	}
 	CurrentCardState = CurrentCardState ==  ECardState::Played ? ECardState::Played : ECardState::Inactive;
-	Pawn->SetCurrentSelectedCardIndex(-1);
+	Pawn->SetCurrentSelectedCardIndex(nullptr);
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum(), FOnCardMovementEnd(), false, 0, false);
 	UpdateMaterials();
 	OnSelectCardEffects(false, Pawn);

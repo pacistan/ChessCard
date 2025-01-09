@@ -92,9 +92,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Play(ACCPlayerPawn* Pawn);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void ConstructCard(FCardData RowHandle);
-
 	UFUNCTION()
 	void Initialize();
 	
@@ -162,4 +159,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_Select(bool ToSelect);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_ConstructCard(FDataTableRowHandle RowHandle);
 };

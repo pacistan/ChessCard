@@ -79,7 +79,7 @@ void ACCPieceBase::InternalInit()
 		break;
 	}
 	
-	BPE_ConstructTile(*CardDataRowHandle.GetRow<FCardData>(""), GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->GetMaterialFromMap(TileType));
+	BPE_ConstructTile(CardDataRowHandle, GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->GetMaterialFromMap(TileType), InitilizationProperties.IsPreview);
 	SetActorRotation(FRotator());
 
 	//SetActorScale3D(FVector::One());
@@ -165,6 +165,13 @@ void ACCPieceBase::OnRep_InitProperties()
 	{
 		InternalInit();
 	}
+}
+
+void ACCPieceBase::RPC_SetVisible_Implementation()
+{
+	DEBUG_ERROR("SET VISIBLE");
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
 }
 
 void ACCPieceBase::UnSelect()

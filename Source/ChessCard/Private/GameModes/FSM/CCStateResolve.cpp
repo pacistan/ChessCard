@@ -21,11 +21,18 @@ void UCCStateResolve::OnEnterState()
 	FTileTypeDelegate TileTypeDelegate;
 	auto Lambda = [](ACCTile* Tile)
 	{
-		for(const auto& Piece : Tile->GetPieces())
+		auto Pieces = Tile->GetPieces();
+		for(int i = 0; i < Pieces.Num() - 1; i++)
 		{
-			if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
+			if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Pieces[i]))
 			{
+				DEBUG_LOG("Unit Unstunned Name : %s", *Unit->GetName());
 				Unit->SetIsStunned(false);
+			}
+			if(i == 0)
+			{
+				Pieces[0]->RPC_SetVisible();
+				Pieces[0]->SetActorHiddenInGame(false);
 			}
 		}	
 	};

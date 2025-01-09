@@ -235,6 +235,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 						FPlayerActionData NewActionData = FPlayerActionData();
 						NewActionData.TargetCoord = FIntPoint(-1, -1);
 						GameMode->PlayerActions[CCPlayerState].Insert(NewActionData, 0);
+						CCPlayerState->GetPawn<ACCPlayerPawn>()->RPC_AddPlayerActionClientElement(TArray<AActor*>());
 					}
 				}
 			}

@@ -117,7 +117,7 @@ private:
 
 	// -1 = No card Selected
 	UPROPERTY()
-	int32 CurrentSelectedCardIndex;
+	TObjectPtr<ACCCard> CurrentSelectedCardIndex;
 
 	UPROPERTY()
 	TObjectPtr<ACCPieceBase> SelectedUnit;
@@ -247,10 +247,10 @@ public:
 	/* ------------------------------------------ GETTERS/SETTERS -------------------------------------------*/
 public:
 	UFUNCTION(BlueprintGetter)
-	int32 GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
+	ACCCard* GetCurrentSelectedCardIndex()const {return CurrentSelectedCardIndex;}
 	
 	UFUNCTION(BlueprintSetter)
-	void SetCurrentSelectedCardIndex(int32 InSelectedCardIndex);
+	void SetCurrentSelectedCardIndex(ACCCard* InSelectedCard);
 
 	UFUNCTION(BlueprintGetter)
 	UCCHandComponent* GetHandComponent()const {return HandComponent;}

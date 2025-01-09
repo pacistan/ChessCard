@@ -138,8 +138,11 @@ public:
 	UFUNCTION()
 	void OnRep_InitProperties();
 
+	UFUNCTION(Client, Unreliable)
+	void RPC_SetVisible();
+	
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPE_ConstructTile(FCardData Card, UMaterialInterface* SocleMaterial);
+	void BPE_ConstructTile(FDataTableRowHandle Card, UMaterialInterface* SocleMaterial, bool IsPreview);
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

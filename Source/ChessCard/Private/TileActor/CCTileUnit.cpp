@@ -41,7 +41,7 @@ FIntPoint ACCTileUnit::GetTravelRelativeCoordinates(TArray<FPatternMapEndPoint>&
 void ACCTileUnit::SetIsStunned(bool InIsStunned, bool IsServerCall)
 {
 	TArray<TSoftObjectPtr<UMaterialInterface>> Materials;
-	BPE_OnStunned(IsServerCall, InIsStunned, *CardDataRowHandle.GetRow<FCardData>(""));
+	BPE_OnStunned(IsServerCall, InIsStunned, CardDataRowHandle);
 	IsStunned = InIsStunned;
 }
 
@@ -63,7 +63,7 @@ void ACCTileUnit::SetTargetMap()
 void ACCTileUnit::HighlightDestinationTiles(ACCPlayerPawn* Pawn)
 {
 	auto GridManager = GetGridManager(GetWorld());
-	LinkedCard = Pawn->GetHandComponent()->Cards[Pawn->GetCurrentSelectedCardIndex()];
+	LinkedCard = Pawn->GetCurrentSelectedCardIndex();
 	check(LinkedCard);
 	check(GridManager);
 	check(Pawn);
@@ -328,7 +328,7 @@ void ACCTileUnit::Click(ACCPlayerPawn* Player)
 		TArray<AActor*> MovementVisualActors;
 		if(CardDataRowHandle.GetRow<FCardData>("")->EffectType == EEffectType::Embrasement)
 		{
-			LinkedCard = Player->GetHandComponent()->Cards[Player->GetCurrentSelectedCardIndex()];
+			LinkedCard = Player->GetCurrentSelectedCardIndex();
 			FActorSpawnParameters SpawnParameters;
 			for(int i = -1; i <= 1; i++)
 			{
