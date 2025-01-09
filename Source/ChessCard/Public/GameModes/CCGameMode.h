@@ -111,6 +111,9 @@ public:
 	int GetNumOfPlayersNeeded() const { return NumOfPlayersNeeded; }
 
 	UFUNCTION(BlueprintCallable)
+	void SetNumOfPlayersNeeded(int InNumOfPlayersNeeded) { NumOfPlayersNeeded = InNumOfPlayersNeeded; }
+
+	UFUNCTION(BlueprintCallable)
 	float GetTimeOfPlanniningPhase() const { return TimeOfPlanniningPhase; }
 
 	TMap<ACCPlayerState*, TArray<FPlayerActionData>> GetPlayerActionsQueue() {return PlayerActions;}
