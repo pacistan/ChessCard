@@ -7,21 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fefaa15-863b-4baa-8ce3-67fda2368319" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Card/BP_TemplateCardTemp.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BPTemp_EffectPoint.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BPTemp_EffectPoint.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/TileUnits/BP_TileUnit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/LevelTest.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelTest.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Materials/M_TileMat_Player1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCEffectManagerComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/CCEffectManagerComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateResolve.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateResolve.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCPieceBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCPieceBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCUnitMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Private/TileActor/CCUnitMovementComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerStart.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/Player/CCPlayerStart.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCPieceBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ChessCard/Public/TileActor/CCPieceBase.h" afterDir="false" />
-    </list>
+    <list default="true" id="9fefaa15-863b-4baa-8ce3-67fda2368319" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -390,7 +376,7 @@
       <workItem from="1736241146792" duration="21107000" />
       <workItem from="1736378454701" duration="1641000" />
       <workItem from="1736381948636" duration="13169000" />
-      <workItem from="1736441324161" duration="3519000" />
+      <workItem from="1736441324161" duration="5212000" />
     </task>
     <servers />
   </component>
@@ -418,6 +404,11 @@
           <url>file://$PROJECT_DIR$/Source/ChessCard/Private/Grid/CCTile.cpp</url>
           <line>139</line>
           <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Source/ChessCard/Private/GameModes/FSM/CCStateResolve.cpp</url>
+          <line>67</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
