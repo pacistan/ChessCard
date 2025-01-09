@@ -93,14 +93,14 @@ void ACCPieceBase::CreateSpline(TArray<FVector> Positions, TArray<AActor*>& Acti
 	ACCSplineMeshActor* Spline = GetWorld()->SpawnActor<ACCSplineMeshActor>(SplineClass, Location, FRotator(), SpawnParams);
 	SplineComponent = Spline->SplineComponent;
 	ActionVisuals.Add(Spline);
-	ClearSpline();
+	//ClearSpline();
 	
 	SplineComponent->AddSplinePoint(GetActorLocation() / 2, ESplineCoordinateSpace::World);
 	SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	for (const auto& Position : Positions)
 	{
 		SplineComponent->AddSplinePoint(Position - GetActorLocation() / 2, ESplineCoordinateSpace::World);
-		SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
+		//SplineComponent->SetSplinePointType(SplineComponent->GetNumberOfSplinePoints() - 1, ESplinePointType::Linear);
 	}
 
 	SplineComponent->UpdateSpline();
@@ -119,7 +119,7 @@ void ACCPieceBase::SetSplinePoints()
 	}
 	
 	// Create a spline mesh component for each segment of the spline
-	for (int32 i = 0; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
+	for (int32 i = 2; i < SplineComponent->GetNumberOfSplinePoints() - 1; ++i)
 	{
 		USplineMeshComponent* SplineMeshComponent = NewObject<USplineMeshComponent>(SplineComponent);
 		SplineMeshComponent->RegisterComponent();
@@ -165,6 +165,11 @@ void ACCPieceBase::OnRep_InitProperties()
 	{
 		InternalInit();
 	}
+}
+
+void ACCPieceBase::MLC_OnDivineCounterChange_Implementation()
+{
+	BPE_OnDivineCounterChange();
 }
 
 void ACCPieceBase::RPC_SetVisible_Implementation()

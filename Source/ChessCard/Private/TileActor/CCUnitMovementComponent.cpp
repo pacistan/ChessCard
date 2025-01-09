@@ -60,7 +60,7 @@ void UCCUnitMovementComponent::StartMovement(FIntPoint InStartCoordinates, const
 		ProgressCoordinates += InAction.MovementData[i].Direction;
 		UnitMovementData.Add(GridManager->CoordinatesToPosition(ProgressCoordinates));
 		FVector DirectionalVector = FVector(InAction.MovementData[i].Direction.X, InAction.MovementData[i].Direction.Y, 0);
-		UnitRotationData.Add(UKismetMathLibrary::MakeRotFromXZ(DirectionalVector, FVector::UpVector));
+		UnitRotationData.Add(UKismetMathLibrary::MakeRotFromYZ(DirectionalVector, FVector::UpVector));
 		if(InAction.MovementData[i].MovementType == EMovementType::Stoppable)
 		{
 			break;

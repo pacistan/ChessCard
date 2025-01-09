@@ -30,6 +30,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 	{
 		ACCTileUnit* Unit = Cast<ACCTileUnit>(InPiece);
 		Unit->DivineAngerCounter = 0;
+		Unit->MLC_OnDivineCounterChange();
 	}
 	switch(CardData.EffectType)
 	{

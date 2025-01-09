@@ -64,6 +64,7 @@ void UCCStateResolve::OnExitState()
 				if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
 				{
 					Unit->DivineAngerCounter++;
+					Unit->MLC_OnDivineCounterChange();
 					Unit->IsMoved = false;
 					if(Tile->GetTileType() == ETileType::ScoreTile)
 					{

@@ -8,7 +8,7 @@
 
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStartClaimed, AController*, ClaimingController);
 
-UENUM()
+UENUM(BlueprintType)
 enum class ETeam : uint8
 {
 	None   UMETA(DisplayName = "None"), 

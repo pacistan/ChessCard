@@ -88,7 +88,7 @@ public:
 	UPROPERTY()
 	FDataTableRowHandle CardDataRowHandle;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	ETeam Team;
 
 	UPROPERTY()
@@ -140,6 +140,9 @@ public:
 
 	UFUNCTION(Client, Unreliable)
 	void RPC_SetVisible();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MLC_OnDivineCounterChange();
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_ConstructTile(FDataTableRowHandle Card, UMaterialInterface* SocleMaterial, bool IsPreview);
@@ -162,4 +165,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnUnitDestroy(bool ActivateEffects);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnDivineCounterChange();
 };
