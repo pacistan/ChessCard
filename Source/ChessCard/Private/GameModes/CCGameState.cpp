@@ -3,6 +3,7 @@
 #include "Components/AudioComponent.h"
 #include "Engine/PlayerStartPIE.h"
 #include "GameModes/CCEffectManagerComponent.h"
+#include "GameModes/CCGameMode.h"
 #include "Macro/CCLogMacro.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
@@ -27,6 +28,12 @@ void ACCGameState::BeginPlay()
 	Super::BeginPlay();
 	GridManager = Cast<ACCGridManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ACCGridManager::StaticClass()));
 	BPE_StartGame();
+	
+	if (HasAuthority()) {
+		if (ACCGameMode* GameMode = Cast<ACCGameMode>(GetWorld()->GetAuthGameMode())) {
+			MaxTimeOfPlanniningPhase = GameMode->GetTimeOfPlanniningPhase();
+		}
+	}
 }
 
 bool ACCGameState::AddPlayerController(ACCPlayerController* PlayerController)
@@ -67,7 +74,7 @@ void ACCGameState::InitScoreArray()
 
 void ACCGameState::OnRep_CurrentTimeOfPlanniningPhase()
 {
-	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
+	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase, MaxTimeOfPlanniningPhase);
 }
 
 void ACCGameState::OnRep_CurrentState()
@@ -85,6 +92,7 @@ void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(ACCGameState, GridManager);
 	DOREPLIFETIME(ACCGameState, CurrentTimeOfPlanniningPhase);
+	DOREPLIFETIME(ACCGameState, MaxTimeOfPlanniningPhase);
 	DOREPLIFETIME(ACCGameState, CurrentState);
 	DOREPLIFETIME(ACCGameState, PlayerScore);
 	
@@ -106,7 +114,7 @@ ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
 void ACCGameState::SetCurrentTimeOfPlanniningPhase(float InCurrentTimeOfPlanniningPhase)
 {
 	CurrentTimeOfPlanniningPhase = InCurrentTimeOfPlanniningPhase;
-	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase);
+	OnCurrentTimeOfPlanniningPhaseChange.Broadcast(CurrentTimeOfPlanniningPhase, MaxTimeOfPlanniningPhase);
 }
 
 void ACCGameState::SetCurrentState(EGameState InCurrentState)

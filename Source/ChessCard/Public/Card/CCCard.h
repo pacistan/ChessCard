@@ -122,6 +122,9 @@ public:
 	virtual void StartHover(ACCPlayerPawn* Pawn) override;
 	
 	virtual void StopHover(ACCPlayerPawn* Pawn) override;
+
+	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle) override;
+	
 	void Unplay(ACCPlayerPawn* Pawn);
 
 	virtual void Select(ACCPlayerPawn* Pawn) override;

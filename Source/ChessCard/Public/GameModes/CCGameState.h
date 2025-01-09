@@ -24,7 +24,7 @@ struct FPlayerScore
 	TArray<int> Score;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCurrentTimeOfPlanniningPhaseChange, float, CurrentTimeOfPlanniningPhase, float, MaxTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameStateChange, EGameState, CurrentState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdate, FPlayerScore, Score); 
 
@@ -51,6 +51,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, ReplicatedUsing = OnRep_CurrentTimeOfPlanniningPhase)
 	float CurrentTimeOfPlanniningPhase = 60.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	float MaxTimeOfPlanniningPhase = 60.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, ReplicatedUsing = OnRep_Score)
 	FPlayerScore PlayerScore;

@@ -1,5 +1,6 @@
 #include "GameModes/FSM/CCStatePlanification.h"
 
+#include "Components/SplineComponent.h"
 #include "GameModes/CCGameMode.h"
 #include "GameModes/CCGameState.h"
 #include "GameModes/FSM/CCFSM.h"
@@ -44,6 +45,7 @@ void UCCStatePlanification::OnStateTick(float DeltaTime)
 
 void UCCStatePlanification::OnExitState()
 {
+	GameState->SetCurrentTimeOfPlanniningPhase(GameMode->GetTimeOfPlanniningPhase());
 	// Ask all players to send their queue of actions to the server
 	TArray<ACCPlayerPawn*> Players = GameMode->GetPlayerPawns();
 	for(auto Player : Players) {
