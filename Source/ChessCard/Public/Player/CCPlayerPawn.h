@@ -153,6 +153,8 @@ public:
 	UPROPERTY()
 	int DiscardCardIndex;
 
+	UPROPERTY()
+	TArray<TObjectPtr<ACCPieceBase>> NotBlueprintHiddenPieces;
 	
 public:
 	UPROPERTY()

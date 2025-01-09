@@ -102,6 +102,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CC|SPLINE")
 	TSubclassOf<ACCSplineMeshActor> SplineClass;
+
+	UPROPERTY()
+	bool bIsPreview;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CC|SPLINE")
 	UStaticMesh* SplineMesh;
@@ -146,6 +149,9 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_ConstructTile(FDataTableRowHandle Card, UMaterialInterface* SocleMaterial, bool IsPreview);
+
+	UFUNCTION()
+	bool GetIsPreview(){return bIsPreview;};
 	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

@@ -167,6 +167,10 @@ void ACCCard::SpawnLocalUnit(ACCTile* Tile)
 	{
 		Tile->GetPieces().Last()->SetActorHiddenInGame(true);
 		Tile->GetPieces().Last()->SetActorEnableCollision(false);
+		if(!Tile->GetPieces().Last()->GetIsPreview())
+		{
+			OwningPawn->NotBlueprintHiddenPieces.Add(Tile->GetPieces().Last());
+		}
 	}
 	
 	ACCTileUnit* Unit =  GetWorld()->SpawnActor<ACCTileUnit>(GetWorld()->GetGameState<ACCGameState>()->PieceClass, UnitPosition, UnitRotation, UnitSpawnParams);

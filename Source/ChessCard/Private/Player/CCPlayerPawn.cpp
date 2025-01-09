@@ -90,6 +90,16 @@ void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 			}
 		}
 	}
+
+	for(auto Piece : NotBlueprintHiddenPieces)
+	{
+		Piece->SetActorHiddenInGame(false);
+		Piece->SetActorEnableCollision(true);
+		if(Piece->GetIsPreview())
+		{
+			DEBUG_LOG("");
+		}
+	}
 }
 
 void ACCPlayerPawn::SRV_SendQueueOfAction_Implementation(const TArray<FPlayerActionData>& ActionData)
@@ -291,7 +301,6 @@ void ACCPlayerPawn::ClearPlayerAction_Implementation()
 
 void ACCPlayerPawn::AddPlayerHud_Implementation()
 {
-	DEBUG_LOG("TEST : %s for %s", IsPlayerControlled() ? TEXT("True") :TEXT("False"), *GetName());
 	if(PLayerHudClass) {
 		PlayerHud = CreateWidget(GetWorld(), PLayerHudClass);
 		if(PlayerHud) {

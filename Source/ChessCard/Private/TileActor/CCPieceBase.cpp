@@ -35,14 +35,16 @@ void ACCPieceBase::DestroyPiece()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
 	BPE_OnUnitDestroy(InitilizationProperties.IsPreview);
+	if(!GetIsPreview())
+	{
+		DEBUG_LOG("");
+	}
 	Destroy();
 }
 
 void ACCPieceBase::MLC_DestroyPiece_Implementation()
 {
-	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
-	BPE_OnUnitDestroy(InitilizationProperties.IsPreview);
-	Destroy();
+	DestroyPiece();
 }
 
 void ACCPieceBase::InitUnit(const FInitilizationProperties& InInitilizationProperties)
@@ -50,6 +52,7 @@ void ACCPieceBase::InitUnit(const FInitilizationProperties& InInitilizationPrope
 	InitilizationProperties = InInitilizationProperties;
 	IsInitialized = true;
 	InternalInit();
+	
 }
 
 void ACCPieceBase::InternalInit()
@@ -60,6 +63,7 @@ void ACCPieceBase::InternalInit()
 	UnitGuid = InitilizationProperties.InstanceID;
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->AddPiece(this);
 	IsInitialized = true;
+	bIsPreview = InitilizationProperties.IsPreview;
 
 	ETileType TileType = ETileType::Player1;
 	switch(Team)
@@ -78,7 +82,6 @@ void ACCPieceBase::InternalInit()
 		TileType = ETileType::Player4;
 		break;
 	}
-	
 	BPE_ConstructTile(CardDataRowHandle, GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->GetMaterialFromMap(TileType), InitilizationProperties.IsPreview);
 	SetActorRotation(FRotator());
 
