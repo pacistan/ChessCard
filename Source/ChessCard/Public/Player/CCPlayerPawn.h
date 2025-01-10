@@ -271,4 +271,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnUndoAction();
+
+	UFUNCTION(Client, Unreliable)
+	void RPC_ActivateVictoryScreen(ETeam VictoryTeam);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnVictorySet(ETeam VictoryTeam);
 };

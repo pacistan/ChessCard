@@ -71,6 +71,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACCPieceBase> PieceClass;
+
+	UPROPERTY()
+	bool IsGameOver;
 	
 	/* ------------------------------------------ FUNCTIONS -------------------------------------------*/
 public:
@@ -107,9 +110,10 @@ public:
 	UFUNCTION()
 	int GetIndexOfPlayerController(ACCPlayerController* PlayerController) const {return PlayerControllers.Find(PlayerController);}
 
-	UFUNCTION()
-	ACCPlayerState* GetPlayerStateOfTeam(ETeam Team) const;
+	UFUNCTION(BlueprintCallable)
+	ACCPlayerState* GetPlayerStateOfTeam(ETeam Team);
 
+	
 	UFUNCTION()
 	void SetCurrentTimeOfPlanniningPhase(float InCurrentTimeOfPlanniningPhase);
 
@@ -130,4 +134,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnPieceEndMove(EEffectType EffectType, bool IsDivineAnger);
+
+	UFUNCTION()
+	FPlayerScore GetScores(){return PlayerScore;}
 };

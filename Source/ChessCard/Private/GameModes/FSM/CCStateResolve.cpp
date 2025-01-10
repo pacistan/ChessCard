@@ -109,6 +109,27 @@ void UCCStateResolve::OnExitState()
 		};
 		ScoreTileDelegate.BindLambda(LambdaScore);
 		GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::ScoreTile, ScoreTileDelegate);
+
+		FPlayerScore PScore = GameState->GetScores();
+		TArray<ACCPlayerState*> WinningPStates;
+		for(int i = 0; i < PScore.Score.Num(); i++)
+		{
+			if(PScore.Score[i] >= GameMode->NumberOfPointsNeededForVictory)
+			{
+				WinningPStates.Add(Cast<ACCPlayerState>(PScore.PlayerStates[i]));
+			}
+		}
+
+		if(!WinningPStates.IsEmpty())
+		{
+			GameState->IsGameOver = true;
+			auto WinningState = WinningPStates[FMath::RandRange(0, WinningPStates.Num() - 1)];
+			for(auto Pawn : GameMode->GetPlayerPawns())
+			{
+				Pawn->RPC_ActivateVictoryScreen(WinningState->GetTeam());
+			}
+		}
+		
 	}
 }
 

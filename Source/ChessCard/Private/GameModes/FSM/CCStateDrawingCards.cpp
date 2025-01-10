@@ -19,6 +19,8 @@ void UCCStateDrawingCards::Initialization()
 void UCCStateDrawingCards::OnEnterState()
 {
 	Super::OnEnterState();
+
+	if(GameState->IsGameOver) return;
 	
 	for(auto Player : Players)
 	{

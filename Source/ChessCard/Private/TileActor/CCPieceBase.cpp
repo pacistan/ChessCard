@@ -30,12 +30,9 @@ void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void ACCPieceBase::DestroyPiece()
 {
 	GetGridManager(GetWorld())->GetTile(CurrentCoordinates)->RemovePiece(this);
-	BPE_OnUnitDestroy(InitilizationProperties.IsPreview);
-	if(!GetIsPreview())
-	{
-		DEBUG_LOG("");
-	}
-	Destroy();
+	BPE_OnUnitDestroy(GetIsPreview());
+	GetWorldTimerManager().SetTimerForNextTick([this](){Destroy();});
+	//Destroy();
 }
 
 void ACCPieceBase::MLC_DestroyPiece_Implementation()
