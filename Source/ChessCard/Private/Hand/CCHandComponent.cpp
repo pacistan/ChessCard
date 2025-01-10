@@ -54,8 +54,8 @@ FDataTableRowHandle UCCHandComponent::RemoveCardFromHand(int InCardIndex)
 	FDataTableRowHandle RowHandle = Card->CardRowHandle;
 
 	Card->Destroy();
-	return RowHandle;
 	Card->BPE_OnDiscardCard();
+	return RowHandle;
 }
 
 void UCCHandComponent::BeginPlay()

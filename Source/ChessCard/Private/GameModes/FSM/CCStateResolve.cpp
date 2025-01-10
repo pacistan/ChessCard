@@ -18,8 +18,16 @@ void UCCStateResolve::OnEnterState()
 	Super::OnEnterState();
 	AreAllPlayerQueuesSent = false;
 
+	TArray<AActor*> Units;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCPieceBase::StaticClass(), Units);
+	for(const auto& Unit : Units)
+	{
+		auto Piece = Cast<ACCTileUnit>(Unit);
+		Piece->SetIsStunned(false);
+	}
+	
 	//UnStun Units
-	FTileTypeDelegate TileTypeDelegate;
+	/*FTileTypeDelegate TileTypeDelegate;
 	auto Lambda = [](ACCTile* Tile)
 	{
 		auto Pieces = Tile->GetPieces();
@@ -38,7 +46,7 @@ void UCCStateResolve::OnEnterState()
 		}	
 	};
 	TileTypeDelegate.BindLambda(Lambda);
-	GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+	GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);*/
 }
 
 void UCCStateResolve::OnStateTick(float DeltaTime)
@@ -75,15 +83,32 @@ void UCCStateResolve::OnExitState()
 					Unit->DivineAngerCounter++;
 					Unit->MLC_OnDivineCounterChange();
 					Unit->IsMoved = false;
-					if(Tile->GetTileType() == ETileType::ScoreTile)
+					//if(Tile->GetTileType() == ETileType::ScoreTile)
+					//{
+					//	GameState->AddPointToPlayer(GameState->GetPlayerStateOfTeam(Unit->Team));
+					//}
+				}
+			}	
+		};
+		TileTypeDelegate.BindLambda(Lambda);
+		GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+
+		FTileTypeDelegate ScoreTileDelegate;
+		auto LambdaScore = [this](ACCTile* Tile)
+		{
+			for(const auto& Piece : Tile->GetPieces())
+			{
+				if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
+				{
+ 					if(Tile->GetTileType() == ETileType::ScoreTile)
 					{
 						GameState->AddPointToPlayer(GameState->GetPlayerStateOfTeam(Unit->Team));
 					}
 				}
 			}	
 		};
-		TileTypeDelegate.BindLambda(Lambda);
-		GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::Unit, TileTypeDelegate);
+		ScoreTileDelegate.BindLambda(LambdaScore);
+		GameState->GetGridManager()->ApplyLambdaToTileType(ETileType::ScoreTile, ScoreTileDelegate);
 	}
 }
 
@@ -254,9 +279,10 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 
 		if(ACCTile* PieceTile = GameState->GetGridManager()->GetTile(LastPiece->CurrentCoordinates))
 		{
-			if(PieceTile->GetTileType() == ETileType::BonusTile)
+			if(PieceTile->GetTileType() == ETileType::BonusTile  && !SlaughterTiles.Contains(PieceTile))
 			{
 				GameMode->BonusTileMap[PieceTile] = LastPiece->GetTeam();
+				PieceTile->MLC_UpdateBonusTileColor(LastPiece->GetTeam());
 			}
 		}
 

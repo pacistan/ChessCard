@@ -142,7 +142,7 @@ void ACCCard::Play(ACCPlayerPawn* Pawn)
 {
 	CurrentCardState = ECardState::Played;
 	UpdateMaterials();
-	BPE_OnPlay(CardRowHandle.GetRow<FCardData>("")->CardType == ECardType::Movement);
+	BPE_OnPlay(CardRowHandle.GetRow<FCardData>("")->CardType == ECardType::Movement, Pawn->PlayedCards.Num() + 1);
 	if(!CardMovement->IsInterruptable)
 	{
 		return;
@@ -250,6 +250,7 @@ void ACCCard::Unplay(ACCPlayerPawn* Pawn)
 	
 	CurrentCardState = ECardState::Inactive;
 	CardMovement->StartMovement(CardIndex, Pawn->GetHandComponent()->GetCardNum());
+	BPE_OnUnplay();
 	UpdateMaterials();
 }
 

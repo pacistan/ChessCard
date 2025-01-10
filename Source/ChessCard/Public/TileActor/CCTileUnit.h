@@ -55,9 +55,11 @@ public:
 	UPROPERTY()
 	bool IsHighlighted;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, VisibleAnywhere)
 	bool IsMoved;
 
+	virtual void OnDivine() override;
+	
 	UPROPERTY()
 	TObjectPtr<ACCCard> LinkedCard;
 
