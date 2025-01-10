@@ -57,6 +57,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float TimerBetweenActions = 1.5f;
+
+	UPROPERTY(EditAnywhere)
+	int NumberOfPointsNeededForVictory;
 	
 public:
 	UPROPERTY(BlueprintAssignable)

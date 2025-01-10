@@ -98,7 +98,7 @@ void ACCGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	
 }
 
-ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) const
+ACCPlayerState* ACCGameState::GetPlayerStateOfTeam(ETeam Team) 
 {
 	for (auto PlayerState : PlayerArray) {
 		if (ACCPlayerState* CCPlayerState = Cast<ACCPlayerState>(PlayerState)) {

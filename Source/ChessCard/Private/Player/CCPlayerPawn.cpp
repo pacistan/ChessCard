@@ -416,3 +416,8 @@ void ACCPlayerPawn::UndoAction()
 		QueueOfLocalActionElements.Pop();
 	}
 }
+
+void ACCPlayerPawn::RPC_ActivateVictoryScreen_Implementation(ETeam VictoryTeam)
+{
+	BPE_OnVictorySet(VictoryTeam);
+}
