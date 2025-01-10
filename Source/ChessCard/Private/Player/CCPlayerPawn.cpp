@@ -58,9 +58,9 @@ void ACCPlayerPawn::RPC_SendQueueOfAction_Implementation()
 
 	GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 	
-	if(IsValid(CurrentSelectedCardIndex))
+	if(IsValid(CurrentSelectedCard))
 	{
-		CurrentSelectedCardIndex->UnSelect(this);
+		CurrentSelectedCard->UnSelect(this);
 	}
 
 	for(auto Card : HandComponent->Cards)
@@ -178,12 +178,12 @@ void ACCPlayerPawn::DrawCard()
 
 void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 {
-	if(!IsValid(CurrentSelectedCardIndex))
+	if(!IsValid(CurrentSelectedCard))
 	{
 		DEBUG_ERROR("TRY TO PLAY WHILE NO CARD SELECTED");
 		return;
 	}
-	auto Card = CurrentSelectedCardIndex;
+	auto Card = CurrentSelectedCard;
 	Card->UnSelect(this);
 	Card->Play(this);
 	PlayedCards.Add(Card);
@@ -191,7 +191,7 @@ void ACCPlayerPawn::PlaySelectedCard(ACCTile* Tile)
 
 void ACCPlayerPawn::OnGetMovementCardTrigger()
 {
-	if(!IsValid(CurrentSelectedCardIndex) || !CurrentSelectedCardIndex->IsCore)
+	if(!IsValid(CurrentSelectedCard) || !CurrentSelectedCard->IsCore)
 	{
 		return;
 	}
@@ -332,13 +332,13 @@ void ACCPlayerPawn::UnPossessed()
 
 void ACCPlayerPawn::SetCurrentSelectedCardIndex(ACCCard* InSelectedCard)
 {
-	if(CurrentSelectedCardIndex != InSelectedCard && IsValid(SelectedUnit))
+	if(CurrentSelectedCard != InSelectedCard && IsValid(SelectedUnit))
 	{
 		SelectedUnit->UnSelect();
 		SelectedUnit = nullptr;
 	}
-	CurrentSelectedCardIndex = InSelectedCard;
-	int CardIndexTarget = IsValid(CurrentSelectedCardIndex) ? CurrentSelectedCardIndex->CardIndex : -1;
+	CurrentSelectedCard = InSelectedCard;
+	int CardIndexTarget = IsValid(CurrentSelectedCard) ? CurrentSelectedCard->CardIndex : -1;
 	OnSelectedCardChange.Broadcast(CardIndexTarget);
 }
 
@@ -401,11 +401,10 @@ void ACCPlayerPawn::UndoAction()
 			
 		PlayedCards.Pop();
 		RemoveLastPlayerAction();
-		if(Card == CurrentSelectedCardIndex)
-		{
-			CurrentSelectedCardIndex = nullptr;
-			GetController<ACCPlayerController>()->CurrentSelectedElement = nullptr;
-		}
+
+		SetCurrentSelectedCardIndex(nullptr);
+		GetController<ACCPlayerController>()->CurrentSelectedElement = nullptr;
+		GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 		QueueOfLocalActionElements.Pop();
 	}
 }

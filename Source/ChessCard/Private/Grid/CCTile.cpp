@@ -156,6 +156,11 @@ void ACCTile::MLC_AddPiece_Implementation(ACCPieceBase* Piece)
 	AddPiece(Piece); 
 }
 
+void ACCTile::MLC_PlayEffectParticles_Implementation()
+{
+	BPE_UnitEffect();
+}
+
 void ACCTile::RemovePiece(ACCPieceBase* Piece)
 {
 	if(HasAuthority())

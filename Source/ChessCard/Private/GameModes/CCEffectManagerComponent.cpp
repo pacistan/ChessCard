@@ -41,6 +41,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 			{
 				if(IsValid(InEffectTiles[0]))
 				{
+					InEffectTiles[0]->MLC_PlayEffectParticles();
 					if(!InEffectTiles[0]->GetPieces().IsEmpty())
 					{
 						auto Piece = InEffectTiles[0]->GetPieces()[0];
@@ -93,6 +94,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		{
 			if(!InEffectTiles.IsEmpty() && InEffectTiles[0]->IsAccessibleForTeam(InPiece->Team))
 			{
+				InEffectTiles[0]->MLC_PlayEffectParticles();
 				auto Pieces = InEffectTiles[0]->GetPieces();
 				for(int k = Pieces.Num() - 1; k >= 0; k--)
 				{
@@ -115,9 +117,10 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 	case EEffectType::Minotaur:
 		if(InTriggerType == EEffectTriggerType::OnMove && IsDivineAnger)
 		{
-			DEBUG_WARNING("MINOTAUR EFFECT");
+			
 			for(auto Tile : InEffectTiles)
 			{
+				Tile->MLC_PlayEffectParticles();
 				auto Pieces = Tile->GetPieces();
 				for(int i = Pieces.Num() - 1; i >= 0; i--)
 				{
@@ -159,6 +162,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		{
 			for(auto Tile : InEffectTiles)
 			{
+				Tile->MLC_PlayEffectParticles();
 				if(!Tile->GetPieces().IsEmpty())
 				{
 					for(auto Piece : Tile->GetPieces())
@@ -180,8 +184,9 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 						int X = InPiece->CurrentCoordinates.X + i;
 						int Y = InPiece->CurrentCoordinates.Y + j;
 						ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
-						if(IsValid(Tile))
+						if(IsValid(Tile) && Tile->GetTileType() != ETileType::Disabled)
 						{
+							Tile->MLC_PlayEffectParticles();
 							for(auto Piece : Tile->GetPieces())
 							{
 								if(ACCTileUnit* Unit = Cast<ACCTileUnit>(Piece))
@@ -260,6 +265,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		{
 			for(auto Tile : InEffectTiles)
 			{
+				Tile->MLC_PlayEffectParticles();
 				if(!Tile->GetPieces().IsEmpty())
 				{
 					ACCPieceBase* Piece = Tile->GetPieces()[0];
@@ -282,6 +288,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 		{
 			if(!InEffectTiles.IsEmpty() && IsValid(InEffectTiles[0]))
 			{
+				InEffectTiles[0]->MLC_PlayEffectParticles();
 				if(!InEffectTiles[0]->GetPieces().IsEmpty())
 				{
 					ACCPieceBase* Piece = InEffectTiles[0]->GetPieces()[0];
@@ -300,8 +307,9 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 						int X = InPiece->CurrentCoordinates.X + i;
 						int Y = InPiece->CurrentCoordinates.Y + j;
 						ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
-						if(IsValid(Tile))
+						if(IsValid(Tile)&&Tile->GetTileType() != ETileType::Disabled)
 						{
+							Tile->MLC_PlayEffectParticles();
 							if(!Tile->GetPieces().IsEmpty())
 							{
 								ACCPieceBase* Piece = Tile->GetPieces()[0];
@@ -327,8 +335,9 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 					int X = InPiece->CurrentCoordinates.X + i;
 					int Y = InPiece->CurrentCoordinates.Y + j;
 					ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
-					if(IsValid(Tile))
+					if(IsValid(Tile)&&Tile->GetTileType() != ETileType::Disabled)
 					{
+						InEffectTiles[0]->MLC_PlayEffectParticles();
 						auto Pieces = Tile->GetPieces();
 						if(!Pieces.IsEmpty())
 						{

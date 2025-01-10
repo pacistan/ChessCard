@@ -163,6 +163,9 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MLC_RemovePiece(ACCPieceBase* Piece);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MLC_PlayEffectParticles();
 	
 	UFUNCTION()
 	void RemovePiece(ACCPieceBase* Piece);
@@ -184,4 +187,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_OnClickTile();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_UnitEffect();
 };
