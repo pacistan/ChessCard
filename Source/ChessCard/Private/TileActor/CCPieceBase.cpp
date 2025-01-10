@@ -16,10 +16,6 @@ ACCPieceBase::ACCPieceBase(const FObjectInitializer& ObjectInitializer) : Super(
 {
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = MeshComponent;
-
-	EffectContainerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("EffectContainerWidget"));
-	EffectContainerWidget->SetupAttachment(RootComponent);
-	
 }
 
 void ACCPieceBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -52,6 +48,7 @@ void ACCPieceBase::InitUnit(const FInitilizationProperties& InInitilizationPrope
 	InitilizationProperties = InInitilizationProperties;
 	IsInitialized = true;
 	InternalInit();
+	SetupEffectContainerWidget(CardDataRowHandle);
 }
 
 void ACCPieceBase::InternalInit()

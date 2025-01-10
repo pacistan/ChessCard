@@ -235,9 +235,11 @@ void ACCCard::StopHover(ACCPlayerPawn* Pawn)
 	UpdateMaterials();
 }
 
-bool ACCCard::GetCardData(FDataTableRowHandle& OutRowHandle)
+bool ACCCard::GetCardData(FDataTableRowHandle& OutRowHandle, bool& outHasDivineCount, int& outCount)
 {
 	OutRowHandle = CardRowHandle;
+	outHasDivineCount = false;
+	outCount = 0;
 	return true;
 }
 

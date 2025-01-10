@@ -10,7 +10,6 @@
 #include "Card/CCCard.h"
 #include "CCTileUnit.generated.h"
 
-enum class ETeam : uint8;
 DECLARE_DYNAMIC_DELEGATE(FOnHoverUnitDelegate);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnClickUnitDelegate, ACCPlayerPawn*, Player);
 
@@ -124,7 +123,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void StartHover(ACCPlayerPawn* Player) override;
 	virtual void StopHover(ACCPlayerPawn* Player) override;
-	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle) override;
+	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle, bool& outHasDivineCount, int& outCount) override;
 	virtual void Click(ACCPlayerPawn* Player) override;
 	virtual void InternalInit() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

@@ -120,7 +120,7 @@ public:
 	
 	virtual void StopHover(ACCPlayerPawn* Pawn) override;
 
-	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle) override;
+	virtual bool GetCardData(FDataTableRowHandle& OutRowHandle, bool& outHasDivineCount, int& outCount) override;
 	
 	void Unplay(ACCPlayerPawn* Pawn);
 

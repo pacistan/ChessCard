@@ -305,9 +305,11 @@ void ACCTileUnit::StopHover(ACCPlayerPawn* Player)
 	}
 }
 
-bool ACCTileUnit::GetCardData(FDataTableRowHandle& OutRowHandle)
+bool ACCTileUnit::GetCardData(FDataTableRowHandle& OutRowHandle, bool& outHasDivineCount, int& outCount)
 {
 	OutRowHandle = CardDataRowHandle;
+	outHasDivineCount = true;
+	outCount = DivineAngerCounter;
 	return true;
 }
 
