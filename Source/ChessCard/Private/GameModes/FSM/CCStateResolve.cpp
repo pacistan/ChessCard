@@ -6,6 +6,7 @@
 #include "GameModes/FSM/CCStateDrawingCards.h"
 #include "Grid/CCGridManager.h"
 #include "Grid/CCTile.h"
+#include "Kismet/GameplayStatics.h"
 #include "Macro/CCLogMacro.h"
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCTileUnit.h"
@@ -56,6 +57,14 @@ void UCCStateResolve::OnExitState()
 
 	//Increment Divine Anger Counter
 	{
+		TArray<AActor*> Units;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCPieceBase::StaticClass(), Units);
+		for(const auto& Unit : Units)
+		{
+			auto Piece = Cast<ACCTileUnit>(Unit);
+			Piece->IsMoved = false;
+		}
+		
 		FTileTypeDelegate TileTypeDelegate;
 		auto Lambda = [this](ACCTile* Tile)
 		{
