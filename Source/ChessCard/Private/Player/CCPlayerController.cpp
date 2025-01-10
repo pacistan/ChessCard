@@ -7,6 +7,7 @@
 #include "Interfaces/Clickable.h"
 #include "Interfaces/Hoverable.h"
 #include "Interfaces/Selectable.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/CCPlayerPawn.h"
 #include "Player/CCPlayerState.h"
 
@@ -168,4 +169,9 @@ void ACCPlayerController::SetupInputComponent()
 	}
 }
 
+void ACCPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACCPlayerController, PlayerName);
+}
 

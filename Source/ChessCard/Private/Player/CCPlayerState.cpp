@@ -10,7 +10,6 @@
 
 ACCPlayerState::ACCPlayerState(const FObjectInitializer& ObjectInitializer) : Super (ObjectInitializer)
 {
-	
 }
 
 void ACCPlayerState::BeginPlay()
@@ -47,4 +46,5 @@ void ACCPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ACCPlayerState, Team);
 	DOREPLIFETIME(ACCPlayerState, bHasEndedTurn);
+	DOREPLIFETIME(ACCPlayerState, PlayerAvatar);
 }

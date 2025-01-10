@@ -121,7 +121,7 @@ AActor* ACCGameMode::ChoosePlayerStart_Implementation(AController* Player)
 void ACCGameMode::FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation)
 {
 	Super::FinishRestartPlayer(NewPlayer, StartRotation);
-	// OnPlayerInitialized.Broadcast(NewPlayer);
+	
 }
 
 void ACCGameMode::StartPlaySequence()
