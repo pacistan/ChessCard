@@ -13,7 +13,7 @@ class ACCPlayerPawn;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartGame);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClick);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShowCardInfo, FDataTableRowHandle, CardRowHandle);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnShowCardInfo, FDataTableRowHandle, CardRowHandle, int , Count);
 
 
 // TODO : Event Show Info Ui Card (CardInfo)

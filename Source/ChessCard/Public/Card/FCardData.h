@@ -7,7 +7,7 @@
 enum class EEffectType : uint8;
 struct FCardAbilities;
 
-UENUM()
+UENUM(BlueprintType)
 enum class ECardType : uint8
 {
 	Unit,

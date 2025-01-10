@@ -131,9 +131,10 @@ void ACCPlayerController::OnShowCardInfo()
 	// If Find Actor brodcast the event with the card data
 	if (HoverableActor != nullptr) {
 		FDataTableRowHandle CardRowHandle;
-		if (HoverableActor->GetCardData(CardRowHandle)) {
-			OnShowCardInfoEvent.Broadcast(CardRowHandle);
-			// TODO Activate the event for Hide the card info
+		bool bHasDivineCount;
+		int Count;
+		if (HoverableActor->GetCardData(CardRowHandle, bHasDivineCount, Count)) {
+			OnShowCardInfoEvent.Broadcast(CardRowHandle, bHasDivineCount ? Count : 0);
 		}
     } 
 	

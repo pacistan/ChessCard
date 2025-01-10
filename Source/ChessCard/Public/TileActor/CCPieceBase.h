@@ -59,12 +59,6 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "CC|Components")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CC|Components")
-	TObjectPtr<UWidgetComponent> EffectContainerWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CC|Components")
-	TObjectPtr<UWidgetComponent> DeathIndicatorWidget;
-
 public:
 	FOnTileEffectTriggered OnDeathEffect;
 	FOnTileEffectTriggered OnSpawnEffect;
@@ -149,6 +143,12 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_ConstructTile(FDataTableRowHandle Card, UMaterialInterface* SocleMaterial, bool IsPreview);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetupEffectContainerWidget(FDataTableRowHandle Card);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetIconStun(bool bIsStunned);
 
 	UFUNCTION()
 	bool GetIsPreview(){return bIsPreview;};
