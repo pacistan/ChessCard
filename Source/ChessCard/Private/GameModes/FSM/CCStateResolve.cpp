@@ -309,7 +309,6 @@ void UCCStateResolve::ApplyActionEffects(ACCPlayerState* PlayerState, const FPla
 		}
 		GameState->GetEffectManager()->TriggerResolveEffect(LastAction.IsDivineAnger, LastPiece->CardDataRowHandle,
 			LastPiece, EffectTiles, EEffectTriggerType::OnMove, TArray<ACCPieceBase*>(), Direction, LastAction);
-		Unit->DivineAngerCounter = 0;
 	}
 }
 
