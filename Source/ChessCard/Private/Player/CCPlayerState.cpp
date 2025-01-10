@@ -10,7 +10,6 @@
 
 ACCPlayerState::ACCPlayerState(const FObjectInitializer& ObjectInitializer) : Super (ObjectInitializer)
 {
-	
 }
 
 void ACCPlayerState::BeginPlay()

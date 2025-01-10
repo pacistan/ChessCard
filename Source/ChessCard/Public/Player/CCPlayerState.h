@@ -30,9 +30,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Replicated)
 	TSoftObjectPtr<UTexture2D> PlayerAvatar;
 
-	
-
-
 public:
 	FOnPlayerEndTurn EndTurnDelegate;
 

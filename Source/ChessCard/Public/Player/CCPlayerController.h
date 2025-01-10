@@ -32,6 +32,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UUserWidget> InGameHud;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	FString PlayerName;
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerPawn|Input", meta=(DisplayName = "Default Mapping Context"))
@@ -71,11 +74,18 @@ private:
 	ACCPlayerPawn* GetCCPlayerPawn();
 
 public:
-	
 	/* ------------------------------------------ OVERRIDES -------------------------------------------*/
 	virtual void BeginPlay() override;
 	
 	virtual void SetupInputComponent() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	/* ------------------------------------------ GETTERS / SETTERS ------------------------------------*/
+public:
+	UFUNCTION(BlueprintCallable)
+	FString GetPlayerName() const { return PlayerName; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerName(const FString& InPlayerName) { PlayerName = InPlayerName; }
 };
