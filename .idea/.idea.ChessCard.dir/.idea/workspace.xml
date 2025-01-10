@@ -7,12 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59a68e6a-a4af-4c99-a684-9d2c70cb6673" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ChessCard.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCCheatManager.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCCheatManager.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/GameModes/BP_CCGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Levels/LevelTest.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Levels/LevelTest.umap" afterDir="false" />
-    </list>
+    <list default="true" id="59a68e6a-a4af-4c99-a684-9d2c70cb6673" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
