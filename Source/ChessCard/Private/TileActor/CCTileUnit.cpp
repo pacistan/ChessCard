@@ -18,6 +18,13 @@
 #include "Player/CCPlayerState.h"
 #include "TileActor/CCUnitMovementComponent.h"
 
+
+void ACCTileUnit::OnDivine()
+{
+	Super::OnDivine();
+	IsMoved = false;
+}
+
 ACCTileUnit::ACCTileUnit(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	MovementComponent = CreateDefaultSubobject<UCCUnitMovementComponent>(TEXT("Movement"));

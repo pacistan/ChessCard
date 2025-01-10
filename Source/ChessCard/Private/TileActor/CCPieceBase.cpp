@@ -160,15 +160,20 @@ void ACCPieceBase::ClearSpline()
 
 void ACCPieceBase::OnRep_InitProperties()
 {	
-	if(!IsInitialized)
-	{
+	/*if(!IsInitialized)
+	{*/
 		InternalInit();
-	}
+//	}
+}
+
+void ACCPieceBase::OnDivine()
+{
 }
 
 void ACCPieceBase::MLC_OnDivineCounterChange_Implementation()
 {
 	BPE_OnDivineCounterChange();
+	OnDivine();
 }
 
 void ACCPieceBase::RPC_SetVisible_Implementation()

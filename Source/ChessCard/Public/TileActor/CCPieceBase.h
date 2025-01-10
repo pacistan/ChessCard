@@ -140,6 +140,9 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MLC_OnDivineCounterChange();
+
+	UFUNCTION()
+	virtual void OnDivine();
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_ConstructTile(FDataTableRowHandle Card, UMaterialInterface* SocleMaterial, bool IsPreview);

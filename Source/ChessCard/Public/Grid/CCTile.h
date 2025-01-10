@@ -60,6 +60,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category="", meta=(AllowPrivateAccess))
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
+
+	UPROPERTY(EditAnywhere, Category="", BlueprintReadWrite, meta=(AllowPrivateAccess))
+	TObjectPtr<UStaticMeshComponent> BonusTileVisual;
 	
 	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<ACCPieceBase>> Pieces;
@@ -166,6 +169,9 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MLC_PlayEffectParticles();
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MLC_UpdateBonusTileColor(ETeam Team);
 	
 	UFUNCTION()
 	void RemovePiece(ACCPieceBase* Piece);
@@ -190,4 +196,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_UnitEffect();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BLE_UpdateBonusTileColor(ETeam Team);
 };

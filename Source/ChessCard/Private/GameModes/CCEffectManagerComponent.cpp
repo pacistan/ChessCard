@@ -257,6 +257,7 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 				FInitilizationProperties InitProperties = Piece->InitilizationProperties;
 				InitProperties.Team = InPiece->Team;
 				InitProperties.InstanceID = InPiece->UnitGuid;
+				InitProperties.Coordinates = Piece->CurrentCoordinates;
 				InPiece->InitUnit(InitProperties);
 				break;
 			}
@@ -272,12 +273,14 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 					FInitilizationProperties InitProperties = Piece->InitilizationProperties;
 					InitProperties.Team = InPiece->Team;
 					InitProperties.InstanceID = InPiece->UnitGuid;
+					InitProperties.Coordinates = Piece->CurrentCoordinates;
 					TriggerResolveEffect(false, Piece->CardDataRowHandle, Piece,TArray<ACCTile*>(),
 							EEffectTriggerType::OnDeath, TArray<ACCPieceBase*>{InPiece}, FIntPoint(), FPlayerActionData());
 					Piece->MLC_DestroyPiece();
 					InPiece->InitUnit(InitProperties);
 					InPiece->SetActorLocation(Piece->GetActorLocation());
 					InPiece->SetActorRotation(Piece->GetActorRotation());
+					InPiece->CurrentCoordinates = Piece->CurrentCoordinates;
 					break;
 				}
 			}
@@ -335,9 +338,9 @@ void UCCEffectManagerComponent::TriggerResolveEffect(bool IsDivineAnger, FDataTa
 					int X = InPiece->CurrentCoordinates.X + i;
 					int Y = InPiece->CurrentCoordinates.Y + j;
 					ACCTile* Tile = GameState->GetGridManager()->GetTile(FIntPoint(X, Y));
-					if(IsValid(Tile)&&Tile->GetTileType() != ETileType::Disabled)
+					if(IsValid(Tile) && Tile->GetTileType() != ETileType::Disabled)
 					{
-						InEffectTiles[0]->MLC_PlayEffectParticles();
+						Tile->MLC_PlayEffectParticles();
 						auto Pieces = Tile->GetPieces();
 						if(!Pieces.IsEmpty())
 						{

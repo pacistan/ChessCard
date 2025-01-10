@@ -216,9 +216,13 @@ void ACCPlayerPawn::DrawMovementCard()
 
 void ACCPlayerPawn::RemoveSelectedCardFromHand()
 {
+	bool IsCore = HandComponent->Cards[DiscardCardIndex]->IsCore;
 	auto Handle = HandComponent->RemoveCardFromHand(DiscardCardIndex);
 	//SetCurrentSelectedCardIndex(-1);
-	DiscardPileComponent->AddCardToDeck(Handle);
+	if(IsCore)
+	{
+		DiscardPileComponent->AddCardToDeck(Handle);
+	}
 }
 
 void ACCPlayerPawn::RemoveCardWithIndex(int TargetIndex)
@@ -398,12 +402,16 @@ void ACCPlayerPawn::UndoAction()
 				VisualActor->Destroy();
 			}
 		}
-			
+
+		GetController<ACCPlayerController>()->CurrentSelectedElement = nullptr;
 		PlayedCards.Pop();
 		RemoveLastPlayerAction();
-
-		SetCurrentSelectedCardIndex(nullptr);
-		GetController<ACCPlayerController>()->CurrentSelectedElement = nullptr;
+		if(IsValid(CurrentSelectedCard))
+		{
+			CurrentSelectedCard->BPE_OnUnplay();
+			CurrentSelectedCard->UnSelect(this);
+		}
+		SetSelectedUnit(nullptr);
 		GetWorld()->GetGameState<ACCGameState>()->GetGridManager()->UnhighlightTiles();
 		QueueOfLocalActionElements.Pop();
 	}

@@ -14,7 +14,9 @@ ACCTile::ACCTile()
 	CCRootComponent = CreateDefaultSubobject<USceneComponent>("Root");
 	RootComponent = CCRootComponent;
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Tile Mesh");
+	BonusTileVisual	 = CreateDefaultSubobject<UStaticMeshComponent>("Bonus Mesh");
 	MeshComponent->SetupAttachment(CCRootComponent);
+	BonusTileVisual->SetupAttachment(CCRootComponent);
 }
 
 void ACCTile::SetHighlight(bool bIsHighlight, FOnClickTileDelegate OnClickDelegate, EHighlightMode HighlightMode)
@@ -159,6 +161,11 @@ void ACCTile::MLC_AddPiece_Implementation(ACCPieceBase* Piece)
 void ACCTile::MLC_PlayEffectParticles_Implementation()
 {
 	BPE_UnitEffect();
+}
+
+void ACCTile::MLC_UpdateBonusTileColor_Implementation(ETeam Team)
+{
+	BLE_UpdateBonusTileColor(Team);
 }
 
 void ACCTile::RemovePiece(ACCPieceBase* Piece)

@@ -152,7 +152,7 @@ public:
 	void BPE_OnDrawCard();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void BPE_OnPlay(bool IsMovement);
+	void BPE_OnPlay(bool IsMovement, int PlayIndex);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_Hover(bool ToHover);
@@ -162,4 +162,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BPE_ConstructCard(FDataTableRowHandle RowHandle);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPE_OnUnplay();
 };
